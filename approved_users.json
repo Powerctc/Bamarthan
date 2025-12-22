@@ -1,16 +1,22 @@
 {
   "users": [
     {
-      "deviceId": "s4_423468705",
-      "expires": "2026-05-31",
-      "registeredAt": "2025-12-22",
-      "name": "Admin User"
+      "deviceId": "S4TV_8G5H2J9K_LM9",
+      "expires": "2024-12-31",
+      "registeredAt": "2024-01-01",
+      "name": "Admin",
+      "package": "Premium",
+      "notes": "Primary admin account"
     },
     {
-      "deviceId": "s4_987654321",
+      "deviceId": "S4TV_3A7B1C4D_EF8",
       "expires": "2024-06-30",
-      "registeredAt": "2024-01-15",
-      "name": "Test User 2"
+      "registeredAt": "2024-01-15", 
+      "name": "Beta Tester",
+      "package": "Basic",
+      "notes": "Testing account"
     }
-  ]
+  ],
+  "lastUpdated": "2024-01-20",
+  "totalUsers": 2
 }
