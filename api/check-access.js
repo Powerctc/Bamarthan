@@ -31,7 +31,7 @@ export default async function handler(req, res) {
   
   try {
     // Read from approved_users.json
-    const filePath = path.join(process.cwd(), 'approved_users.json');
+    const filePath = path.join(process.cwd(), 'https://tv-version-six.vercel.app/approved_users.json');
     const fileData = fs.readFileSync(filePath, 'utf8');
     const approvedUsers = JSON.parse(fileData);
     
