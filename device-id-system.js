@@ -17,10 +17,7 @@
     API_BASE: 'https://tv-version-six.vercel.app/api',
     STORAGE_PREFIX: 's4tv_',
     COOKIE_EXPIRE_DAYS: 365,
-    CACHE_DURATION: 30 * 60 * 1000,
-    REFRESH_INTERVAL: 30 * 60 * 1000, // 30 minutes
-    INITIAL_RETRY_DELAY: 5000, // 5 seconds
-    MAX_RETRIES: 3
+    CACHE_DURATION: 30 * 60 * 1000
   };
   
   // ============ GLOBAL STATE ============
@@ -30,8 +27,6 @@
     userData: null,
     isInitialized: false,
     callbacks: [],
-    retryCount: 0,
-    isOffline: false,
     
     // Public API methods
     init: function() {
@@ -41,10 +36,6 @@
       this.isInitialized = true;
       
       console.log('[S4ITMM] Initialized with ID:', this.deviceId);
-      
-      // Check if device was previously approved
-      this._loadCachedAccess();
-      
       return this._checkAccess();
     },
     
@@ -62,21 +53,12 @@
         data: this.userData,
         isApproved: this.accessStatus === 'approved',
         isExpired: this.accessStatus === 'expired',
-        isPending: this.accessStatus === 'pending',
-        isChecking: this.accessStatus === 'checking',
-        isOffline: this.isOffline,
-        timestamp: new Date().toISOString()
+        isPending: this.accessStatus === 'pending'
       };
     },
     
-    refreshAccess: function(force = false) {
-      console.log('[S4ITMM] Refreshing access...', force ? '(forced)' : '');
-      
-      if (force) {
-        // Clear cache if forced refresh
-        this._clearCache();
-      }
-      
+    refreshAccess: function() {
+      console.log('[S4ITMM] Refreshing access...');
       return this._checkAccess();
     },
     
@@ -86,13 +68,7 @@
         
         // Call immediately if initialized
         if (this.isInitialized) {
-          setTimeout(() => {
-            try {
-              callback(this.getAccessStatus());
-            } catch (e) {
-              console.error('[S4ITMM] Initial callback error:', e);
-            }
-          }, 100);
+          setTimeout(() => callback(this.getAccessStatus()), 100);
         }
         
         // Return unsubscribe function
@@ -125,28 +101,6 @@
       }
     },
     
-    clearData: function() {
-      try {
-        localStorage.removeItem(CONFIG.STORAGE_PREFIX + 'device_id');
-        localStorage.removeItem(CONFIG.STORAGE_PREFIX + 'first_seen');
-        localStorage.removeItem(CONFIG.STORAGE_PREFIX + 'access_cache');
-        this.deviceId = null;
-        this.userData = null;
-        this.accessStatus = 'checking';
-        this.isInitialized = false;
-        this.retryCount = 0;
-        
-        // Re-initialize
-        setTimeout(() => this.init(), 100);
-        
-        this._showNotification('Data cleared. New ID will be generated.', 'info');
-        return true;
-      } catch (e) {
-        console.error('[S4ITMM] Clear data failed:', e);
-        return false;
-      }
-    },
-    
     // ============ PRIVATE METHODS ============
     _generateStableDeviceId: function() {
       console.log('[S4ITMM] Generating device ID...');
@@ -162,32 +116,25 @@
         console.warn('[S4ITMM] localStorage error:', e.message);
       }
       
-      // Generate new ID with better fingerprinting
-      const fingerprintData = {
-        ua: navigator.userAgent || 'unknown',
-        platform: navigator.platform || 'unknown',
-        screen: (screen.width || 0) + 'x' + (screen.height || 0),
-        language: navigator.language || 'en',
-        timezone: new Date().getTimezoneOffset(),
-        hardwareConcurrency: navigator.hardwareConcurrency || 0,
-        deviceMemory: navigator.deviceMemory || 0,
-        timestamp: Date.now()
-      };
+      // Generate new ID
+      const fingerprint = [
+        navigator.userAgent || 'unknown',
+        navigator.platform || 'unknown',
+        (screen.width || 0) + 'x' + (screen.height || 0),
+        navigator.language || 'en',
+        new Date().getTimezoneOffset().toString(),
+        Date.now().toString()
+      ].join('|');
       
-      const fingerprintString = JSON.stringify(fingerprintData);
-      
-      // Simple hash function
       let hash = 0;
-      for (let i = 0; i < fingerprintString.length; i++) {
-        const char = fingerprintString.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+      for (let i = 0; i < fingerprint.length; i++) {
+        hash = ((hash << 5) - hash) + fingerprint.charCodeAt(i);
         hash = hash & hash;
       }
       
       const hashPart = Math.abs(hash).toString(36).substring(0, 6).toUpperCase();
       const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-      const timestampPart = Date.now().toString(36).substring(4, 8).toUpperCase();
-      const newId = `S4TV_${hashPart}_${randomPart}_${timestampPart}`;
+      const newId = `S4TV_${hashPart}_${randomPart}`;
       
       console.log('[S4ITMM] Generated new ID:', newId);
       
@@ -197,11 +144,11 @@
     },
     
     _isValidDeviceId: function(id) {
-      if (!id || typeof id !== 'string') return false;
-      
-      // Check format: S4TV_XXXXXX_XXXX_XXXXX
-      const pattern = /^S4TV_[A-Z0-9]{6}_[A-Z0-9]{4}_[A-Z0-9]{5,8}$/;
-      return pattern.test(id);
+      return id && 
+             typeof id === 'string' && 
+             id.length >= 10 && 
+             id.length <= 30 &&
+             id.startsWith('S4TV_');
     },
     
     _saveDeviceId: function(id) {
@@ -215,142 +162,48 @@
       }
     },
     
-    _saveAccessCache: function(data) {
-      try {
-        const cacheData = {
-          data: data,
-          timestamp: Date.now(),
-          status: data.status
-        };
-        localStorage.setItem(CONFIG.STORAGE_PREFIX + 'access_cache', JSON.stringify(cacheData));
-      } catch (e) {
-        console.warn('[S4ITMM] Failed to save cache:', e.message);
-      }
-    },
-    
-    _loadCachedAccess: function() {
-      try {
-        const cached = localStorage.getItem(CONFIG.STORAGE_PREFIX + 'access_cache');
-        if (cached) {
-          const cacheData = JSON.parse(cached);
-          const age = Date.now() - cacheData.timestamp;
-          
-          // Use cache if less than 1 hour old
-          if (age < 60 * 60 * 1000) {
-            this.accessStatus = cacheData.status;
-            this.userData = cacheData.data;
-            console.log('[S4ITMM] Loaded from cache:', this.accessStatus);
-            this._notifyCallbacks();
-          }
-        }
-      } catch (e) {
-        console.warn('[S4ITMM] Cache load error:', e.message);
-      }
-    },
-    
-    _clearCache: function() {
-      try {
-        localStorage.removeItem(CONFIG.STORAGE_PREFIX + 'access_cache');
-      } catch (e) {
-        console.warn('[S4ITMM] Cache clear error:', e.message);
-      }
-    },
-    
     _checkAccess: async function() {
       const deviceId = this.getDeviceId();
       console.log('[S4ITMM] Checking access for:', deviceId);
       
       // Update status to checking
       this.accessStatus = 'checking';
-      this.isOffline = false;
       this._notifyCallbacks();
       
       try {
-        // Call API with timeout
+        // Call API
         const apiUrl = `${CONFIG.API_BASE}/check-access?deviceId=${encodeURIComponent(deviceId)}&_t=${Date.now()}`;
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        console.log('[S4ITMM] Calling API:', apiUrl);
         
         const response = await fetch(apiUrl, {
           method: 'GET',
           headers: { 
             'Accept': 'application/json',
-            'Cache-Control': 'no-cache',
-            'X-Device-ID': deviceId,
-            'X-App-Version': CONFIG.APP_VERSION
-          },
-          signal: controller.signal
+            'Cache-Control': 'no-cache'
+          }
         });
         
-        clearTimeout(timeoutId);
-        
         if (!response.ok) {
-          throw new Error(`API error: ${response.status} ${response.statusText}`);
+          throw new Error(`API error: ${response.status}`);
         }
         
         const data = await response.json();
         console.log('[S4ITMM] API response:', data);
         
-        // Reset retry count on success
-        this.retryCount = 0;
-        
         // Update state
         this.accessStatus = data.status || 'pending';
         this.userData = data;
         
-        // Cache successful response
-        if (this.accessStatus === 'approved' || this.accessStatus === 'expired') {
-          this._saveAccessCache(data);
-        }
-        
       } catch (error) {
         console.error('[S4ITMM] Access check failed:', error.message);
         
-        // Network error detection
-        this.isOffline = error.name === 'AbortError' || 
-                        error.message.includes('Failed to fetch') ||
-                        error.message.includes('NetworkError');
-        
-        // Increment retry count
-        this.retryCount++;
-        
-        // Use cached data if available and we're offline
-        try {
-          const cached = localStorage.getItem(CONFIG.STORAGE_PREFIX + 'access_cache');
-          if (cached && this.isOffline) {
-            const cacheData = JSON.parse(cached);
-            this.accessStatus = cacheData.status;
-            this.userData = cacheData.data;
-            console.log('[S4ITMM] Using cached data (offline mode)');
-          } else {
-            // Fallback to pending status
-            this.accessStatus = 'pending';
-            this.userData = {
-              deviceId: deviceId,
-              message: this.isOffline 
-                ? 'Cannot connect to server. Please check your internet connection.' 
-                : 'Service temporarily unavailable. Please try again.',
-              offline: this.isOffline,
-              error: error.message
-            };
-          }
-        } catch (cacheError) {
-          console.warn('[S4ITMM] Cache error:', cacheError);
-          this.accessStatus = 'pending';
-        }
-        
-        // Schedule retry if needed
-        if (this.retryCount < CONFIG.MAX_RETRIES) {
-          const retryDelay = CONFIG.INITIAL_RETRY_DELAY * Math.pow(2, this.retryCount - 1);
-          console.log(`[S4ITMM] Retry ${this.retryCount}/${CONFIG.MAX_RETRIES} in ${retryDelay}ms`);
-          
-          setTimeout(() => {
-            if (this.isInitialized) {
-              this._checkAccess();
-            }
-          }, retryDelay);
-        }
+        // Fallback to pending status
+        this.accessStatus = 'pending';
+        this.userData = {
+          deviceId: deviceId,
+          message: 'Cannot connect to server. Please check internet.',
+          offline: true
+        };
       }
       
       // Notify all callbacks
@@ -381,7 +234,7 @@
         if (state.isApproved) {
           window.dispatchEvent(new CustomEvent('s4itmm-access-granted', { detail: state }));
         } else if (state.isExpired) {
-          window.dispatchEvent(new CustomEvent('s4ITMM-access-expired', { detail: state }));
+          window.dispatchEvent(new CustomEvent('s4itmm-access-expired', { detail: state }));
         } else if (state.isPending) {
           window.dispatchEvent(new CustomEvent('s4itmm-access-pending', { detail: state }));
         }
@@ -442,11 +295,10 @@
         z-index: 99999;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         animation: s4itmmNotificationIn 0.3s ease-out;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: Arial, sans-serif;
         font-size: 14px;
         max-width: 400px;
         word-break: break-word;
-        pointer-events: none;
       `;
       
       notification.textContent = message;
@@ -454,14 +306,12 @@
       
       // Auto remove after 3 seconds
       setTimeout(() => {
-        if (notification.parentNode) {
-          notification.style.animation = 's4itmmNotificationOut 0.3s ease-in';
-          setTimeout(() => {
-            if (notification.parentNode) {
-              notification.parentNode.removeChild(notification);
-            }
-          }, 300);
-        }
+        notification.style.animation = 's4itmmNotificationOut 0.3s ease-in';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
       }, 3000);
     }
   };
@@ -472,12 +322,12 @@
     style.id = 's4itmm-notification-styles';
     style.textContent = `
       @keyframes s4itmmNotificationIn {
-        from { transform: translateX(100%) translateY(-20px); opacity: 0; }
-        to { transform: translateX(0) translateY(0); opacity: 1; }
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
       }
       @keyframes s4itmmNotificationOut {
-        from { transform: translateX(0) translateY(0); opacity: 1; }
-        to { transform: translateX(100%) translateY(-20px); opacity: 0; }
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
       }
     `;
     document.head.appendChild(style);
@@ -490,35 +340,19 @@
         window.S4ITMM.init();
       });
     } else {
-      setTimeout(() => window.S4ITMM.init(), 100);
+      window.S4ITMM.init();
     }
     
-    // Periodic refresh
+    // Periodic refresh (every 30 minutes)
     setInterval(() => {
       if (window.S4ITMM.isInitialized) {
         window.S4ITMM.refreshAccess();
       }
-    }, CONFIG.REFRESH_INTERVAL);
-    
-    // Listen for online/offline events
-    window.addEventListener('online', () => {
-      console.log('[S4ITMM] Network online, refreshing access...');
-      if (window.S4ITMM.isInitialized && window.S4ITMM.isOffline) {
-        setTimeout(() => window.S4ITMM.refreshAccess(true), 1000);
-      }
-    });
-    
-    window.addEventListener('offline', () => {
-      console.log('[S4ITMM] Network offline');
-      if (window.S4ITMM.isInitialized) {
-        window.S4ITMM.isOffline = true;
-        window.S4ITMM._notifyCallbacks();
-      }
-    });
+    }, 30 * 60 * 1000);
   }
   
   // Start initialization
   initialize();
   
-  console.log('[S4ITMM] Device ID System v' + CONFIG.APP_VERSION + ' loaded successfully');
+  console.log('[S4ITMM] Device ID System loaded successfully');
 })();
