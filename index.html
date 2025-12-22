@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>S4MM TV - Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Universal Device ID System -->
+  <script src="device-id-system.js"></script>
 
   <style>
     /* ============ GLOBAL ============ */
@@ -141,6 +144,7 @@
       padding: 6px 12px;
       border-radius: 6px;
       border: 1px solid #4b5563;
+      font-family: monospace;
     }
 
     .status-badge {
@@ -276,39 +280,14 @@
       margin: 0;
     }
 
-    /* ============ FOOTER ============ */
-    footer {
-      background-color: #1f2937;
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px;
-      border-top: 1px solid #374151;
-    }
-
-    footer p {
-      margin: 5px 0;
-      color: #9ca3af;
-    }
-
-    footer a {
-      color: #60a5fa;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-      color: #3b82f6;
-    }
-
-    /* ============ POPUP ============ */
-    #access-denied-popup {
+    /* ============ ACCESS POPUP ============ */
+    #access-popup {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.95);
+      background: rgba(0, 0, 0, 0.95);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -344,6 +323,10 @@
       color: #ef4444;
       margin-bottom: 20px;
       font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
     .popup-status {
@@ -390,6 +373,7 @@
       font-weight: bold;
       letter-spacing: 1px;
       cursor: default;
+      font-family: monospace;
     }
 
     .popup-buttons {
@@ -530,11 +514,32 @@
       border-radius: 10px;
       margin: 20px 0;
       border: 2px solid #10b981;
+      display: none;
     }
 
-    .access-granted h3 {
-      color: #10b981;
-      margin-bottom: 10px;
+    /* ============ FOOTER ============ */
+    footer {
+      background-color: #1f2937;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      border-top: 1px solid #374151;
+    }
+
+    footer p {
+      margin: 5px 0;
+      color: #9ca3af;
+    }
+
+    footer a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+      color: #3b82f6;
     }
   </style>
 </head>
@@ -603,7 +608,7 @@
     <div class="device-info-box">
       <div class="device-info-row">
         <span class="device-info-label">Device ID:</span>
-        <span class="device-info-value" id="device-id-inline">Generating...</span>
+        <span class="device-info-value" id="device-id-inline">Loading...</span>
       </div>
       
       <div class="device-info-row">
@@ -620,21 +625,27 @@
       </div>
       
       <div class="device-info-row">
-        <span class="device-info-label">Generated On:</span>
+        <span class="device-info-label">Device Since:</span>
         <span class="device-info-value" id="generated-date">-</span>
       </div>
       
       <div class="device-actions">
-        <button class="btn btn-primary" onclick="copyDeviceIdToClipboard()">
+        <button class="btn btn-primary" onclick="copyDeviceId()">
           <i class="fas fa-copy"></i> Copy ID
         </button>
-        <button class="btn btn-secondary" onclick="checkAccessAgain()">
+        <button class="btn btn-secondary" onclick="refreshAccess()">
           <i class="fas fa-sync-alt"></i> Re-check
         </button>
-        <button class="btn btn-secondary" onclick="showDeviceInfo()">
-          <i class="fas fa-info-circle"></i> Debug Info
+        <button class="btn btn-secondary" onclick="showDebugInfo()">
+          <i class="fas fa-info-circle"></i> Debug
         </button>
       </div>
+    </div>
+
+    <!-- ACCESS GRANTED MESSAGE -->
+    <div id="access-granted-message" class="access-granted">
+      <h3><i class="fas fa-check-circle"></i> Access Granted!</h3>
+      <p>You can now browse the movie collection. Enjoy watching!</p>
     </div>
 
     <!-- MOVIES WILL LOAD HERE -->
@@ -647,12 +658,6 @@
       <div class="loading-spinner"></div>
       <p>Checking your access permissions...</p>
       <p style="font-size: 13px; color: #6b7280;">This may take a few seconds</p>
-    </div>
-
-    <!-- ACCESS GRANTED MESSAGE (Hidden by default) -->
-    <div id="access-granted-message" class="access-granted" style="display: none;">
-      <h3><i class="fas fa-check-circle"></i> Access Granted!</h3>
-      <p>You can now browse the movie collection. Enjoy watching!</p>
     </div>
   </div>
 
@@ -670,13 +675,13 @@
   </footer>
 
   <!-- ACCESS POPUP -->
-  <div id="access-denied-popup">
+  <div id="access-popup">
     <div class="popup-content">
       <h2 id="popup-title">
         <i class="fas fa-user-shield"></i> Device Verification
       </h2>
       
-      <div class="popup-status" id="popup-status">Checking...</div>
+      <div class="popup-status status-checking" id="popup-status">Checking...</div>
       
       <div class="popup-message">
         <p id="popup-message">Verifying your device access permissions...</p>
@@ -689,10 +694,10 @@
       
       <div class="popup-buttons">
         <button class="popup-button popup-button-copy" onclick="copyDeviceIdFromPopup()">
-          <i class="fas fa-copy"></i> Copy Device ID to Clipboard
+          <i class="fas fa-copy"></i> Copy Device ID
         </button>
-        <button class="popup-button popup-button-refresh" onclick="recheckAccess()">
-          <i class="fas fa-redo"></i> Re-check Access Status
+        <button class="popup-button popup-button-refresh" onclick="refreshAccess()">
+          <i class="fas fa-redo"></i> Refresh Status
         </button>
       </div>
       
@@ -713,527 +718,246 @@
             <a href="mailto:support@s4itmm.com">support@s4itmm.com</a>
           </p>
           <p style="font-size: 12px; margin-top: 8px;">
-            Send your Device ID to get approval. Approval usually takes 1-2 hours.
+            Send your Device ID to get approval.
           </p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- =================== MAIN SCRIPT =================== -->
+  <!-- MAIN SCRIPT -->
   <script>
-    // CONFIGURATION
-    const CONFIG = {
-      APP_NAME: 'S4ITMM_TV',
-      API_BASE: window.location.origin.includes('vercel') 
-        ? window.location.origin + '/api' 
-        : 'https://tv-version-six.vercel.app/api',
-      VERSION: '2.1',
-      STORAGE_PREFIX: 's4tv_'
-    };
-
-    // GLOBAL VARIABLES
-    let deviceId = null;
-    let accessStatus = 'checking';
-    let appInitialized = false;
-
-    // ============ DEVICE ID MANAGEMENT ============
-    function generateStableDeviceId() {
-      console.log('🔧 Generating stable device ID...');
-      
-      // Try multiple methods to get/create stable ID
-      
-      // 1. Check URL parameter (most reliable for persistence)
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlDeviceId = urlParams.get('did');
-      if (urlDeviceId && isValidDeviceId(urlDeviceId)) {
-        console.log('📱 Found ID in URL:', urlDeviceId);
-        saveDeviceId(urlDeviceId);
-        return urlDeviceId;
-      }
-      
-      // 2. Try localStorage
-      try {
-        const storedId = localStorage.getItem(CONFIG.STORAGE_PREFIX + 'device_id');
-        if (storedId && isValidDeviceId(storedId)) {
-          console.log('💾 Found ID in localStorage:', storedId);
-          return storedId;
-        }
-      } catch (e) {
-        console.log('⚠️ localStorage not available');
-      }
-      
-      // 3. Try sessionStorage
-      try {
-        const sessionId = sessionStorage.getItem(CONFIG.STORAGE_PREFIX + 'session_id');
-        if (sessionId && isValidDeviceId(sessionId)) {
-          console.log('🔄 Found ID in sessionStorage:', sessionId);
-          saveDeviceId(sessionId);
-          return sessionId;
-        }
-      } catch (e) {
-        console.log('⚠️ sessionStorage not available');
-      }
-      
-      // 4. Generate NEW stable ID
-      console.log('✨ Generating new stable ID...');
-      const newId = createNewDeviceId();
-      saveDeviceId(newId);
-      
-      // 5. Update URL with the new ID (for refresh persistence)
-      updateUrlWithDeviceId(newId);
-      
-      return newId;
-    }
+    // ============ STATE ============
+    let currentDeviceId = null;
+    let currentStatus = 'checking';
     
-    function createNewDeviceId() {
-      // Create fingerprint from browser data (this stays consistent)
-      const fingerprintData = [
-        navigator.userAgent || 'unknown',
-        navigator.platform || 'unknown',
-        (screen.width || 0) + 'x' + (screen.height || 0),
-        navigator.language || 'en',
-        new Date().getTimezoneOffset(),
-        navigator.hardwareConcurrency || 'unknown'
-      ].join('|');
+    // ============ INITIALIZATION ============
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM loaded, initializing S4ITMM TV...');
       
-      // Create hash from fingerprint
-      let hash = 0;
-      for (let i = 0; i < fingerprintData.length; i++) {
-        hash = ((hash << 5) - hash) + fingerprintData.charCodeAt(i);
-        hash = hash & hash;
-      }
-      
-      // Format: S4TV_XXXXXXXX_XXXX
-      const timestampPart = Math.abs(hash).toString(36).substring(0, 8).toUpperCase();
-      const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-      const deviceId = `S4TV_${timestampPart}_${randomPart}`;
-      
-      console.log('🆕 Generated new ID:', deviceId);
-      return deviceId;
-    }
-    
-    function saveDeviceId(id) {
-      if (!isValidDeviceId(id)) return;
-      
-      console.log('💾 Saving device ID:', id);
-      
-      // Save to multiple storage methods for reliability
-      try {
-        localStorage.setItem(CONFIG.STORAGE_PREFIX + 'device_id', id);
-        localStorage.setItem(CONFIG.STORAGE_PREFIX + 'first_seen', new Date().toISOString());
-      } catch (e) { console.log('❌ Failed to save to localStorage'); }
-      
-      try {
-        sessionStorage.setItem(CONFIG.STORAGE_PREFIX + 'session_id', id);
-      } catch (e) { console.log('❌ Failed to save to sessionStorage'); }
-      
-      // Save to cookie (most reliable for browsers)
-      setCookie(CONFIG.STORAGE_PREFIX + 'device_id', id, 365);
-      
-      // Save generation time
-      const now = new Date();
-      try {
-        localStorage.setItem(CONFIG.STORAGE_PREFIX + 'last_generated', now.toISOString());
-      } catch (e) {}
-    }
-    
-    function updateUrlWithDeviceId(id) {
-      try {
-        const url = new URL(window.location);
-        if (!url.searchParams.has('did')) {
-          url.searchParams.set('did', id);
-          window.history.replaceState({}, '', url.toString());
-          console.log('🔗 Updated URL with device ID');
-        }
-      } catch (e) {
-        console.log('⚠️ Could not update URL');
-      }
-    }
-    
-    function isValidDeviceId(id) {
-      return id && 
-             typeof id === 'string' && 
-             id.length >= 10 && 
-             id.length <= 30 &&
-             id.startsWith('S4TV_');
-    }
-    
-    // ============ COOKIE FUNCTIONS ============
-    function setCookie(name, value, days) {
-      try {
-        const d = new Date();
-        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-        const expires = "expires=" + d.toUTCString();
-        document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";path=/;SameSite=Lax";
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-    
-    function getCookie(name) {
-      try {
-        const nameEQ = name + "=";
-        const ca = document.cookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-          let c = ca[i];
-          while (c.charAt(0) === ' ') c = c.substring(1);
-          if (c.indexOf(nameEQ) === 0) return decodeURIComponent(c.substring(nameEQ.length));
-        }
-        return null;
-      } catch (e) {
-        return null;
-      }
-    }
-    
-    // ============ ACCESS CHECK ============
-    async function checkDeviceAccess() {
-      console.log('🔍 Checking device access...');
-      
-      // Update UI to show checking
-      updateStatusUI('checking', 'Checking access...');
-      showPopup('checking', 'Verifying your device...');
-      
-      try {
-        // Call Vercel API
-        const apiUrl = `${CONFIG.API_BASE}/check-access?deviceId=${encodeURIComponent(deviceId)}&_t=${Date.now()}`;
-        console.log('📡 Calling API:', apiUrl);
-        
-        const response = await fetch(apiUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          },
-          cache: 'no-store'
+      // Initialize the device ID system
+      if (window.S4ITMM && window.S4ITMM.init) {
+        window.S4ITMM.init().then(function(result) {
+          console.log('S4ITMM initialized:', result);
+          setupAccessListeners();
+        }).catch(function(error) {
+          console.error('S4ITMM initialization failed:', error);
+          showPopup('error', 'System initialization failed');
         });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('📊 API Response:', data);
-        
-        // Handle response
-        handleAccessResponse(data);
-        
-      } catch (error) {
-        console.error('❌ Error checking access:', error);
-        
-        // Try offline mode - check local cache
-        const cached = localStorage.getItem(CONFIG.STORAGE_PREFIX + 'access_cache');
-        if (cached) {
-          try {
-            const cachedData = JSON.parse(cached);
-            if (Date.now() - cachedData.timestamp < 24 * 60 * 60 * 1000) { // 24 hours
-              console.log('📂 Using cached access data');
-              handleAccessResponse(cachedData.data);
-              showPopup('checking', 'Offline mode - using cached access');
-              return;
-            }
-          } catch (e) {
-            console.log('❌ Failed to parse cache');
-          }
-        }
-        
-        // No cache or error
-        showPopup('error', 'Cannot connect to server. Please check your internet connection.');
-        updateStatusUI('error', 'Connection failed');
+      } else {
+        console.error('S4ITMM system not found!');
+        showPopup('error', 'Device ID system not loaded');
       }
+    });
+    
+    // ============ ACCESS LISTENERS ============
+    function setupAccessListeners() {
+      // Listen for access changes
+      if (window.S4ITMM && window.S4ITMM.onAccessChange) {
+        window.S4ITMM.onAccessChange(function(state) {
+          handleAccessState(state);
+        });
+      }
+      
+      // Also listen for global events
+      window.addEventListener('s4itmm-access-update', function(event) {
+        handleAccessState(event.detail);
+      });
+      
+      window.addEventListener('s4itmm-access-granted', function(event) {
+        console.log('Access granted event received');
+        handleAccessState(event.detail);
+      });
     }
     
-    function handleAccessResponse(data) {
-      // Cache the response
-      try {
-        localStorage.setItem(CONFIG.STORAGE_PREFIX + 'access_cache', JSON.stringify({
-          data: data,
-          timestamp: Date.now()
-        }));
-      } catch (e) {}
+    // ============ HANDLE ACCESS STATES ============
+    function handleAccessState(state) {
+      console.log('Access state updated:', state);
       
-      // Update global status
-      accessStatus = data.status || 'pending';
+      currentDeviceId = state.deviceId;
+      currentStatus = state.status;
       
-      // Update UI based on status
-      switch(accessStatus) {
+      // Update UI
+      updateDeviceInfo(state);
+      updatePopupUI(state);
+      
+      // Handle based on status
+      switch(state.status) {
         case 'approved':
-          handleApprovedAccess(data);
+          handleApprovedAccess(state);
           break;
           
         case 'pending':
-          handlePendingAccess(data);
+          handlePendingAccess(state);
           break;
           
         case 'expired':
-          handleExpiredAccess(data);
+          handleExpiredAccess(state);
+          break;
+          
+        case 'checking':
+          // Do nothing, just show checking
           break;
           
         default:
-          handleUnknownAccess(data);
+          console.warn('Unknown access status:', state.status);
       }
     }
     
-    function handleApprovedAccess(data) {
+    function handleApprovedAccess(state) {
       console.log('✅ Access granted!');
       
-      // Update UI
-      updateStatusUI('approved', `Access granted until ${data.expires || 'N/A'}`);
-      updateDeviceInfoDisplay(data);
-      
-      // Hide popup
-      hidePopup();
+      // Hide popup after delay
+      setTimeout(function() {
+        hidePopup();
+      }, 1500);
       
       // Show access granted message
       document.getElementById('access-granted-message').style.display = 'block';
+       // Hide loading placeholder
       document.getElementById('loading-placeholder').style.display = 'none';
       
       // Load movies
-      setTimeout(() => {
-        loadMovies();
-      }, 500);
+      loadMovies();
     }
     
-    function handlePendingAccess(data) {
+    function handlePendingAccess(state) {
       console.log('⏳ Access pending');
-      
-      updateStatusUI('pending', 'Waiting for approval');
-      updateDeviceInfoDisplay(data);
-      
-      showPopup('pending', 
-        data.message || 'Your device is pending approval. Please contact admin with your Device ID.'
-      );
+      // Popup already shows the message
     }
     
-    function handleExpiredAccess(data) {
+    function handleExpiredAccess(state) {
       console.log('❌ Access expired');
-      
-      updateStatusUI('expired', `Expired on ${data.expires || 'N/A'}`);
-      updateDeviceInfoDisplay(data);
-      
-      showPopup('expired', 
-        data.message || `Your subscription expired on ${data.expires}. Please renew.`
-      );
-    }
-    
-    function handleUnknownAccess(data) {
-      console.log('❓ Unknown access status:', data.status);
-      
-      updateStatusUI('error', data.message || 'Unknown status');
-      updateDeviceInfoDisplay(data);
-      
-      showPopup('error', 
-        data.message || 'Unable to verify access. Please try again later.'
-      );
+      // Popup already shows the message
     }
     
     // ============ UI UPDATES ============
-    function updateStatusUI(status, message) {
-      const statusText = document.getElementById('status-text');
-      const statusBadge = document.getElementById('status-badge');
-      const expiryDate = document.getElementById('expiry-date');
-      
-      if (statusText) statusText.textContent = message || status;
-      if (statusBadge) {
-        statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        statusBadge.className = `status-badge status-${status}`;
+    function updateDeviceInfo(state) {
+      // Update device ID
+      const deviceIdElement = document.getElementById('device-id-inline');
+      if (deviceIdElement && state.deviceId) {
+        deviceIdElement.textContent = state.deviceId;
       }
       
-      // Update other UI elements based on status
-      const loadingPlaceholder = document.getElementById('loading-placeholder');
-      if (loadingPlaceholder) {
-        if (status === 'approved') {
-          loadingPlaceholder.style.display = 'none';
-        } else {
-          loadingPlaceholder.innerHTML = `
-            <div class="loading-spinner"></div>
-            <p>${message || 'Checking access...'}</p>
-          `;
+      // Update status text
+      const statusText = document.getElementById('status-text');
+      const statusBadge = document.getElementById('status-badge');
+      
+      if (statusText) {
+        let statusMessage = 'Checking...';
+        if (state.status === 'approved') {
+          statusMessage = 'Access Granted';
+        } else if (state.status === 'pending') {
+          statusMessage = 'Pending Approval';
+        } else if (state.status === 'expired') {
+          statusMessage = 'Subscription Expired';
+        }
+        statusText.textContent = statusMessage;
+      }
+      
+      if (statusBadge) {
+        statusBadge.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+        statusBadge.className = 'status-badge status-' + state.status;
+      }
+      
+      // Update expiry date
+      const expiryElement = document.getElementById('expiry-date');
+      if (expiryElement && state.data && state.data.expires) {
+        expiryElement.textContent = state.data.expires;
+      } else if (expiryElement) {
+        expiryElement.textContent = 'Not set';
+      }
+      
+      // Update generated date
+      const generatedElement = document.getElementById('generated-date');
+      if (generatedElement) {
+        try {
+          const firstSeen = localStorage.getItem('s4tv_first_seen');
+          if (firstSeen) {
+            const date = new Date(firstSeen);
+            generatedElement.textContent = date.toLocaleDateString();
+          } else {
+            generatedElement.textContent = 'Today';
+          }
+        } catch (e) {
+          generatedElement.textContent = 'Today';
         }
       }
     }
     
-    function updateDeviceInfoDisplay(data) {
-      // Update inline display
-      const deviceIdDisplay = document.getElementById('device-id-inline');
-      if (deviceIdDisplay && deviceId) {
-        deviceIdDisplay.textContent = deviceId;
+    function updatePopupUI(state) {
+      const popupTitle = document.getElementById('popup-title');
+      const popupStatus = document.getElementById('popup-status');
+      const popupMessage = document.getElementById('popup-message');
+      const deviceIdDisplay = document.getElementById('device-id-display');
+      
+      // Update device ID in popup
+      if (deviceIdDisplay && state.deviceId) {
+        deviceIdDisplay.value = state.deviceId;
       }
       
-      // Update expiry date
-      const expiryDate = document.getElementById('expiry-date');
-      if (expiryDate) {
-        expiryDate.textContent = data.expires || 'Not set';
+      // Update status
+      if (popupStatus) {
+        popupStatus.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+        popupStatus.className = 'popup-status status-' + state.status;
       }
       
-      // Update generated date
-      const generatedDate = document.getElementById('generated-date');
-      if (generatedDate) {
-        try {
-          const firstSeen = localStorage.getItem(CONFIG.STORAGE_PREFIX + 'first_seen');
-          if (firstSeen) {
-            const date = new Date(firstSeen);
-            generatedDate.textContent = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-          } else {
-            generatedDate.textContent = new Date().toLocaleDateString();
-          }
-        } catch (e) {
-          generatedDate.textContent = new Date().toLocaleDateString();
+      // Update title and message
+      if (popupTitle && popupMessage) {
+        switch(state.status) {
+          case 'approved':
+            popupTitle.innerHTML = '<i class="fas fa-check-circle"></i> Access Granted';
+            popupMessage.textContent = 'Your device has been approved. Loading content...';
+            break;
+            
+          case 'pending':
+            popupTitle.innerHTML = '<i class="fas fa-clock"></i> Approval Required';
+            popupMessage.textContent = state.data?.message || 'Your device is pending approval. Please contact admin.';
+            break;
+            
+          case 'expired':
+            popupTitle.innerHTML = '<i class="fas fa-calendar-times"></i> Subscription Expired';
+            popupMessage.textContent = state.data?.message || 'Your subscription has expired. Please renew.';
+            break;
+            
+          case 'checking':
+            popupTitle.innerHTML = '<i class="fas fa-user-shield"></i> Device Verification';
+            popupMessage.textContent = 'Verifying your device access...';
+            break;
+            
+          default:
+            popupTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Access Error';
+            popupMessage.textContent = 'Unable to verify access. Please try again.';
         }
       }
       
-      // Update popup display
-      const popupDisplay = document.getElementById('device-id-display');
-      if (popupDisplay) {
-        popupDisplay.value = deviceId || 'Error';
+      // Show popup if not approved
+      if (state.status !== 'approved') {
+        showPopup(state.status, state.data?.message || '');
       }
     }
     
     function showPopup(status, message) {
-      const popup = document.getElementById('access-denied-popup');
-      const popupTitle = document.getElementById('popup-title');
-      const popupStatus = document.getElementById('popup-status');
-      const popupMessage = document.getElementById('popup-message');
-      
-      if (popup) popup.style.display = 'flex';
-      
-      if (popupTitle) {
-        switch(status) {
-          case 'approved':
-            popupTitle.innerHTML = '<i class="fas fa-check-circle"></i> Access Granted';
-            break;
-          case 'pending':
-            popupTitle.innerHTML = '<i class="fas fa-clock"></i> Approval Required';
-            break;
-          case 'expired':
-            popupTitle.innerHTML = '<i class="fas fa-calendar-times"></i> Subscription Expired';
-            break;
-          case 'error':
-            popupTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Connection Error';
-            break;
-          default:
-            popupTitle.innerHTML = '<i class="fas fa-user-shield"></i> Device Verification';
-        }
-      }
-      
-      if (popupStatus) {
-        popupStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-        popupStatus.className = 'popup-status';
-        popupStatus.classList.add(`status-${status}`);
-      }
-      
-      if (popupMessage) {
-        popupMessage.textContent = message || 'Verifying your device...';
+      const popup = document.getElementById('access-popup');
+      if (popup) {
+        popup.style.display = 'flex';
       }
     }
     
     function hidePopup() {
-      const popup = document.getElementById('access-denied-popup');
+      const popup = document.getElementById('access-popup');
       if (popup) {
         popup.style.display = 'none';
       }
     }
     
-    // ============ MOVIE FUNCTIONS ============
-    async function loadMovies() {
-      console.log('🎬 Loading movies...');
-      
-      const movieGrid = document.getElementById('movie-grid');
-      if (!movieGrid) return;
-      
-      try {
-        // Try to load from local file
-        const response = await fetch('zetmovies.json?_t=' + Date.now());
-        
-        if (!response.ok) {
-          throw new Error('Failed to load movies');
-        }
-        
-        const movies = await response.json();
-        displayMovies(movies);
-        
-      } catch (error) {
-        console.error('Error loading movies:', error);
-        
-        // Show error in movie grid
-        movieGrid.innerHTML = `
-          <div style="width:100%; text-align:center; padding:40px; color:#9ca3af;">
-            <i class="fas fa-exclamation-triangle" style="font-size:40px; margin-bottom:20px;"></i>
-            <h3>Cannot Load Movies</h3>
-            <p>There was an error loading the movie collection.</p>
-            <button onclick="loadMovies()" class="btn btn-primary" style="margin-top:20px;">
-              <i class="fas fa-redo"></i> Try Again
-            </button>
-          </div>
-        `;
-      }
-    }
-    
-    function displayMovies(movies) {
-      const movieGrid = document.getElementById('movie-grid');
-      if (!movieGrid) return;
-      
-      // Clear loading placeholder
-      movieGrid.innerHTML = '';
-      
-      if (!Array.isArray(movies) || movies.length === 0) {
-        movieGrid.innerHTML = `
-          <div style="width:100%; text-align:center; padding:40px; color:#9ca3af;">
-            <i class="fas fa-film" style="font-size:40px; margin-bottom:20px;"></i>
-            <h3>No Movies Available</h3>
-            <p>Check back later for new additions.</p>
-          </div>
-        `;
-        return;
-      }
-      
-      // Display each movie
-      movies.forEach(movie => {
-        const movieCol = document.createElement('div');
-        movieCol.className = 'movie-col';
-        
-        const movieCard = document.createElement('div');
-        movieCard.className = 'movie-card';
-        
-        // Fallback image in case of error
-        const fallbackImage = 'https://via.placeholder.com/300x250/1f2937/ffffff?text=No+Poster';
-        
-        movieCard.innerHTML = `
-          <img src="${movie.logo || movie.poster || fallbackImage}" 
-               alt="${movie.title || 'Movie'}"
-               loading="lazy"
-               onerror="this.src='${fallbackImage}'">
-          <div class="info">
-            <h3>${movie.title || 'Untitled Movie'}</h3>
-            <p>
-              ${movie.year || ''} 
-              ${movie.category ? '• ' + movie.category : ''}
-              ${movie.rating ? '• ⭐ ' + movie.rating : ''}
-            </p>
-            ${movie.duration ? `<p style="color:#6b7280; font-size:12px;">${movie.duration}</p>` : ''}
-          </div>
-        `;
-        
-        // Add click event
-        movieCard.addEventListener('click', () => {
-          try {
-            localStorage.setItem('selectedMovie', JSON.stringify(movie));
-            window.location.href = 'movie_detail.html';
-          } catch (e) {
-            alert('Cannot open movie details. Please try again.');
-          }
-        });
-        
-        movieCol.appendChild(movieCard);
-        movieGrid.appendChild(movieCol);
-      });
-      
-      console.log(`✅ Displayed ${movies.length} movies`);
-    }
-    
     // ============ UTILITY FUNCTIONS ============
-    function copyDeviceIdToClipboard() {
-      copyToClipboard(deviceId || 'Not available');
+    function copyDeviceId() {
+      if (window.S4ITMM && window.S4ITMM.copyDeviceId) {
+        window.S4ITMM.copyDeviceId();
+      } else {
+        fallbackCopy(currentDeviceId || 'Not available');
+      }
     }
     
     function copyDeviceIdFromPopup() {
@@ -1244,14 +968,11 @@
     }
     
     function copyToClipboard(text) {
-      if (!text) {
-        alert('No Device ID to copy');
-        return;
-      }
+      if (!text) return;
       
-      if (navigator.clipboard && navigator.clipboard.writeText) {
+      if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => {
-          showNotification('✅ Device ID copied to clipboard!');
+          showNotification('✅ Device ID copied!');
         }).catch(() => {
           fallbackCopy(text);
         });
@@ -1272,16 +993,15 @@
       
       try {
         document.execCommand('copy');
-        showNotification('✅ Device ID copied to clipboard!');
+        showNotification('✅ Device ID copied!');
       } catch (err) {
-        showNotification('❌ Failed to copy. Please select and copy manually.');
+        showNotification('❌ Failed to copy. Please copy manually.');
       }
       
       document.body.removeChild(textArea);
     }
     
     function showNotification(message) {
-      // Create notification element
       const notification = document.createElement('div');
       notification.textContent = message;
       notification.style.cssText = `
@@ -1290,18 +1010,17 @@
         right: 20px;
         background: #10b981;
         color: white;
-        padding: 15px 20px;
+        padding: 12px 20px;
         border-radius: 8px;
         z-index: 10000;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        animation: slideIn 0.3s ease-out;
+        animation: notificationIn 0.3s ease-out;
       `;
       
       document.body.appendChild(notification);
       
-      // Remove after 3 seconds
       setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-in';
+        notification.style.animation = 'notificationOut 0.3s ease-in';
         setTimeout(() => {
           if (notification.parentNode) {
             notification.parentNode.removeChild(notification);
@@ -1310,125 +1029,199 @@
       }, 3000);
     }
     
-    // Add CSS for animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
+    // Add notification styles
+    const notificationStyle = document.createElement('style');
+    notificationStyle.textContent = `
+      @keyframes notificationIn {
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
       }
-      @keyframes slideOut {
+      @keyframes notificationOut {
         from { transform: translateX(0); opacity: 1; }
         to { transform: translateX(100%); opacity: 0; }
       }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(notificationStyle);
     
-    function checkAccessAgain() {
-      console.log('🔄 Re-checking access...');
-      checkDeviceAccess();
-    }
-    
-    function recheckAccess() {
-      checkAccessAgain();
+    function refreshAccess() {
+      console.log('Refreshing access...');
+      if (window.S4ITMM && window.S4ITMM.refreshAccess) {
+        window.S4ITMM.refreshAccess().then(function(result) {
+          console.log('Refresh result:', result);
+        });
+      }
     }
     
     function contactViaViber() {
-      const message = encodeURIComponent(
-        `S4ITMM TV Access Request\n` +
-        `Device ID: ${deviceId || 'Not available'}\n` +
-        `Please approve my device for access.`
-      );
-      window.open(`viber://forward?text=${message}`, '_blank');
+      const deviceId = currentDeviceId || document.getElementById('device-id-display').value;
+      if (deviceId && deviceId !== 'Loading...') {
+        const message = encodeURIComponent(
+          `S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`
+        );
+        window.open(`viber://forward?text=${message}`, '_blank');
+      } else {
+        showNotification('Please wait for Device ID to load');
+      }
     }
     
     function contactViaTelegram() {
-      const message = encodeURIComponent(
-        `S4ITMM TV Access Request\n` +
-        `Device ID: ${deviceId || 'Not available'}\n` +
-        `Please approve my device for access.`
-      );
-      window.open(`https://t.me/S4ITMM?text=${message}`, '_blank');
+      const deviceId = currentDeviceId || document.getElementById('device-id-display').value;
+      if (deviceId && deviceId !== 'Loading...') {
+        const message = encodeURIComponent(
+          `S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`
+        );
+        window.open(`https://t.me/S4ITMM?text=${message}`, '_blank');
+      } else {
+        showNotification('Please wait for Device ID to load');
+      }
     }
     
-    function showDeviceInfo() {
+    function showDebugInfo() {
       const info = `
-        === DEVICE INFO ===
-        ID: ${deviceId}
-        Status: ${accessStatus}
+        === DEBUG INFO ===
+        Device ID: ${currentDeviceId || 'Not set'}
+        Status: ${currentStatus}
+        S4ITMM Available: ${!!window.S4ITMM}
+        API Base: ${window.S4ITMM ? 'Loaded' : 'Not loaded'}
+        LocalStorage: ${testLocalStorage() ? 'Working' : 'Not working'}
         User Agent: ${navigator.userAgent.substring(0, 50)}...
-        Platform: ${navigator.platform}
-        Screen: ${screen.width}x${screen.height}
         URL: ${window.location.href}
-        Storage: ${testLocalStorage() ? 'Working' : 'Not Working'}
-        Cookies: ${document.cookie ? 'Enabled' : 'Disabled'}
-        App Version: ${CONFIG.VERSION}
-      `.replace(/^ {8}/gm, ''); // Remove indentation
+      `.trim();
       
       alert(info);
     }
     
     function testLocalStorage() {
       try {
-        const testKey = CONFIG.STORAGE_PREFIX + 'test';
-        const testValue = 'test_' + Date.now();
-        localStorage.setItem(testKey, testValue);
-        const retrieved = localStorage.getItem(testKey);
-        localStorage.removeItem(testKey);
-        return retrieved === testValue;
+        const test = 'test_' + Date.now();
+        localStorage.setItem('test', test);
+        return localStorage.getItem('test') === test;
       } catch (e) {
         return false;
       }
     }
     
-    // ============ INITIALIZATION ============
-    async function initializeApp() {
-      if (appInitialized) return;
-      appInitialized = true;
+    // ============ MOVIE FUNCTIONS ============
+    async function loadMovies() {
+      console.log('🎬 Loading movies...');
       
-      console.log('🚀 Initializing S4ITMM TV App...');
+      const movieGrid = document.getElementById('movie-grid');
+      if (!movieGrid) return;
       
-      // Generate/get device ID
-      deviceId = generateStableDeviceId();
-      console.log('📱 Device ID:', deviceId);
-      
-      // Update UI with device ID immediately
-      updateDeviceInfoDisplay({});
-      
-      // Check access
-      await checkDeviceAccess();
-      
-      // Set up periodic refresh (every 30 minutes)
-      setInterval(checkDeviceAccess, 30 * 60 * 1000);
-      
-          // Handle online/offline events
-      window.addEventListener('online', () => {
-        console.log('🌐 Back online, rechecking access...');
-        checkDeviceAccess();
-      });
-      
-      window.addEventListener('offline', () => {
-        console.log('📴 Offline mode');
-        showPopup('error', 'You are offline. Some features may not work.');
-      });
-      
-      console.log('✅ App initialized successfully');
-    }
-    
-    // Start the app when DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initializeApp);
-    } else {
-      initializeApp();
-    }
-    
-    // Handle page restore from cache
-    window.addEventListener('pageshow', function(event) {
-      if (event.persisted) {
-        console.log('🔄 Page restored from cache');
-        initializeApp();
+      try {
+        // Show loading in movie grid
+        movieGrid.innerHTML = `
+          <div style="width:100%; text-align:center; padding:20px; color:#9ca3af;">
+            <div class="loading-spinner" style="width:30px; height:30px; border-width:3px;"></div>
+            <p>Loading movies...</p>
+          </div>
+        `;
+        
+        // Load movies data
+        const response = await fetch('zetmovies.json?_t=' + Date.now());
+        
+        if (!response.ok) {
+          throw new Error('Failed to load movies');
+        }
+        
+        const movies = await response.json();
+        displayMovies(movies);
+        
+      } catch (error) {
+        console.error('Error loading movies:', error);
+        
+        // Show error
+        movieGrid.innerHTML = `
+          <div style="width:100%; text-align:center; padding:40px; color:#9ca3af;">
+            <i class="fas fa-exclamation-triangle" style="font-size:40px; margin-bottom:20px;"></i>
+            <h3>Cannot Load Movies</h3>
+            <p>There was an error loading the movie collection.</p>
+            <button onclick="loadMovies()" class="btn btn-primary" style="margin-top:20px;">
+              <i class="fas fa-redo"></i> Try Again
+            </button>
+          </div>
+        `;
       }
+    }
+    
+    function displayMovies(movies) {
+      const movieGrid = document.getElementById('movie-grid');
+      if (!movieGrid) return;
+      
+      // Clear loading
+      movieGrid.innerHTML = '';
+      
+      if (!Array.isArray(movies) || movies.length === 0) {
+        movieGrid.innerHTML = `
+          <div style="width:100%; text-align:center; padding:40px; color:#9ca3af;">
+            <i class="fas fa-film" style="font-size:40px; margin-bottom:20px;"></i>
+            <h3>No Movies Available</h3>
+            <p>Check back later for new additions.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Display movies
+      movies.forEach(movie => {
+        const movieCol = document.createElement('div');
+        movieCol.className = 'movie-col';
+        
+        const movieCard = document.createElement('div');
+        movieCard.className = 'movie-card';
+        
+        const fallbackImage = 'https://via.placeholder.com/300x250/1f2937/ffffff?text=No+Poster';
+        
+        movieCard.innerHTML = `
+          <img src="${movie.logo || movie.poster || fallbackImage}" 
+               alt="${movie.title || 'Movie'}"
+               loading="lazy"
+               onerror="this.src='${fallbackImage}'">
+          <div class="info">
+            <h3>${movie.title || 'Untitled Movie'}</h3>
+            <p>
+              ${movie.year || ''} 
+              ${movie.category ? '• ' + movie.category : ''}
+              ${movie.rating ? '• ⭐ ' + movie.rating : ''}
+            </p>
+          </div>
+        `;
+        
+        // Click event
+        movieCard.addEventListener('click', () => {
+          try {
+            localStorage.setItem('selectedMovie', JSON.stringify(movie));
+            window.location.href = 'movie_detail.html';
+          } catch (e) {
+            alert('Cannot open movie details. Please try again.');
+          }
+        });
+        
+        movieCol.appendChild(movieCard);
+        movieGrid.appendChild(movieCol);
+      });
+      
+      console.log(`✅ Displayed ${movies.length} movies`);
+    }
+    
+    // ============ ERROR HANDLING ============
+    window.addEventListener('error', function(event) {
+      console.error('Global error:', event.error);
     });
+    
+    // Online/offline handling
+    window.addEventListener('online', function() {
+      console.log('🌐 Back online');
+      showNotification('Back online. Refreshing access...');
+      refreshAccess();
+    });
+    
+    window.addEventListener('offline', function() {
+      console.log('📴 Offline');
+      showNotification('You are offline. Some features may not work.', 'warning');
+    });
+    
+    console.log('S4ITMM TV main script loaded');
   </script>
 
   <!-- Vercel Analytics -->
