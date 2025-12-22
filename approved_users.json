@@ -9,6 +9,17 @@
       "notes": "Primary admin account"
     }
   ],
+  
+  "users": [
+    {
+      "deviceId": "S4TV_OD0IVX_VIE3",
+      "expires": "2026-05-31",
+      "registeredAt": "2024-01-20",
+      "name": "Admin",
+      "package": "Premium",
+      "notes": "Primary admin account"
+    }
+  ],
   "lastUpdated": "2024-01-20",
   "totalUsers": 1
 }
