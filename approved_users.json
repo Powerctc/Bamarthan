@@ -4,6 +4,11 @@
       "deviceId": "S4TV_KBHCZL_D2B0",
       "expires": "2026-05-31",
       "name": "Admin"
+    },
+    {
+      "deviceId": "S4TV_OD0IVX_VIE3",
+      "expires": "2026-05-31",
+      "name": "Admin"
     }
   ]
 }
