@@ -107,8 +107,8 @@ async function getApprovedUsers() {
     // Method 2: Fallback to hardcoded list
     return [
       {
-        deviceId: "S4TV_8G5H2J9K_LM9",  // ဒီက ID ကို မင်း generate လုပ်တဲ့ ID နဲ့အစားထိုး
-        expires: "2024-12-31",
+        deviceId: "S4TV_KBHCZL_D2B0",  // ဒီက ID ကို မင်း generate လုပ်တဲ့ ID နဲ့အစားထိုး
+        expires: "2026-05-31",
         registeredAt: "2024-01-01",
         name: "Admin Account"
       },
