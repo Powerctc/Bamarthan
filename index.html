@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>S4MM TV - Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Include Universal Device ID System -->
   <script src="device-id-system.js"></script>
   <style>
     /* ============ GLOBAL ============ */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Roboto', 'Segoe UI', sans-serif;
@@ -19,6 +16,7 @@
       color: white;
       overflow-x: hidden;
     }
+
     /* ============ SIDEBAR ============ */
     .sidebar {
       position: fixed;
@@ -27,9 +25,9 @@
       width: 192px;
       height: 100vh;
       background-color: #1f2937;
-      transition: transform 0.3s ease;
       overflow-y: auto;
       z-index: 1000;
+      transition: transform 0.3s ease;
     }
     .sidebar-header {
       padding: 16px;
@@ -72,7 +70,7 @@
       border-left-color: #ef4444;
     }
 
-    /* ============ MOBILE SIDEBAR TOGGLE ============ */
+    /* ============ TOGGLE BUTTON ============ */
     .sidebar-toggle {
       display: none;
       position: fixed;
@@ -92,15 +90,20 @@
       justify-content: center;
     }
 
+    /* ============ MAIN CONTENT ============ */
+    .main-content {
+      margin-left: 192px;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* 💡 MOBILE: HIDE SIDEBAR + SHOW TOGGLE */
     @media (max-width: 768px) {
-      .sidebar-toggle {
-        display: flex;
-      }
+      .sidebar-toggle { display: flex; }
 
       .sidebar {
-        transform: translateX(-192px); /* fully hidden */
+        transform: translateX(-192px);
       }
-
       .sidebar.active {
         transform: translateX(0);
       }
@@ -111,13 +114,7 @@
       }
     }
 
-    /* ============ MAIN CONTENT ============ */
-    .main-content {
-      margin-left: 192px;
-      padding: 20px;
-      min-height: 100vh;
-    }
-
+    /* ============ Rest of your styles (unchanged) ============ */
     .page-title {
       font-size: 28px;
       font-weight: bold;
@@ -126,7 +123,6 @@
       padding-bottom: 10px;
       border-bottom: 2px solid #374151;
     }
-    /* ============ DEVICE INFO ============ */
     .device-info-box {
       background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
       border-radius: 10px;
@@ -165,22 +161,10 @@
       font-weight: bold;
       margin-left: 10px;
     }
-    .status-pending {
-      background-color: #f59e0b;
-      color: white;
-    }
-    .status-approved {
-      background-color: #10b981;
-      color: white;
-    }
-    .status-expired {
-      background-color: #ef4444;
-      color: white;
-    }
-    .status-checking {
-      background-color: #6b7280;
-      color: white;
-    }
+    .status-pending { background-color: #f59e0b; color: white; }
+    .status-approved { background-color: #10b981; color: white; }
+    .status-expired { background-color: #ef4444; color: white; }
+    .status-checking { background-color: #6b7280; color: white; }
     .device-actions {
       margin-top: 15px;
       display: flex;
@@ -198,37 +182,19 @@
       align-items: center;
       gap: 8px;
     }
-    .btn-primary {
-      background-color: #3b82f6;
-      color: white;
-    }
-    .btn-primary:hover {
-      background-color: #2563eb;
-    }
-    .btn-secondary {
-      background-color: #6b7280;
-      color: white;
-    }
-    .btn-secondary:hover {
-      background-color: #4b5563;
-    }
-    .btn-success {
-      background-color: #10b981;
-      color: white;
-    }
-    .btn-success:hover {
-      background-color: #059669;
-    }
-    /* ============ MOVIE GRID ============ */
+    .btn-primary { background-color: #3b82f6; color: white; }
+    .btn-primary:hover { background-color: #2563eb; }
+    .btn-secondary { background-color: #6b7280; color: white; }
+    .btn-secondary:hover { background-color: #4b5563; }
+    .btn-success { background-color: #10b981; color: white; }
+    .btn-success:hover { background-color: #059669; }
     .movie-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 16px;
       justify-content: flex-start;
     }
-    .movie-col {
-      width: calc(50% - 8px);
-    }
+    .movie-col { width: calc(50% - 8px); }
     @media (min-width: 640px) { .movie-col { width: calc(33.333% - 10.666px); } }
     @media (min-width: 768px) { .movie-col { width: calc(25% - 12px); } }
     @media (min-width: 1024px) { .movie-col { width: calc(20% - 12.8px); } }
@@ -268,7 +234,6 @@
       color: #9ca3af;
       margin: 0;
     }
-    /* ============ ACCESS POPUP ============ */
     #access-popup {
       position: fixed;
       top: 0;
@@ -295,14 +260,8 @@
       animation: popupSlide 0.3s ease-out;
     }
     @keyframes popupSlide {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .popup-content h2 {
       color: #ef4444;
@@ -374,20 +333,10 @@
       justify-content: center;
       gap: 10px;
     }
-    .popup-button-copy {
-      background-color: #10b981;
-      color: white;
-    }
-    .popup-button-copy:hover {
-      background-color: #059669;
-    }
-    .popup-button-refresh {
-      background-color: #6b7280;
-      color: white;
-    }
-    .popup-button-refresh:hover {
-      background-color: #4b5563;
-    }
+    .popup-button-copy { background-color: #10b981; color: white; }
+    .popup-button-copy:hover { background-color: #059669; }
+    .popup-button-refresh { background-color: #6b7280; color: white; }
+    .popup-button-refresh:hover { background-color: #4b5563; }
     .contact-section {
       margin-top: 25px;
       padding-top: 20px;
@@ -417,20 +366,10 @@
       gap: 8px;
       transition: all 0.2s;
     }
-    .contact-button-viber {
-      background-color: #7360f2;
-      color: white;
-    }
-    .contact-button-viber:hover {
-      background-color: #5a4ae6;
-    }
-    .contact-button-telegram {
-      background-color: #0088cc;
-      color: white;
-    }
-    .contact-button-telegram:hover {
-      background-color: #0077b5;
-    }
+    .contact-button-viber { background-color: #7360f2; color: white; }
+    .contact-button-viber:hover { background-color: #5a4ae6; }
+    .contact-button-telegram { background-color: #0088cc; color: white; }
+    .contact-button-telegram:hover { background-color: #0077b5; }
     .admin-contact {
       margin-top: 15px;
       padding: 12px;
@@ -443,10 +382,7 @@
       text-decoration: none;
       font-weight: bold;
     }
-    .admin-contact a:hover {
-      text-decoration: underline;
-    }
-    /* ============ LOADING ============ */
+    .admin-contact a:hover { text-decoration: underline; }
     .loading {
       text-align: center;
       padding: 40px;
@@ -465,7 +401,6 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    /* ============ ACCESS GRANTED ============ */
     .access-granted {
       text-align: center;
       padding: 15px;
@@ -475,7 +410,6 @@
       border: 2px solid #10b981;
       display: none;
     }
-    /* ============ FOOTER ============ */
     footer {
       background-color: #1f2937;
       text-align: center;
@@ -495,9 +429,6 @@
     footer a:hover {
       text-decoration: underline;
       color: #3b82f6;
-    }
-    .access-granted {
-      display: none !important;
     }
   </style>
 </head>
@@ -554,7 +485,7 @@
     </a>
   </div>
 
-  <!-- Mobile Toggle Button -->
+  <!-- MOBILE TOGGLE BUTTON -->
   <button id="sidebar-toggle" class="sidebar-toggle">
     <i class="fas fa-bars"></i>
   </button>
@@ -564,7 +495,6 @@
     <h2 class="page-title">
       <i class="fas fa-film"></i> Movies Collection
     </h2>
-    <!-- DEVICE INFO -->
     <div class="device-info-box">
       <div class="device-info-row">
         <span class="device-info-label">Device ID:</span>
@@ -592,26 +522,19 @@
         <button class="btn btn-secondary" onclick="refreshAccess()">
           <i class="fas fa-sync-alt"></i> Re-check
         </button>
-       <!-- <button class="btn btn-secondary" onclick="showDebugInfo()">
-          <i class="fas fa-info-circle"></i> Debug
-        </button>-->
       </div>
     </div>
-    <!-- ACCESS GRANTED MESSAGE -->
     <div id="access-granted-message" class="access-granted">
-     <p><i class="fas fa-check-circle"></i> Access Granted!</p>
+      <p><i class="fas fa-check-circle"></i> Access Granted!</p>
     </div>
-    <!-- MOVIES WILL LOAD HERE -->
-    <div id="movie-grid" class="movie-grid">
-      <!-- Movies will be loaded here when access is granted -->
-    </div>
-    <!-- LOADING PLACEHOLDER -->
+    <div id="movie-grid" class="movie-grid"></div>
     <div id="loading-placeholder" class="loading">
       <div class="loading-spinner"></div>
       <p>Checking your access permissions...</p>
       <p style="font-size: 13px; color: #6b7280;">This may take a few seconds</p>
     </div>
   </div>
+
   <!-- FOOTER -->
   <footer>
     <p>S4ITMM TV © 2024 - All rights reserved</p>
@@ -624,6 +547,7 @@
       <i class="fas fa-mobile-alt"></i> Mobile Friendly
     </p>
   </footer>
+
   <!-- ACCESS POPUP -->
   <div id="access-popup">
     <div class="popup-content">
@@ -660,32 +584,30 @@
           <p><i class="fas fa-envelope"></i> Email: 
             <a href="mailto:support@s4itmm.com">support@s4itmm.com</a>
           </p>
-          <p style="font-size: 12px; margin-top: 8px;">
-            Send your Device ID to get approval.
-          </p>
+          <p style="font-size: 12px; margin-top: 8px;">Send your Device ID to get approval.</p>
         </div>
       </div>
     </div>
   </div>
+
   <!-- MAIN SCRIPT -->
   <script>
-    // ============ GLOBAL VARIABLES ============
     let currentAccessState = null;
 
-    // ============ TOGGLE SIDEBAR ON MOBILE ============
+    // ============ SIDEBAR TOGGLE (MOBILE ONLY) ============
     document.addEventListener('DOMContentLoaded', function () {
       const toggleBtn = document.getElementById('sidebar-toggle');
       const sidebar = document.querySelector('.sidebar');
 
       if (toggleBtn && sidebar) {
-        toggleBtn.addEventListener('click', function () {
+        toggleBtn.addEventListener('click', () => {
           if (window.innerWidth <= 768) {
             sidebar.classList.toggle('active');
           }
         });
 
-        // Optional: Close sidebar when clicking outside
-        document.addEventListener('click', function (e) {
+        // Close sidebar when clicking outside
+        document.addEventListener('click', (e) => {
           if (
             window.innerWidth <= 768 &&
             sidebar.classList.contains('active') &&
@@ -697,7 +619,7 @@
         });
       }
 
-      // ============ EXISTING INIT CODE ============
+      // ============ YOUR EXISTING INIT CODE ============
       console.log('🎬 S4ITMM TV Main Page Loading...');
       if (window.S4ITMM && window.S4ITMM.init) {
         window.S4ITMM.init().then(function(result) {
@@ -713,31 +635,17 @@
       }
     });
 
-// ============ EVENT LISTENERS ============
+    // ============ Rest of your script (unchanged) ============
     function setupEventListeners() {
       if (window.S4ITMM && window.S4ITMM.onAccessChange) {
         window.S4ITMM.onAccessChange(handleAccessUpdate);
       }
-      window.addEventListener('s4itmm-access-update', function(event) {
-        handleAccessUpdate(event.detail);
-      });
-      window.addEventListener('s4itmm-access-granted', function(event) {
-        console.log('🎉 Access granted via event!');
-        handleAccessUpdate(event.detail);
-      });
-      window.addEventListener('s4itmm-access-expired', function(event) {
-        console.log('⏰ Access expired via event');
-        handleAccessUpdate(event.detail);
-      });
-      window.addEventListener('s4itmm-access-pending', function(event) {
-        console.log('⏳ Access pending via event');
-        handleAccessUpdate(event.detail);
-      });
+      window.addEventListener('s4itmm-access-update', (e) => handleAccessUpdate(e.detail));
+      window.addEventListener('s4itmm-access-granted', (e) => handleAccessUpdate(e.detail));
+      window.addEventListener('s4itmm-access-expired', (e) => handleAccessUpdate(e.detail));
+      window.addEventListener('s4itmm-access-pending', (e) => handleAccessUpdate(e.detail));
     }
-
-    // ============ (Rest of your existing script remains unchanged) ============
     function handleAccessUpdate(state) {
-      console.log('📊 Access state updated:', state);
       currentAccessState = state;
       updateUI(state);
       switch(state.status) {
@@ -760,58 +668,44 @@
     }
     function updateUI(state) {
       const deviceId = state.deviceId || 'Loading...';
-      const inlineEl = document.getElementById('device-id-inline');
-      if (inlineEl) inlineEl.textContent = deviceId;
-      const popupEl = document.getElementById('device-id-display');
-      if (popupEl) popupEl.value = deviceId;
+      document.getElementById('device-id-inline').textContent = deviceId;
+      document.getElementById('device-id-display').value = deviceId;
+
       const statusText = document.getElementById('status-text');
       const statusBadge = document.getElementById('status-badge');
-      if (statusText) {
-        let displayText = 'Checking...';
-        if (state.status === 'approved') displayText = 'Access Granted';
-        if (state.status === 'pending') displayText = 'Pending Approval';
-        if (state.status === 'expired') displayText = 'Subscription Expired';
-        statusText.textContent = displayText;
-      }
-      if (statusBadge) {
-        statusBadge.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
-        statusBadge.className = 'status-badge status-' + state.status;
-      }
-      const expiryEl = document.getElementById('expiry-date');
-      if (expiryEl) {
-        expiryEl.textContent = (state.data && state.data.expires) ? state.data.expires : 'Not set';
-      }
+      let displayText = 'Checking...';
+      if (state.status === 'approved') displayText = 'Access Granted';
+      if (state.status === 'pending') displayText = 'Pending Approval';
+      if (state.status === 'expired') displayText = 'Subscription Expired';
+      statusText.textContent = displayText;
+      statusBadge.className = 'status-badge status-' + state.status;
+      statusBadge.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
+
+      document.getElementById('expiry-date').textContent = 
+        (state.data && state.data.expires) ? state.data.expires : 'Not set';
+
       const generatedEl = document.getElementById('generated-date');
-      if (generatedEl) {
-        try {
-          const firstSeen = localStorage.getItem('s4tv_first_seen');
-          generatedEl.textContent = firstSeen ? new Date(firstSeen).toLocaleDateString() : 'Today';
-        } catch (e) {
-          generatedEl.textContent = 'Today';
-        }
+      try {
+        const firstSeen = localStorage.getItem('s4tv_first_seen');
+        generatedEl.textContent = firstSeen ? new Date(firstSeen).toLocaleDateString() : 'Today';
+      } catch (e) {
+        generatedEl.textContent = 'Today';
       }
     }
     function showPopup(status, message) {
-      const popup = document.getElementById('access-popup');
-      const popupTitle = document.getElementById('popup-title');
-      const popupStatus = document.getElementById('popup-status');
-      const popupMessage = document.getElementById('popup-message');
-      if (!popup || !popupTitle || !popupStatus || !popupMessage) return;
       let titleText = 'Device Verification';
-      switch(status) {
-        case 'approved': titleText = 'Access Granted'; break;
-        case 'pending': titleText = 'Approval Required'; break;
-        case 'expired': titleText = 'Subscription Expired'; break;
-      }
-      popupTitle.innerHTML = `<i class="fas fa-user-shield"></i> ${titleText}`;
-      popupStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-      popupStatus.className = 'popup-status status-' + status;
-      popupMessage.textContent = message || 'Verifying your device...';
-      popup.style.display = 'flex';
+      if (status === 'approved') titleText = 'Access Granted';
+      if (status === 'pending') titleText = 'Approval Required';
+      if (status === 'expired') titleText = 'Subscription Expired';
+
+      document.getElementById('popup-title').innerHTML = `<i class="fas fa-user-shield"></i> ${titleText}`;
+      document.getElementById('popup-status').className = 'popup-status status-' + status;
+      document.getElementById('popup-status').textContent = status.charAt(0).toUpperCase() + status.slice(1);
+      document.getElementById('popup-message').textContent = message || 'Verifying your device...';
+      document.getElementById('access-popup').style.display = 'flex';
     }
     function hidePopup() {
-      const popup = document.getElementById('access-popup');
-      if (popup) popup.style.display = 'none';
+      document.getElementById('access-popup').style.display = 'none';
     }
     function copyDeviceId() {
       if (window.S4ITMM && window.S4ITMM.copyDeviceId) {
@@ -820,9 +714,7 @@
         fallbackCopy(currentAccessState?.deviceId || 'Not available');
       }
     }
-    function copyDeviceIdFromPopup() {
-      copyDeviceId();
-    }
+    function copyDeviceIdFromPopup() { copyDeviceId(); }
     function fallbackCopy(text) {
       if (!text) return;
       const el = document.createElement('textarea');
@@ -865,11 +757,8 @@
       setTimeout(() => el.remove(), 3000);
     }
     function showError(msg) {
-      const popup = document.getElementById('access-popup');
-      if (popup) {
-        document.getElementById('popup-message').textContent = msg;
-        popup.style.display = 'flex';
-      }
+      document.getElementById('popup-message').textContent = msg;
+      document.getElementById('access-popup').style.display = 'flex';
     }
     async function loadMovies() {
       const grid = document.getElementById('movie-grid');
@@ -877,17 +766,14 @@
       try {
         grid.innerHTML = `<div style="width:100%;text-align:center;padding:30px;color:#9ca3af;"><div class="loading-spinner"></div><p>Loading movies collection...</p></div>`;
         const res = await fetch('zetmovies.json?_t=' + Date.now());
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const movies = await res.json();
         displayMovies(movies);
       } catch (e) {
-        console.error('❌ Error loading movies:', e);
         grid.innerHTML = `<div style="width:100%;text-align:center;padding:40px;color:#9ca3af;"><i class="fas fa-exclamation-triangle" style="font-size:40px;margin-bottom:20px;"></i><h3>Cannot Load Movies</h3><p>There was an error loading the movie collection.</p><button onclick="loadMovies()" class="btn btn-primary" style="margin-top:20px;"><i class="fas fa-redo"></i> Try Again</button></div>`;
       }
     }
     function displayMovies(movies) {
       const grid = document.getElementById('movie-grid');
-      if (!grid) return;
       grid.innerHTML = '';
       if (!Array.isArray(movies) || movies.length === 0) {
         grid.innerHTML = `<div style="width:100%;text-align:center;padding:40px;color:#9ca3af;"><i class="fas fa-film" style="font-size:40px;margin-bottom:20px;"></i><h3>No Movies Available</h3><p>Check back later for new additions.</p></div>`;
@@ -917,20 +803,12 @@
         col.appendChild(card);
         grid.appendChild(col);
       });
-      console.log(`✅ Displayed ${movies.length} movies`);
     }
     window.addEventListener('error', (e) => console.error('Global error:', e.error));
-    window.addEventListener('online', () => {
-      console.log('🌐 Online - refreshing access');
-      refreshAccess();
-    });
-    window.addEventListener('offline', () => {
-      console.log('📴 Offline');
-      showMessage('You are offline. Some features may not work.');
-    });
+    window.addEventListener('online', () => refreshAccess());
+    window.addEventListener('offline', () => showMessage('You are offline. Some features may not work.'));
     console.log('🎬 S4ITMM TV main script loaded successfully');
   </script>
-  <!-- Vercel Analytics -->
   <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
 </body>
 </html>
