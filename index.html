@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>S4MM TV - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* ============ GLOBAL ============ */
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      background-color: #111827;
+      color: white;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 192px;
+      height: 100vh;
+      background-color: #1f2937;
+      transition: all 0.3s;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-header i {
+      color: #ef4444;
+      margin-right: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      color: #d1d5db;
+      text-decoration: none;
+    }
+
+    .nav-item:hover:not(.active) {
+      background-color: #f3f4f6;
+      color: #1f2937;
+    }
+
+    .nav-item.active {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .nav-item.active:hover {
+      background-color: #dc2626;
+    }
+
+    /* ============ MAIN CONTENT ============ */
+    .main-content {
+      margin-left: 192px;
+      padding: 24px 16px 64px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ef4444;
+      margin-bottom: 20px;
+    }
+
+    .page-title span {
+      font-size: 14px;
+      font-weight: normal;
+    }
+
+    .device-info {
+      background: #1f2937;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    /* ============ MOVIE GRID ============ */
+    .movie-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-start;
+    }
+
+    .movie-col {
+      width: calc(50% - 6px);
+    }
+
+    @media (min-width: 640px) { .movie-col { width: calc(33.333% - 8px); } }
+    @media (min-width: 768px) { .movie-col { width: calc(25% - 9px); } }
+    @media (min-width: 1024px) { .movie-col { width: calc(20% - 9.6px); } }
+    @media (min-width: 1280px) { .movie-col { width: calc(16.666% - 10px); } }
+
+    .movie-card {
+      background-color: #1f2937;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .movie-card .info {
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .movie-card .info h3 {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 0 0 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .movie-card .info p {
+      font-size: 12px;
+      color: #9ca3af;
+      margin: 0;
+    }
+
+    /* ============ FOOTER ============ */
+    footer {
+      background-color: #1f2937;
+      text-align: center;
+      padding: 14px;
+      margin-top: 32px;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: #f87171;
+      text-decoration: underline;
+    }
+
+    /* ============ POPUP ============ */
+    #access-denied-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup-content {
+      background-color: #1f2937;
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 380px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .popup-content h2 {
+      color: #ef4444;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .popup-content .status-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      margin: 10px 0;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .status-approved {
+      background: #10b981;
+      color: white;
+    }
+
+    .status-pending {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .status-expired {
+      background: #ef4444;
+      color: white;
+    }
+
+    .popup-content p {
+      margin: 8px 0;
+    }
+
+    .popup-content input {
+      width: 100%;
+      background: #374151;
+      color: white;
+      padding: 12px;
+      border: 1px solid #4b5563;
+      border-radius: 6px;
+      margin: 12px 0;
+      text-align: center;
+      font-size: 15px;
+      letter-spacing: 1px;
+    }
+
+    .popup-content button {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 12px;
+      width: 100%;
+      margin: 8px 0;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+
+    .popup-content button:hover {
+      background: #dc2626;
+    }
+
+    .popup-content .btn-secondary {
+      background: #4b5563;
+    }
+
+    .popup-content .btn-secondary:hover {
+      background: #374151;
+    }
+
+    .popup-content a {
+      color: #60a5fa;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+
+    .contact-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .contact-buttons button {
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-film"></i>
+      <span class="logo-text">S4ITMM TV</span>
+    </div>
+    <a href="search.html" target="_blank" class="nav-item">
+      <i class="fas fa-search mr-3"></i>Search
+    </a>
+    <a href="/" class="nav-item active">
+      <i class="fas fa-home mr-3"></i>HOME
+    </a>
+    <a href="Live/index.html" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i>Futbol Live(D1)
+    </a>
+    <a href="live/indexl.html" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i>Futbol Live(D2)
+    </a>
+    <a href="fight/index.html" class="nav-item">
+      <i class="fas fa-people-arrows mr-3"></i>MMA Live
+    </a>
+    <a href="https://www.fotmob.com/my" class="nav-item" style="background:transparent;color:#d1d5db;">
+      <i class="fas fa-futbol mr-3"></i>Livescore
+    </a>
+    <a href="series/index.html" class="nav-item">
+      <i class="fas fa-tv mr-3"></i>Series
+    </a>
+    <a href="mmtv/index.html" class="nav-item">
+      <i class="fas fa-satellite-dish mr-3"></i>Myanmar TV
+    </a>
+    <a href="adults/index.html" class="nav-item">
+      <i class="fas fa-ban mr-3"></i>Adults(❌)
+    </a>
+    <a href="https://tinyurl.com/3dhv27he" class="nav-item">
+      <i class="fas fa-download mr-3"></i><span>Phone Version</span>
+    </a>
+    <a href="About.html" class="nav-item">
+      <i class="fas fa-user mr-3"></i><span>About</span>
+    </a>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <h2 class="page-title">
+      Movies
+    </h2>
+    
+    <div class="device-info">
+      <div>Device ID: <strong id="device-id-inline">Loading...</strong></div>
+      <div>Status: <span id="status-display" class="status-badge status-pending">Checking...</span></div>
+      <div>Expires: <span id="expiry-inline">Checking...</span></div>
+      <div>Registered: <span id="register-date">-</span></div>
+    </div>
+
+    <div id="movie-grid" class="movie-grid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>S4ITMM © All rights reserved</p>
+    <p>Created by Next Js
+      <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung (Forever Study)</a>
+    </p>
+  </footer>
+
+  <!-- POPUP -->
+  <div id="access-denied-popup">
+    <div class="popup-content">
+      <h2 id="popup-title">Checking Access</h2>
+      
+      <div id="status-badge" class="status-badge status-pending">Checking...</div>
+      
+      <p id="deny-reason" style="color:#fbbf24; margin:15px 0;">Verifying your device...</p>
+      
+      <div style="margin: 15px 0;">
+        <p style="color:#9ca3af; font-size:13px; margin-bottom:5px;">Your Device ID:</p>
+        <input id="device-id-display" readonly />
+      </div>
+      
+      <button onclick="copyDeviceId()">📋 Copy Device ID</button>
+      <button onclick="refreshDeviceId()" class="btn-secondary">🔄 Refresh Status</button>
+      
+      <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #374151;">
+        <p style="color:#d1d5db; font-size:14px; margin-bottom:10px;">Need access? Contact us:</p>
+        
+        <div class="contact-buttons">
+          <button onclick="contactViber()" style="background:#7360f2;">
+            <i class="fab fa-viber"></i> Viber
+          </button>
+          <button onclick="contactTelegram()" style="background:#0088cc;">
+            <i class="fab fa-telegram"></i> Telegram
+          </button>
+        </div>
+        
+        <div style="margin-top: 15px;">
+          <p style="font-size:13px; color:#9ca3af;">
+            📧 Email: <a href="mailto:support@s4itmm.com">support@s4itmm.com</a><br>
+            📱 Send your Device ID to get approval
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔥 ENHANCED DEVICE ID SYSTEM -->
+  <script>
+    // Configuration
+    const CONFIG = {
+      APP_NAME: 's4itmm_tv',
+      VERSION: '2.0',
+      API_BASE: 'https://s4itmm-tv.vercel.app/api', // ဒါကို မင်း Vercel project name ပြောင်းပါ
+      CHECK_INTERVAL: 3600000, // 1 hour
+      MAX_RETRIES: 3
+    };
+
+    // Global variables
+    let deviceID = null;
+    let accessStatus = 'pending';
+    let expiryDate = null;
+    let retryCount = 0;
+
+    // =================== DEVICE ID GENERATION ===================
+    function generateStableDeviceId() {
+      try {
+        // Try to get existing ID
+        const storedId = localStorage.getItem(`${CONFIG.APP_NAME}_device_id`);
+        if (storedId && storedId.length >= 12) {
+          console.log('Using stored device ID:', storedId);
+          return storedId;
+        }
+
+        // Generate new stable ID
+        const components = [];
+        
+        // Collect browser fingerprint
+        if (navigator.userAgent) components.push(navigator.userAgent);
+        if (screen.width) components.push(screen.width);
+        if (screen.height) components.push(screen.height);
+        if (navigator.language) components.push(navigator.language);
+        if (navigator.platform) components.push(navigator.platform);
+        if (navigator.hardwareConcurrency) components.push(navigator.hardwareConcurrency);
+        
+        // Add timestamp and random
+        components.push(Date.now().toString());
+        components.push(Math.random().toString(36).substring(2, 15));
+        
+        // Create hash
+        let hash = 0;
+        const combined = components.join('|');
+        for (let i = 0; i < combined.length; i++) {
+          hash = ((hash << 5) - hash) + combined.charCodeAt(i);
+          hash = hash & hash;
+        }
+        
+        // Format as 12-character ID
+        const deviceId = 's4_' + Math.abs(hash).toString().padStart(9, '0').slice(0, 9);
+        
+        // Store in localStorage
+        localStorage.setItem(`${CONFIG.APP_NAME}_device_id`, deviceId);
+        localStorage.setItem(`${CONFIG.APP_NAME}_first_seen`, new Date().toISOString());
+        
+        console.log('Generated new device ID:', deviceId);
+        return deviceId;
+        
+      } catch (error) {
+        console.error('Error generating device ID:', error);
+        // Fallback ID
+        return 'fbk_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+      }
+    }
+
+    // =================== ACCESS CHECK ===================
+    async function checkAccess() {
+      try {
+        showLoadingStatus();
+        
+        // First check local cache
+        const cached = localStorage.getItem(`${CONFIG.APP_NAME}_access_cache`);
+        if (cached) {
+          const data = JSON.parse(cached);
+          if (Date.now() - data.timestamp < 300000) { // 5 minutes cache
+            updateUI(data);
+            if (data.status === 'approved') {
+              hidePopup();
+              return;
+            }
+          }
+        }
+
+        // Call Vercel API
+        const response = await fetch(`${CONFIG.API_BASE}/check-access`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            deviceId: deviceID,
+            appName: CONFIG.APP_NAME,
+            version: CONFIG.VERSION,
+            timestamp: new Date().toISOString()
+          }),
+          signal: AbortSignal.timeout(10000) // 10 second timeout
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const result = await response.json();
+        
+        // Cache the result
+        localStorage.setItem(`${CONFIG.APP_NAME}_access_cache`, JSON.stringify({
+          ...result,
+          timestamp: Date.now()
+        }));
+        
+        updateUI(result);
+        
+        if (result.status === 'approved') {
+          hidePopup();
+          fetchMovies();
+        } else {
+          showPopup(result);
+        }
+        
+        retryCount = 0;
+        
+      } catch (error) {
+        console.error('Access check failed:', error);
+        
+        if (retryCount < CONFIG.MAX_RETRIES) {
+          retryCount++;
+          setTimeout(checkAccess, 2000 * retryCount);
+          showAccessDeniedPopup('Network error. Retrying...');
+        } else {
+          showAccessDeniedPopup('Cannot connect to server. Please check internet.');
+        }
+      }
+    }
+
+    // =================== UI UPDATES ===================
+    function updateUI(data) {
+      deviceID = data.deviceId || deviceID;
+      
+      // Update inline display
+      document.getElementById('device-id-inline').textContent = deviceID;
+      document.getElementById('status-display').textContent = data.status || 'unknown';
+      document.getElementById('status-display').className = `status-badge status-${data.status || 'pending'}`;
+      document.getElementById('expiry-inline').textContent = data.expires || 'Not set';
+      document.getElementById('register-date').textContent = data.registeredAt ? 
+        new Date(data.registeredAt).toLocaleDateString() : '-';
+      
+      // Update popup
+      document.getElementById('device-id-display').value = deviceID;
+      document.getElementById('popup-title').textContent = 
+        data.status === 'approved' ? 'Access Granted' : 
+        data.status === 'expired' ? 'Subscription Expired' : 'Access Required';
+      
+      document.getElementById('status-badge').textContent = data.status || 'pending';
+      document.getElementById('status-badge').className = `status-badge status-${data.status || 'pending'}`;
+      
+      document.getElementById('deny-reason').textContent = 
+        data.message || (data.status === 'pending' ? 'Your device is pending approval' : 'Access denied');
+    }
+
+    function showLoadingStatus() {
+      document.getElementById('status-display').textContent = 'Checking...';
+      document.getElementById('status-display').className = 'status-badge status-pending';
+      document.getElementById('expiry-inline').textContent = 'Checking...';
+    }
+
+    function showAccessDeniedPopup(message) {
+      document.getElementById('deny-reason').textContent = message;
+      document.getElementById('access-denied-popup').style.display = 'flex';
+    }
+
+    function showPopup(data) {
+      updateUI(data);
+      document.getElementById('access-denied-popup').style.display = 'flex';
+    }
+
+    function hidePopup() {
+      document.getElementById('access-denied-popup').style.display = 'none';
+    }
+
+    // =================== UTILITY FUNCTIONS ===================
+    function copyDeviceId() {
+      const text = document.getElementById('device-id-display').value;
+      if (!text) return;
+      
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('✅ Device ID copied to clipboard!');
+        }).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        document.execCommand('copy');
+        alert('✅ Device ID copied to clipboard!');
+      } catch (err) {
+        alert('❌ Failed to copy. Please select and copy manually.');
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
+    function refreshDeviceId() {
+      localStorage.removeItem(`${CONFIG.APP_NAME}_device_id`);
+      localStorage.removeItem(`${CONFIG.APP_NAME}_access_cache`);
+      location.reload();
+    }
+
+    function contactViber() {
+      const deviceId = document.getElementById('device-id-display').value;
+      const message = encodeURIComponent(`S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`);
+      window.open(`viber://forward?text=${message}`, '_blank');
+    }
+
+    function contactTelegram() {
+      const deviceId = document.getElementById('device-id-display').value;
+      const message = encodeURIComponent(`S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`);
+      window.open(`https://t.me/S4ITMM?text=${message}`, '_blank');
+    }
+
+    // =================== MOVIE FUNCTIONS ===================
+    async function fetchMovies() {
+      const grid = document.getElementById('movie-grid');
+      if (!grid) return;
+
+      try {
+        const res = await fetch('zetmovies.json?_t=' + Date.now(), { 
+          cache: "no-store",
+          headers: {
+            'X-Device-ID': deviceID
+          }
+        });
+        
+        if (!res.ok) throw new Error('Failed to load movies');
+        const movies = await res.json();
+        displayMovies(movies);
+      } catch (err) {
+        console.error('Movie loading error:', err);
+        grid.innerHTML = `
+          <div style="color:#f87171; text-align:center; width:100%; padding:30px;">
+            <i class="fas fa-exclamation-triangle"></i><br>
+            Failed to load movies.<br>
+            <button onclick="fetchMovies()" style="margin-top:10px; padding:8px 15px; background:#ef4444; color:white; border:none; border-radius:5px;">
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function displayMovies(movies) {
+      const grid = document.getElementById('movie-grid');
+      if (!grid) return;
+
+      if (!Array.isArray(movies) || movies.length === 0) {
+        grid.innerHTML = '<div style="color:#9ca3af; text-align:center; width:100%; padding:30px;">No movies available.</div>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      
+      movies.forEach(movie => {
+        const col = document.createElement('div');
+        col.className = 'movie-col';
+
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.innerHTML = `
+          <img src="${movie.logo || 'https://via.placeholder.com/300x220/1f2937/ffffff?text=No+Image'}" 
+               alt="${movie.title || 'Untitled'}" 
+               loading="lazy"
+               onerror="this.src='https://via.placeholder.com/300x220/1f2937/ffffff?text=No+Image'">
+          <div class="info">
+            <h3>${movie.title || 'Untitled'}</h3>
+            <p>${movie.year || ''} ${movie.category ? `| ${movie.category}` : ''}</p>
+          </div>
+        `;
+
+        card.addEventListener('click', () => {
+          localStorage.setItem('selectedMovie', JSON.stringify(movie));
+          window.location.href = 'movie_detail.html';
+        });
+
+        col.appendChild(card);
+        grid.appendChild(col);
+      });
+    }
+
+   // =================== INITIALIZATION ===================
+    (function initialize() {
+      // Generate device ID
+      deviceID = generateStableDeviceId();
+      
+      // Update UI immediately
+      document.getElementById('device-id-inline').textContent = deviceID;
+      document.getElementById('device-id-display').value = deviceID;
+      
+      // Check access
+      checkAccess();
+      
+      // Set up periodic check
+      setInterval(checkAccess, CONFIG.CHECK_INTERVAL);
+      
+      // Add offline/online detection
+      window.addEventListener('online', checkAccess);
+      window.addEventListener('offline', () => {
+        showAccessDeniedPopup('You are offline. Please check internet connection.');
+      });
+    })();
+  </script>
+
+  <!-- MOVIE LOADER (for when access is granted) -->
+  <script>
+    // Already included in the main script above
+  </script>
+
+  <!-- Vercel Analytics -->
+  <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+</body>
+</html>
