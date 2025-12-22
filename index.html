@@ -6,7 +6,7 @@
   <title>S4MM TV - Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   
-  <!-- Universal Device ID System -->
+  <!-- Include Universal Device ID System -->
   <script src="device-id-system.js"></script>
 
   <style>
@@ -288,7 +288,7 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.95);
-      display: flex;
+      display: none; /* Hidden by default */
       justify-content: center;
       align-items: center;
       z-index: 9999;
@@ -727,132 +727,136 @@
 
   <!-- MAIN SCRIPT -->
   <script>
-    // ============ STATE ============
-    let currentDeviceId = null;
-    let currentStatus = 'checking';
+    // ============ GLOBAL VARIABLES ============
+    let currentAccessState = null;
     
     // ============ INITIALIZATION ============
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, initializing S4ITMM TV...');
+      console.log('🎬 S4ITMM TV Main Page Loading...');
       
       // Initialize the device ID system
       if (window.S4ITMM && window.S4ITMM.init) {
         window.S4ITMM.init().then(function(result) {
-          console.log('S4ITMM initialized:', result);
-          setupAccessListeners();
+          console.log('✅ S4ITMM System initialized:', result);
+          setupEventListeners();
         }).catch(function(error) {
-          console.error('S4ITMM initialization failed:', error);
-          showPopup('error', 'System initialization failed');
+          console.error('❌ S4ITMM initialization failed:', error);
+          showError('System initialization failed. Please refresh.');
         });
       } else {
-        console.error('S4ITMM system not found!');
-        showPopup('error', 'Device ID system not loaded');
+        console.error('❌ S4ITMM system not found!');
+        showError('Device ID system failed to load. Please check console.');
       }
     });
     
-    // ============ ACCESS LISTENERS ============
-    function setupAccessListeners() {
-      // Listen for access changes
+    // ============ EVENT LISTENERS ============
+    function setupEventListeners() {
+      // Method 1: Use the callback system
       if (window.S4ITMM && window.S4ITMM.onAccessChange) {
-        window.S4ITMM.onAccessChange(function(state) {
-          handleAccessState(state);
-        });
+        window.S4ITMM.onAccessChange(handleAccessUpdate);
       }
       
-      // Also listen for global events
+      // Method 2: Listen for global events (backup)
       window.addEventListener('s4itmm-access-update', function(event) {
-        handleAccessState(event.detail);
+        handleAccessUpdate(event.detail);
       });
       
       window.addEventListener('s4itmm-access-granted', function(event) {
-        console.log('Access granted event received');
-        handleAccessState(event.detail);
+        console.log('🎉 Access granted via event!');
+        handleAccessUpdate(event.detail);
+      });
+      
+      window.addEventListener('s4itmm-access-expired', function(event) {
+        console.log('⏰ Access expired via event');
+        handleAccessUpdate(event.detail);
+      });
+      
+      window.addEventListener('s4itmm-access-pending', function(event) {
+        console.log('⏳ Access pending via event');
+        handleAccessUpdate(event.detail);
       });
     }
     
-    // ============ HANDLE ACCESS STATES ============
-    function handleAccessState(state) {
-      console.log('Access state updated:', state);
+    // ============ ACCESS HANDLER ============
+    function handleAccessUpdate(state) {
+      console.log('📊 Access state updated:', state);
       
-      currentDeviceId = state.deviceId;
-      currentStatus = state.status;
+      // Save current state
+      currentAccessState = state;
       
       // Update UI
-      updateDeviceInfo(state);
-      updatePopupUI(state);
+      updateUI(state);
       
-      // Handle based on status
+      // Handle specific status
       switch(state.status) {
         case 'approved':
-          handleApprovedAccess(state);
+          handleApproved(state);
           break;
-          
         case 'pending':
-          handlePendingAccess(state);
+          handlePending(state);
           break;
-          
         case 'expired':
-          handleExpiredAccess(state);
+          handleExpired(state);
           break;
-          
         case 'checking':
-          // Do nothing, just show checking
+          // Do nothing, UI already shows checking
           break;
-          
         default:
-          console.warn('Unknown access status:', state.status);
+          console.warn('Unknown status:', state.status);
       }
     }
     
-    function handleApprovedAccess(state) {
-      console.log('✅ Access granted!');
+    function handleApproved(state) {
+      console.log('✅ Access granted, loading movies...');
       
       // Hide popup after delay
-      setTimeout(function() {
+      setTimeout(() => {
         hidePopup();
-      }, 1500);
+      }, 1000);
       
-      // Show access granted message
+      // Show success message
       document.getElementById('access-granted-message').style.display = 'block';
-       // Hide loading placeholder
+      
+      // Hide loading
       document.getElementById('loading-placeholder').style.display = 'none';
       
       // Load movies
       loadMovies();
     }
     
-    function handlePendingAccess(state) {
-      console.log('⏳ Access pending');
-      // Popup already shows the message
+    function handlePending(state) {
+      console.log('⏳ Access pending, showing contact info');
+      showPopup('pending', state.data?.message || 'Device pending approval');
     }
     
-    function handleExpiredAccess(state) {
+    function handleExpired(state) {
       console.log('❌ Access expired');
-      // Popup already shows the message
+      showPopup('expired', state.data?.message || 'Your subscription has expired');
     }
     
     // ============ UI UPDATES ============
-    function updateDeviceInfo(state) {
-      // Update device ID
-      const deviceIdElement = document.getElementById('device-id-inline');
-      if (deviceIdElement && state.deviceId) {
-        deviceIdElement.textContent = state.deviceId;
-      }
+    function updateUI(state) {
+      // Update device ID displays
+      const deviceId = state.deviceId || 'Loading...';
       
-      // Update status text
+      // Inline display
+      const inlineEl = document.getElementById('device-id-inline');
+      if (inlineEl) inlineEl.textContent = deviceId;
+      
+      // Popup display
+      const popupEl = document.getElementById('device-id-display');
+      if (popupEl) popupEl.value = deviceId;
+      
+      // Update status
       const statusText = document.getElementById('status-text');
       const statusBadge = document.getElementById('status-badge');
       
       if (statusText) {
-        let statusMessage = 'Checking...';
-        if (state.status === 'approved') {
-          statusMessage = 'Access Granted';
-        } else if (state.status === 'pending') {
-          statusMessage = 'Pending Approval';
-        } else if (state.status === 'expired') {
-          statusMessage = 'Subscription Expired';
-        }
-        statusText.textContent = statusMessage;
+        let displayText = 'Checking...';
+        if (state.status === 'approved') displayText = 'Access Granted';
+        if (state.status === 'pending') displayText = 'Pending Approval';
+        if (state.status === 'expired') displayText = 'Subscription Expired';
+        statusText.textContent = displayText;
       }
       
       if (statusBadge) {
@@ -861,87 +865,63 @@
       }
       
       // Update expiry date
-      const expiryElement = document.getElementById('expiry-date');
-      if (expiryElement && state.data && state.data.expires) {
-        expiryElement.textContent = state.data.expires;
-      } else if (expiryElement) {
-        expiryElement.textContent = 'Not set';
+      const expiryEl = document.getElementById('expiry-date');
+      if (expiryEl) {
+        if (state.data && state.data.expires) {
+          expiryEl.textContent = state.data.expires;
+        } else {
+          expiryEl.textContent = 'Not set';
+        }
       }
       
       // Update generated date
-      const generatedElement = document.getElementById('generated-date');
-      if (generatedElement) {
+      const generatedEl = document.getElementById('generated-date');
+      if (generatedEl) {
         try {
           const firstSeen = localStorage.getItem('s4tv_first_seen');
           if (firstSeen) {
             const date = new Date(firstSeen);
-            generatedElement.textContent = date.toLocaleDateString();
+            generatedEl.textContent = date.toLocaleDateString();
           } else {
-            generatedElement.textContent = 'Today';
+            generatedEl.textContent = 'Today';
           }
         } catch (e) {
-          generatedElement.textContent = 'Today';
+          generatedEl.textContent = 'Today';
         }
-      }
-    }
-    
-    function updatePopupUI(state) {
-      const popupTitle = document.getElementById('popup-title');
-      const popupStatus = document.getElementById('popup-status');
-      const popupMessage = document.getElementById('popup-message');
-      const deviceIdDisplay = document.getElementById('device-id-display');
-      
-      // Update device ID in popup
-      if (deviceIdDisplay && state.deviceId) {
-        deviceIdDisplay.value = state.deviceId;
-      }
-      
-      // Update status
-      if (popupStatus) {
-        popupStatus.textContent = state.status.charAt(0).toUpperCase() + state.status.slice(1);
-        popupStatus.className = 'popup-status status-' + state.status;
-      }
-      
-      // Update title and message
-      if (popupTitle && popupMessage) {
-        switch(state.status) {
-          case 'approved':
-            popupTitle.innerHTML = '<i class="fas fa-check-circle"></i> Access Granted';
-            popupMessage.textContent = 'Your device has been approved. Loading content...';
-            break;
-            
-          case 'pending':
-            popupTitle.innerHTML = '<i class="fas fa-clock"></i> Approval Required';
-            popupMessage.textContent = state.data?.message || 'Your device is pending approval. Please contact admin.';
-            break;
-            
-          case 'expired':
-            popupTitle.innerHTML = '<i class="fas fa-calendar-times"></i> Subscription Expired';
-            popupMessage.textContent = state.data?.message || 'Your subscription has expired. Please renew.';
-            break;
-            
-          case 'checking':
-            popupTitle.innerHTML = '<i class="fas fa-user-shield"></i> Device Verification';
-            popupMessage.textContent = 'Verifying your device access...';
-            break;
-            
-          default:
-            popupTitle.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Access Error';
-            popupMessage.textContent = 'Unable to verify access. Please try again.';
-        }
-      }
-      
-      // Show popup if not approved
-      if (state.status !== 'approved') {
-        showPopup(state.status, state.data?.message || '');
       }
     }
     
     function showPopup(status, message) {
       const popup = document.getElementById('access-popup');
-      if (popup) {
-        popup.style.display = 'flex';
+      const popupTitle = document.getElementById('popup-title');
+      const popupStatus = document.getElementById('popup-status');
+      const popupMessage = document.getElementById('popup-message');
+      
+      if (!popup || !popupTitle || !popupStatus || !popupMessage) return;
+      
+      // Update popup content
+      let titleText = 'Device Verification';
+      let statusText = status;
+      
+      switch(status) {
+        case 'approved':
+          titleText = 'Access Granted';
+          break;
+        case 'pending':
+          titleText = 'Approval Required';
+          break;
+        case 'expired':
+          titleText = 'Subscription Expired';
+          break;
       }
+      
+      popupTitle.innerHTML = `<i class="fas fa-user-shield"></i> ${titleText}`;
+      popupStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+      popupStatus.className = 'popup-status status-' + status;
+      popupMessage.textContent = message || 'Verifying your device...';
+      
+      // Show popup
+      popup.style.display = 'flex';
     }
     
     function hidePopup() {
@@ -951,37 +931,22 @@
       }
     }
     
-    // ============ UTILITY FUNCTIONS ============
+    // ============ BUTTON FUNCTIONS ============
     function copyDeviceId() {
       if (window.S4ITMM && window.S4ITMM.copyDeviceId) {
         window.S4ITMM.copyDeviceId();
       } else {
-        fallbackCopy(currentDeviceId || 'Not available');
+        fallbackCopy(currentAccessState?.deviceId || 'Not available');
       }
     }
     
     function copyDeviceIdFromPopup() {
-      const deviceIdInput = document.getElementById('device-id-display');
-      if (deviceIdInput && deviceIdInput.value) {
-        copyToClipboard(deviceIdInput.value);
-      }
-    }
-    
-    function copyToClipboard(text) {
-      if (!text) return;
-      
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => {
-          showNotification('✅ Device ID copied!');
-        }).catch(() => {
-          fallbackCopy(text);
-        });
-      } else {
-        fallbackCopy(text);
-      }
+      copyDeviceId();
     }
     
     function fallbackCopy(text) {
+      if (!text) return;
+      
       const textArea = document.createElement('textarea');
       textArea.value = text;
       textArea.style.position = 'fixed';
@@ -993,99 +958,63 @@
       
       try {
         document.execCommand('copy');
-        showNotification('✅ Device ID copied!');
+        showMessage('✅ Device ID copied!');
       } catch (err) {
-        showNotification('❌ Failed to copy. Please copy manually.');
+        showMessage('❌ Failed to copy. Please copy manually.');
       }
       
       document.body.removeChild(textArea);
     }
     
-    function showNotification(message) {
-      const notification = document.createElement('div');
-      notification.textContent = message;
-      notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #10b981;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        z-index: 10000;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        animation: notificationIn 0.3s ease-out;
-      `;
-      
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.style.animation = 'notificationOut 0.3s ease-in';
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
-          }
-        }, 300);
-      }, 3000);
-    }
-    
-    // Add notification styles
-    const notificationStyle = document.createElement('style');
-    notificationStyle.textContent = `
-      @keyframes notificationIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      @keyframes notificationOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(notificationStyle);
-    
     function refreshAccess() {
-      console.log('Refreshing access...');
+      console.log('🔄 Manual refresh requested');
       if (window.S4ITMM && window.S4ITMM.refreshAccess) {
-        window.S4ITMM.refreshAccess().then(function(result) {
-          console.log('Refresh result:', result);
-        });
+        window.S4ITMM.refreshAccess();
+        showMessage('Refreshing access status...');
       }
     }
     
     function contactViaViber() {
-      const deviceId = currentDeviceId || document.getElementById('device-id-display').value;
-      if (deviceId && deviceId !== 'Loading...') {
-        const message = encodeURIComponent(
-          `S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`
-        );
-        window.open(`viber://forward?text=${message}`, '_blank');
-      } else {
-        showNotification('Please wait for Device ID to load');
+      const deviceId = currentAccessState?.deviceId || 
+                      (window.S4ITMM ? window.S4ITMM.getDeviceId() : 'Not available');
+      
+      if (!deviceId || deviceId === 'Not available') {
+        showMessage('Please wait for Device ID to load');
+        return;
       }
+      
+      const message = encodeURIComponent(
+        `S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`
+      );
+      window.open(`viber://forward?text=${message}`, '_blank');
     }
     
     function contactViaTelegram() {
-      const deviceId = currentDeviceId || document.getElementById('device-id-display').value;
-      if (deviceId && deviceId !== 'Loading...') {
-        const message = encodeURIComponent(
-          `S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`
-        );
-        window.open(`https://t.me/S4ITMM?text=${message}`, '_blank');
-      } else {
-        showNotification('Please wait for Device ID to load');
+      const deviceId = currentAccessState?.deviceId || 
+                      (window.S4ITMM ? window.S4ITMM.getDeviceId() : 'Not available');
+      
+      if (!deviceId || deviceId === 'Not available') {
+        showMessage('Please wait for Device ID to load');
+        return;
       }
+      
+      const message = encodeURIComponent(
+        `S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`
+      );
+      window.open(`https://t.me/S4ITMM?text=${message}`, '_blank');
     }
     
     function showDebugInfo() {
       const info = `
         === DEBUG INFO ===
-        Device ID: ${currentDeviceId || 'Not set'}
-        Status: ${currentStatus}
-        S4ITMM Available: ${!!window.S4ITMM}
+        Device ID: ${currentAccessState?.deviceId || 'Not set'}
+        Status: ${currentAccessState?.status || 'Unknown'}
+        Is Approved: ${currentAccessState?.isApproved || false}
+        S4ITMM Loaded: ${!!window.S4ITMM}
         API Base: ${window.S4ITMM ? 'Loaded' : 'Not loaded'}
-        LocalStorage: ${testLocalStorage() ? 'Working' : 'Not working'}
+        LocalStorage Test: ${testLocalStorage() ? 'Working' : 'Not working'}
+        Current URL: ${window.location.href}
         User Agent: ${navigator.userAgent.substring(0, 50)}...
-        URL: ${window.location.href}
       `.trim();
       
       alert(info);
@@ -1101,6 +1030,38 @@
       }
     }
     
+    function showMessage(message) {
+      // Simple message display
+      const msgEl = document.createElement('div');
+      msgEl.textContent = message;
+      msgEl.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #3b82f6;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 99999;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      `;
+      
+      document.body.appendChild(msgEl);
+      setTimeout(() => {
+        if (msgEl.parentNode) {
+          msgEl.parentNode.removeChild(msgEl);
+        }
+      }, 3000);
+    }
+    
+    function showError(message) {
+      const popup = document.getElementById('access-popup');
+      if (popup) {
+        document.getElementById('popup-message').textContent = message;
+        popup.style.display = 'flex';
+      }
+    }
+    
     // ============ MOVIE FUNCTIONS ============
     async function loadMovies() {
       console.log('🎬 Loading movies...');
@@ -1109,28 +1070,27 @@
       if (!movieGrid) return;
       
       try {
-        // Show loading in movie grid
+        // Show loading
         movieGrid.innerHTML = `
-          <div style="width:100%; text-align:center; padding:20px; color:#9ca3af;">
-            <div class="loading-spinner" style="width:30px; height:30px; border-width:3px;"></div>
-            <p>Loading movies...</p>
+          <div style="width:100%; text-align:center; padding:30px; color:#9ca3af;">
+            <div class="loading-spinner"></div>
+            <p>Loading movies collection...</p>
           </div>
         `;
         
-        // Load movies data
+        // Fetch movies
         const response = await fetch('zetmovies.json?_t=' + Date.now());
         
         if (!response.ok) {
-          throw new Error('Failed to load movies');
+          throw new Error(`HTTP ${response.status}`);
         }
         
         const movies = await response.json();
         displayMovies(movies);
         
       } catch (error) {
-        console.error('Error loading movies:', error);
+        console.error('❌ Error loading movies:', error);
         
-        // Show error
         movieGrid.innerHTML = `
           <div style="width:100%; text-align:center; padding:40px; color:#9ca3af;">
             <i class="fas fa-exclamation-triangle" style="font-size:40px; margin-bottom:20px;"></i>
@@ -1209,19 +1169,18 @@
       console.error('Global error:', event.error);
     });
     
-    // Online/offline handling
+    // Online/offline events
     window.addEventListener('online', function() {
-      console.log('🌐 Back online');
-      showNotification('Back online. Refreshing access...');
+      console.log('🌐 Online - refreshing access');
       refreshAccess();
     });
     
     window.addEventListener('offline', function() {
       console.log('📴 Offline');
-      showNotification('You are offline. Some features may not work.', 'warning');
+      showMessage('You are offline. Some features may not work.');
     });
     
-    console.log('S4ITMM TV main script loaded');
+    console.log('🎬 S4ITMM TV main script loaded successfully');
   </script>
 
   <!-- Vercel Analytics -->
