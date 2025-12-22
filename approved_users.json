@@ -1,0 +1,16 @@
+{
+  "users": [
+    {
+      "deviceId": "s4_123456789",
+      "expires": "2024-12-31",
+      "registeredAt": "2024-01-01",
+      "name": "Admin User"
+    },
+    {
+      "deviceId": "s4_987654321",
+      "expires": "2024-06-30",
+      "registeredAt": "2024-01-15",
+      "name": "Test User 2"
+    }
+  ]
+}
