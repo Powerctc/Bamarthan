@@ -1,7 +1,4 @@
 // api/check-access.js
-import fs from 'fs';
-import path from 'path';
-
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -29,55 +26,47 @@ export default async function handler(req, res) {
     });
   }
   
-  try {
-    // Read from approved_users.json
-    const filePath = path.join(process.cwd(), 'https://tv-version-six.vercel.app/approved_users.json');
-    const fileData = fs.readFileSync(filePath, 'utf8');
-    const approvedUsers = JSON.parse(fileData);
-    
-    console.log('📁 Approved users loaded:', approvedUsers.length);
-    
-    const user = approvedUsers.find(u => u.deviceId === deviceId);
-    
-    if (!user) {
-      return res.json({
-        status: 'pending',
-        deviceId: deviceId,
-        message: 'Device not approved. Please contact admin with your Device ID.'
-      });
+  // ✅ မင်း Device ID ကို ဒီမှာ ထည့်ပါ
+  const approvedUsers = [
+    {
+      deviceId: "S4TV_KBHCZL_D2B0",  // ✅ မင်း Device ID
+      expires: "2025-12-31",         // ✅ Future date
+      registeredAt: "2024-01-20",
+      name: "Admin",
+      package: "Premium"
     }
-    
-    // Check expiry
-    const today = new Date();
-    const expiry = new Date(user.expires);
-    
-    if (expiry < today) {
-      return res.json({
-        status: 'expired',
-        deviceId: deviceId,
-        expires: user.expires,
-        message: `Your subscription expired on ${user.expires}`
-      });
-    }
-    
-    // ✅ APPROVED
+  ];
+  
+  const user = approvedUsers.find(u => u.deviceId === deviceId);
+  
+  if (!user) {
     return res.json({
-      status: 'approved',
+      status: 'pending',
       deviceId: deviceId,
-      expires: user.expires,
-      name: user.name,
-      package: user.package,
-      message: 'Access granted'
-    });
-    
-  } catch (error) {
-    console.error('❌ Error reading user data:', error);
-    
-    // If file doesn't exist or is empty
-    return res.status(500).json({
-      status: 'error',
-      message: 'Server error while checking access',
-      details: error.message
+      message: 'Device not approved. Please contact admin with your Device ID.'
     });
   }
-      }
+  
+  // Check expiry
+  const today = new Date();
+  const expiry = new Date(user.expires);
+  
+  if (expiry < today) {
+    return res.json({
+      status: 'expired',
+      deviceId: deviceId,
+      expires: user.expires,
+      message: `Your subscription expired on ${user.expires}`
+    });
+  }
+  
+  // ✅ APPROVED
+  return res.json({
+    status: 'approved',
+    deviceId: deviceId,
+    expires: user.expires,
+    name: user.name,
+    package: user.package,
+    message: 'Access granted'
+  });
+}
