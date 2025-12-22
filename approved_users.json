@@ -2,21 +2,13 @@
   "users": [
     {
       "deviceId": "S4TV_KBHCZL_D2B0",
-      "expires": "2025-05-31",
-      "registeredAt": "2025-12-22",
+      "expires": "2024-12-31",
+      "registeredAt": "2024-01-20",
       "name": "Admin",
       "package": "Premium",
       "notes": "Primary admin account"
-    },
-    {
-      "deviceId": "S4TV_3A7B1C4D_EF8",
-      "expires": "2024-06-30",
-      "registeredAt": "2024-01-15", 
-      "name": "Beta Tester",
-      "package": "Basic",
-      "notes": "Testing account"
     }
   ],
   "lastUpdated": "2024-01-20",
-  "totalUsers": 2
+  "totalUsers": 1
 }
