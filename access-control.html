@@ -1,0 +1,350 @@
+<!-- access-control.html -->
+<!-- Include this in ALL pages that need access control -->
+<div id="s4itmm-access-control" style="display: none;">
+  <style>
+    .s4itmm-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .s4itmm-popup-content {
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 450px;
+      width: 90%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      border: 1px solid #374151;
+      text-align: center;
+      color: white;
+    }
+    
+    .s4itmm-popup-title {
+      color: #ef4444;
+      margin-bottom: 20px;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .s4itmm-status-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      margin: 15px 0;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .s4itmm-status-pending { background: #f59e0b; color: white; }
+    .s4itmm-status-approved { background: #10b981; color: white; }
+    .s4itmm-status-expired { background: #ef4444; color: white; }
+    .s4itmm-status-checking { background: #6b7280; color: white; }
+    
+    .s4itmm-device-id-container {
+      margin: 20px 0;
+      padding: 15px;
+      background: #374151;
+      border-radius: 8px;
+      border: 2px solid #4b5563;
+    }
+    
+    .s4itmm-device-id-container label {
+      display: block;
+      color: #9ca3af;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    .s4itmm-device-id-display {
+      width: 100%;
+      background: transparent;
+      color: white;
+      padding: 12px;
+      border: 2px dashed #6b7280;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      cursor: default;
+      font-family: monospace;
+    }
+    
+    .s4itmm-popup-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    .s4itmm-popup-button {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .s4itmm-button-copy {
+      background: #10b981;
+      color: white;
+    }
+    
+    .s4itmm-button-copy:hover {
+      background: #059669;
+    }
+    
+    .s4itmm-button-refresh {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .s4itmm-button-refresh:hover {
+      background: #4b5563;
+    }
+    
+    .s4itmm-contact-section {
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #374151;
+    }
+    
+    .s4itmm-contact-buttons {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .s4itmm-contact-button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .s4itmm-button-viber {
+      background: #7360f2;
+      color: white;
+    }
+    
+    .s4itmm-button-viber:hover {
+      background: #5a4ae6;
+    }
+    
+    .s4itmm-button-telegram {
+      background: #0088cc;
+      color: white;
+    }
+    
+    .s4itmm-button-telegram:hover {
+      background: #0077b5;
+    }
+    
+    .s4itmm-admin-info {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .s4itmm-admin-info a {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    
+    .s4itmm-admin-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+  
+  <div class="s4itmm-popup">
+    <div class="s4itmm-popup-content">
+      <h2 class="s4itmm-popup-title">
+        <i class="fas fa-user-shield"></i>
+        <span id="s4itmm-popup-title-text">Device Verification</span>
+      </h2>
+      
+      <div class="s4itmm-status-badge s4itmm-status-checking" id="s4itmm-status-badge">
+        Checking...
+      </div>
+      
+      <div style="margin: 15px 0; padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; border-left: 4px solid #ef4444;">
+        <p id="s4itmm-popup-message">Verifying your device access...</p>
+      </div>
+      
+      <div class="s4itmm-device-id-container">
+        <label>Your Device ID:</label>
+        <input type="text" class="s4itmm-device-id-display" id="s4itmm-device-id-display" readonly value="Loading...">
+      </div>
+      
+      <div class="s4itmm-popup-buttons">
+        <button class="s4itmm-popup-button s4itmm-button-copy" id="s4itmm-copy-button">
+          <i class="fas fa-copy"></i> Copy Device ID
+        </button>
+        <button class="s4itmm-popup-button s4itmm-button-refresh" id="s4itmm-refresh-button">
+          <i class="fas fa-redo"></i> Refresh Status
+        </button>
+      </div>
+      
+      <div class="s4itmm-contact-section">
+        <p style="color: #d1d5db; font-size: 14px;">Need access? Contact admin:</p>
+        
+        <div class="s4itmm-contact-buttons">
+          <button class="s4itmm-contact-button s4itmm-button-viber" id="s4itmm-viber-button">
+            <i class="fab fa-viber"></i> Viber
+          </button>
+          <button class="s4itmm-contact-button s4itmm-button-telegram" id="s4itmm-telegram-button">
+            <i class="fab fa-telegram"></i> Telegram
+          </button>
+        </div>
+        
+        <div class="s4itmm-admin-info">
+          <p><i class="fas fa-envelope"></i> Email: 
+            <a href="mailto:support@s4itmm.com">support@s4itmm.com</a>
+          </p>
+          <p style="margin-top: 8px; font-size: 12px; color: #9ca3af;">
+            Send your Device ID to get approval.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Wait for S4ITMM system to load
+  document.addEventListener('DOMContentLoaded', function() {
+    const popupContainer = document.getElementById('s4itmm-access-control');
+    const popupElement = popupContainer.querySelector('.s4itmm-popup');
+    
+    // Show popup initially
+    popupContainer.style.display = 'block';
+    
+    // Setup event listeners
+    document.getElementById('s4itmm-copy-button').addEventListener('click', function() {
+      if (window.S4ITMM && window.S4ITMM.copyDeviceId) {
+        window.S4ITMM.copyDeviceId();
+      }
+    });
+    
+    document.getElementById('s4itmm-refresh-button').addEventListener('click', function() {
+      if (window.S4ITMM && window.S4ITMM.refreshAccess) {
+        window.S4ITMM.refreshAccess();
+      }
+    });
+    
+    document.getElementById('s4itmm-viber-button').addEventListener('click', function() {
+      if (window.S4ITMM && window.S4ITMM.getDeviceId) {
+        const deviceId = window.S4ITMM.getDeviceId();
+        const message = encodeURIComponent(`S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`);
+        window.open(`viber://forward?text=${message}`, '_blank');
+      }
+    });
+    
+    document.getElementById('s4itmm-telegram-button').addEventListener('click', function() {
+      if (window.S4ITMM && window.S4ITMM.getDeviceId) {
+        const deviceId = window.S4ITMM.getDeviceId();
+        const message = encodeURIComponent(`S4ITMM TV Access Request\nDevice ID: ${deviceId}\nPlease approve my device.`);
+        window.open(`https://t.me/S4ITMM?text=${message}`, '_blank');
+      }
+    });
+    
+    // Subscribe to access changes
+    if (window.S4ITMM && window.S4ITMM.onAccessChange) {
+      window.S4ITMM.onAccessChange(function(state) {
+        updatePopupUI(state);
+      });
+    } else {
+      // Fallback: check every second until S4ITMM loads
+      const checkInterval = setInterval(function() {
+        if (window.S4ITMM && window.S4ITMM.onAccessChange) {
+          clearInterval(checkInterval);
+          window.S4ITMM.onAccessChange(function(state) {
+            updatePopupUI(state);
+          });
+        }
+      }, 1000);
+    }
+    
+    function updatePopupUI(state) {
+      const deviceId = state.deviceId || 'Unknown';
+      const status = state.status || 'checking';
+      const data = state.data || {};
+      
+      // Update device ID display
+      const deviceIdDisplay = document.getElementById('s4itmm-device-id-display');
+      if (deviceIdDisplay) deviceIdDisplay.value = deviceId;
+      
+      // Update status badge
+      const statusBadge = document.getElementById('s4itmm-status-badge');
+      if (statusBadge) {
+        statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        statusBadge.className = 's4itmm-status-badge s4itmm-status-' + status;
+      }
+      
+      // Update title
+      const titleText = document.getElementById('s4itmm-popup-title-text');
+      if (titleText) {
+        switch(status) {
+          case 'approved': titleText.textContent = 'Access Granted'; break;
+          case 'pending': titleText.textContent = 'Approval Required'; break;
+          case 'expired': titleText.textContent = 'Subscription Expired'; break;
+          default: titleText.textContent = 'Device Verification';
+        }
+      }
+      
+      // Update message
+      const messageEl = document.getElementById('s4itmm-popup-message');
+      if (messageEl) {
+        let message = data.message || 'Verifying access...';
+        if (status === 'approved') {
+          message = 'Access granted! Loading content...';
+        } else if (status === 'pending') {
+          message = 'Device pending approval. Please contact admin.';
+        } else if (status === 'expired') {
+          message = `Your subscription expired on ${data.expires || 'unknown date'}`;
+        }
+        messageEl.textContent = message;
+      }
+      
+      // Hide popup if approved
+      if (status === 'approved' && popupElement) {
+        setTimeout(function() {
+          popupElement.style.display = 'none';
+          // Notify parent page that access is granted
+          window.dispatchEvent(new CustomEvent('s4itmm-access-granted', { 
+            detail: state 
+          }));
+        }, 1000);
+      }
+    }
+  });
+</script>
