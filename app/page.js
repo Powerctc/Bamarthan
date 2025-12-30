@@ -1,4 +1,4 @@
-'use client'
+idt'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -63,8 +63,7 @@ export default function HomePage() {
   const checkAccess = async (id) => {
     try {
       // 1️⃣ READ STATIC JSON
-      const res = await fetch(
-        'https://m-sport-download.static.hf.space/approved_users.json?_=' +
+      const res = await fetch("/api/users?_t=' +
           Date.now(),
         { cache: 'no-store' }
       )
@@ -109,7 +108,7 @@ export default function HomePage() {
 
       // 2️⃣ AUTO APPROVE
       setStatus('Requesting auto approval...')
-      const approve = await fetch(`/api/approve?id=${id}`)
+      const approve = await fetch(`/api/approve?id=${id}id
       const result = await approve.json()
 
       if (result?.status === 'success') {
