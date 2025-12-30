@@ -1,37 +1,36 @@
-export const runtime = "edge";
-
+// app/api/users/route.js
 export async function GET() {
   try {
     const res = await fetch(
       "https://m-sport-download.static.hf.space/approved_users.json",
       {
+        cache: "no-store",
         headers: {
-          "User-Agent": "Mozilla/5.0",
-          "Accept": "application/json"
-        },
-        cache: "no-store"
+          "User-Agent": "Mozilla/5.0"
+        }
       }
-    );
+    )
 
     if (!res.ok) {
-      throw new Error("HF fetch failed");
+      return new Response(
+        JSON.stringify({ error: "HF fetch failed" }),
+        { status: 500 }
+      )
     }
 
-    const data = await res.json();
+    const data = await res.json()
 
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         "Cache-Control": "no-store"
       }
-    });
-
+    })
   } catch (e) {
-    return new Response(JSON.stringify({
-      status: "error",
-      msg: "Approval service unavailable"
-    }), { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Proxy error" }),
+      { status: 500 }
+    )
   }
 }
