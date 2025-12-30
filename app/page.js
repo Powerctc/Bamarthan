@@ -1,16 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { initializeApp } from 'firebase/app'
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth'
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 
-// Firebase setup
-const firebaseConfig = JSON.parse(__firebase_config);
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 's4itmm-tv-nextjs';
+// Firebase config (you can also use process.env.NEXT_PUBLIC_FIREBASE_CONFIG)
+const firebaseConfig = typeof __firebase_config !== 'undefined' 
+  ? JSON.parse(__firebase_config) 
+  : JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}')
+
+const appId = typeof __app_id !== 'undefined' ? __app_id : 's4itmm-tv-nextjs'
 
 export default function HomePage() {
   const [user, setUser] = useState(null)
@@ -21,14 +18,13 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isAndroidTV, setIsAndroidTV] = useState(false)
 
-  // 1. Device and Android TV Detection
+  // 1. Device & Android TV Detection
   useEffect(() => {
     const userAgent = navigator.userAgent.toLowerCase()
     const isTV = userAgent.includes('android') && 
                  (userAgent.includes('tv') || userAgent.includes('box') || screen.width >= 1280)
     setIsAndroidTV(isTV)
 
-    // Device ID Logic
     let id = localStorage.getItem("s4itmm_device_v2")
     if (!id || id.length !== 12) {
       const raw = (navigator.userAgent || "unknown") + Date.now() + Math.random()
@@ -42,99 +38,151 @@ export default function HomePage() {
     setDeviceID(id)
   }, [])
 
-  // 2. Auth Listener (Rule 3)
+  // 2. Load Firebase from /public/firebase/*.js
   useEffect(() => {
-    const initAuth = async () => {
-      if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-        await signInWithCustomToken(auth, __initial_auth_token);
-      } else {
-        await signInAnonymously(auth);
-      }
-    };
-    initAuth();
-    const unsubscribe = onAuthStateChanged(auth, setUser);
-    return () => unsubscribe();
-  }, []);
+    if (typeof window === 'undefined') return
 
-  // 3. Auto-Approval Database Logic
-  useEffect(() => {
-    if (!user || !deviceID) return;
+    let firebaseInitialized = false
 
-    // Use onSnapshot for real-time updates (if admin extends time)
-    const docPath = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', deviceID);
-    
-    const unsubscribe = onSnapshot(docPath, async (docSnap) => {
+    const initFirebase = async () => {
       try {
-        if (docSnap.exists()) {
-          validateAccess(docSnap.data());
+        // Load Firebase modules dynamically from public folder
+        if (!window.firebaseApp) {
+          setStatus('Loading local Firebase SDK...')
+
+          // Load in order
+          await import('/firebase/firebase-app.js')
+          await import('/firebase/firebase-auth.js')
+          await import('/firebase/firebase-firestore.js')
+
+          const { initializeApp } = await import('/firebase/firebase-app.js')
+          window.firebaseApp = initializeApp(firebaseConfig)
+        }
+
+        const { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } = await import('/firebase/firebase-auth.js')
+        const { getFirestore, doc, getDoc, setDoc, onSnapshot, Timestamp } = await import('/firebase/firebase-firestore.js')
+
+        const app = window.firebaseApp
+        const auth = getAuth(app)
+        const db = getFirestore(app)
+
+        // Auth init
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token)
         } else {
-          // AUTO APPROVAL TRIGGER
-          setStatus('New device found. Activating 3-day trial...');
-          const expiryDate = new Date();
-          expiryDate.setDate(expiryDate.getDate() + 3);
+          await signInAnonymously(auth)
+        }
 
-          const newUserData = {
-            id: deviceID,
-            name: `Guest_${deviceID.slice(-4)}`,
-            expires: expiryDate.toISOString(),
-            status: 'trial',
-            createdAt: new Date().toISOString()
-          };
+        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+          setUser(user)
+        })
 
-          await setDoc(docPath, newUserData);
-          // Snapshot will trigger again automatically after setDoc
+        // Watch Firestore registration
+        const watchFirestore = () => {
+          if (!user || !deviceID) return null
+
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', deviceID)
+
+          const unsub = onSnapshot(docRef, async (snap) => {
+            try {
+              if (snap.exists()) {
+                validateAccess(snap.data())
+              } else {
+                setStatus('New device found. Activating 3-day trial...')
+                const expiryDate = new Date()
+                expiryDate.setDate(expiryDate.getDate() + 3)
+
+                await setDoc(docRef, {
+                  id: deviceID,
+                  name: `Guest_${deviceID.slice(-4)}`,
+                  expires: Timestamp.fromDate(expiryDate),
+                  status: 'trial',
+                  createdAt: Timestamp.now()
+                })
+              }
+            } catch (err) {
+              console.error("Firestore Error:", err)
+              setError({ title: "Database Error", message: "Failed to sync user data." })
+              setIsLoading(false)
+            }
+          }, (err) => {
+            console.error("Snapshot error:", err)
+            setError({ title: "Connection Error", message: "Lost connection to approval server." })
+            setIsLoading(false)
+          })
+
+          return unsub
+        }
+
+        let firestoreUnsub = null
+
+        const handleUserDeviceChange = () => {
+          if (user && deviceID && !firestoreUnsub) {
+            firestoreUnsub = watchFirestore()
+          } else if ((!user || !deviceID) && firestoreUnsub) {
+            firestoreUnsub()
+            firestoreUnsub = null
+          }
+        }
+
+        handleUserDeviceChange()
+
+        return () => {
+          unsubscribeAuth()
+          if (firestoreUnsub) firestoreUnsub()
         }
       } catch (err) {
-        console.error("Firestore Error:", err);
-        setError({ title: "Database Error", message: "Failed to sync user data." });
-        setIsLoading(false);
+        console.error("Firebase init error:", err)
+        setError({ title: "Startup Failed", message: "Could not load TV system. Try again or use /home.html" })
+        setIsLoading(false)
       }
-    }, (err) => {
-      console.error("Snapshot error:", err);
-      setError({ title: "Connection Error", message: "Lost connection to approval server." });
-      setIsLoading(false);
-    });
+    }
 
-    return () => unsubscribe();
-  }, [user, deviceID]);
+    initFirebase()
+  }, [deviceID, user])
 
+  // Validation logic
   const validateAccess = (data) => {
-    const today = new Date();
-    const expiry = new Date(data.expires);
-    const diffTime = expiry - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const today = new Date()
+    const expires = data.expires?.toDate ? data.expires.toDate() : new Date(data.expires)
+    const diffDays = Math.ceil((expires - today) / (1000 * 60 * 60 * 24))
 
-    setUserInfo({ ...data, daysRemaining: Math.max(0, diffDays) });
+    setUserInfo({ ...data, daysRemaining: Math.max(0, diffDays) })
 
-    if (expiry < today) {
+    if (expires < today) {
       setError({
         title: "Access Expired",
         message: "Your trial or subscription has ended. Contact @S4ITMM for renewal.",
         userInfo: data
-      });
-      setIsLoading(false);
+      })
+      setIsLoading(false)
     } else {
-      setStatus('✅ Access Verified');
-      setIsLoading(false);
-      // Logic for redirecting would go here: router.push('/main')
+      setStatus('✅ Access Verified')
+      setIsLoading(false)
     }
-  };
+  }
 
   const copyId = () => {
-    const el = document.createElement('textarea');
-    el.value = deviceID;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    setStatus("ID Copied to Clipboard!");
-    setTimeout(() => setStatus("Checking access..."), 2000);
-  };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(deviceID).then(() => {
+        setStatus("ID Copied to Clipboard!")
+        setTimeout(() => setStatus("Checking access..."), 2000)
+      })
+    } else {
+      const el = document.createElement('textarea')
+      el.value = deviceID
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      setStatus("ID Copied!")
+      setTimeout(() => setStatus("Checking access..."), 2000)
+    }
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#0a0f1e] text-slate-100">
       <div className="w-full max-w-md">
-        {/* Brand */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black text-red-600 italic tracking-tighter">
             S4ITMM<span className="text-white not-italic">TV</span>
@@ -142,9 +190,7 @@ export default function HomePage() {
           <div className="h-1 w-20 bg-red-600 mx-auto mt-2 rounded-full"></div>
         </div>
 
-        {/* Status Card */}
         <div className="bg-[#161d31] border border-slate-700/50 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-          {/* Subtle Glow */}
           <div className="absolute -top-24 -left-24 w-48 h-48 bg-red-600/10 rounded-full blur-3xl"></div>
 
           {isLoading ? (
@@ -160,8 +206,8 @@ export default function HomePage() {
               
               {error.userInfo && (
                 <div className="bg-black/20 rounded-xl p-4 mb-6 text-sm text-left border border-slate-800">
-                   <div className="flex justify-between mb-1"><span className="text-slate-500">Device ID:</span><span>{error.userInfo.id}</span></div>
-                   <div className="flex justify-between"><span className="text-slate-500">Expired On:</span><span className="text-red-400">{new Date(error.userInfo.expires).toLocaleDateString()}</span></div>
+                  <div className="flex justify-between mb-1"><span className="text-slate-500">Device ID:</span><span>{error.userInfo.id}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-500">Expired On:</span><span className="text-red-400">{new Date(error.userInfo.expires.toDate?.() || error.userInfo.expires).toLocaleDateString()}</span></div>
                 </div>
               )}
 
@@ -182,18 +228,20 @@ export default function HomePage() {
                 </div>
                 <div className="flex justify-between p-3 bg-black/20 rounded-xl">
                   <span className="text-slate-400 text-sm">Expired Date:</span>
-                  <span className="text-slate-200 text-sm">{new Date(userInfo.expires).toLocaleDateString()}</span>
+                  <span className="text-slate-200 text-sm">{new Date(userInfo.expires.toDate?.() || userInfo.expires).toLocaleDateString()}</span>
                 </div>
               </div>
 
-              <button className="w-full py-4 bg-red-600 hover:bg-red-700 rounded-2xl font-black text-lg shadow-lg shadow-red-900/20 transition-all hover:scale-[1.02] active:scale-95">
+              <button 
+                onClick={() => window.location.href = '/main'} 
+                className="w-full py-4 bg-red-600 hover:bg-red-700 rounded-2xl font-black text-lg shadow-lg shadow-red-900/20 transition-all hover:scale-[1.02] active:scale-95"
+              >
                 START WATCHING
               </button>
             </div>
           )}
         </div>
 
-        {/* Footer/Help */}
         <div className="mt-8 space-y-4 text-center">
           {isAndroidTV && (
             <div className="text-xs text-blue-400/80 bg-blue-500/5 py-2 rounded-lg border border-blue-500/10">
@@ -224,4 +272,4 @@ export default function HomePage() {
       `}</style>
     </div>
   )
-}                              
+        }
