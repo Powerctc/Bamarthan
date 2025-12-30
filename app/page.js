@@ -1,275 +1,597 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-
-// Firebase config (you can also use process.env.NEXT_PUBLIC_FIREBASE_CONFIG)
-const firebaseConfig = typeof __firebase_config !== 'undefined' 
-  ? JSON.parse(__firebase_config) 
-  : JSON.parse(process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}')
-
-const appId = typeof __app_id !== 'undefined' ? __app_id : 's4itmm-tv-nextjs'
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import './globals.css';
 
 export default function HomePage() {
-  const [user, setUser] = useState(null)
-  const [deviceID, setDeviceID] = useState(null)
-  const [userInfo, setUserInfo] = useState(null)
-  const [status, setStatus] = useState('Initializing S4ITMM TV...')
-  const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAndroidTV, setIsAndroidTV] = useState(false)
+  const [deviceID, setDeviceID] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
+  const [status, setStatus] = useState('Checking device access...');
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAndroidTV, setIsAndroidTV] = useState(false);
+  const router = useRouter();
 
-  // 1. Device & Android TV Detection
+  // 🔍 Detect Android TV / Android Box
   useEffect(() => {
-    const userAgent = navigator.userAgent.toLowerCase()
-    const isTV = userAgent.includes('android') && 
-                 (userAgent.includes('tv') || userAgent.includes('box') || screen.width >= 1280)
-    setIsAndroidTV(isTV)
+    const checkAndroidTV = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isTV =
+        userAgent.includes('android') &&
+        (userAgent.includes('tv') ||
+          userAgent.includes('box') ||
+          userAgent.includes('set-top') ||
+          screen.width >= 1280);
+      setIsAndroidTV(isTV);
+      if (isTV) {
+        console.log('Android TV/Box detected:', {
+          userAgent: navigator.userAgent,
+          screen: `${screen.width}x${screen.height}`,
+        });
+      }
+    };
+    checkAndroidTV();
+  }, []);
 
-    let id = localStorage.getItem("s4itmm_device_v2")
-    if (!id || id.length !== 12) {
-      const raw = (navigator.userAgent || "unknown") + Date.now() + Math.random()
-      let hash = 0
+  // 🔢 Generate or retrieve 12-digit device ID
+  const initDeviceID = () => {
+    try {
+      let id = localStorage.getItem('s4itmmdeviceid_12');
+      if (!id || id.length !== 12 || !/^\d+$/.test(id)) {
+        const raw =
+          (navigator.userAgent || 'unknown') +
+          (screen.width || 0) +
+          (screen.height || 0) +
+          Date.now() +
+          Math.random();
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+          hash = (hash << 5) - hash + raw.charCodeAt(i);
+        }
+        id = Math.abs(hash).toString().padStart(12, '0').slice(0, 12);
+        localStorage.setItem('s4itmmdeviceid_12', id);
+      }
+      setDeviceID(id);
+      setStatus(`Device ID: ${id}`);
+      return id;
+    } catch (e) {
+      const raw = 'fallback' + Date.now() + Math.random();
+      let hash = 0;
       for (let i = 0; i < raw.length; i++) {
-        hash = (hash << 5) - hash + raw.charCodeAt(i)
+        hash = (hash << 5) - hash + raw.charCodeAt(i);
       }
-      id = Math.abs(hash).toString().padStart(12, "0").slice(0, 12)
-      localStorage.setItem("s4itmm_device_v2", id)
+      const id = Math.abs(hash).toString().padStart(12, '0').slice(0, 12);
+      setDeviceID(id);
+      return id;
     }
-    setDeviceID(id)
-  }, [])
+  };
 
-  // 2. Load Firebase from /public/firebase/*.js
-  useEffect(() => {
-    if (typeof window === 'undefined') return
+  // 📅 Format date (English)
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
 
-    let firebaseInitialized = false
+  // 🇲🇲 Format date (Myanmar YYYY-MM-DD)
+  const formatMyanmarDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    } catch (e) {
+      return dateString;
+    }
+  };
 
-    const initFirebase = async () => {
+  // 🔐 Check access from approved_users.json (array format)
+  const checkAccess = async (id) => {
+    try {
+      const url = `https://m-sport-download.static.hf.space/approved_users.json?t=${Date.now()}`;
+      const res = await fetch(url, {
+        cache: 'no-store',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to load access list (${res.status})`);
+      }
+
+      let data;
       try {
-        // Load Firebase modules dynamically from public folder
-        if (!window.firebaseApp) {
-          setStatus('Loading local Firebase SDK...')
-
-          // Load in order
-          await import('/firebase/firebase-app.js')
-          await import('/firebase/firebase-auth.js')
-          await import('/firebase/firebase-firestore.js')
-
-          const { initializeApp } = await import('/firebase/firebase-app.js')
-          window.firebaseApp = initializeApp(firebaseConfig)
+        data = await res.json();
+        if (!Array.isArray(data)) {
+          throw new Error('Invalid JSON format: expected array');
         }
+      } catch (parseErr) {
+        throw new Error('Corrupted or invalid approved_users.json');
+      }
 
-        const { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } = await import('/firebase/firebase-auth.js')
-        const { getFirestore, doc, getDoc, setDoc, onSnapshot, Timestamp } = await import('/firebase/firebase-firestore.js')
+      const user = data.find((u) => u.id === id);
+      if (!user) {
+        setError({
+          title: 'Device Not Approved',
+          message: 'Your device is not in the approved list. Please contact admin for access.',
+        });
+        setIsLoading(false);
+        return;
+      }
 
-        const app = window.firebaseApp
-        const auth = getAuth(app)
-        const db = getFirestore(app)
+      // Check expiry
+      const today = new Date();
+      const expiry = new Date(user.expires);
+      const daysRemaining = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
 
-        // Auth init
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-          await signInWithCustomToken(auth, __initial_auth_token)
-        } else {
-          await signInAnonymously(auth)
-        }
+      setUserInfo({
+        id: user.id,
+        name: user.name || 'N/A',
+        expires: user.expires,
+        daysRemaining: daysRemaining > 0 ? daysRemaining : 0,
+      });
 
-        const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-          setUser(user)
-        })
+      if (expiry < today) {
+        setError({
+          title: 'Access Expired',
+          message: `Your access expired on ${formatDate(user.expires)}. Please renew your subscription.`,
+          userInfo: {
+            id: user.id,
+            name: user.name || 'N/A',
+            expires: user.expires,
+            expired: true,
+          },
+        });
+        setIsLoading(false);
+        return;
+      }
 
-        // Watch Firestore registration
-        const watchFirestore = () => {
-          if (!user || !deviceID) return null
+      // ✅ Approved
+      setStatus('✅ Access granted!');
+      const redirectDelay = isAndroidTV ? 5000 : 1000;
+      setTimeout(() => {
+        router.push('/index.html'); // or '/home' if using Next.js route
+      }, redirectDelay);
+    } catch (err) {
+      console.error('Access check error:', err);
+      setError({
+        title: 'Network Error',
+        message: 'Cannot verify access. Please check your internet connection and try again.',
+      });
+      setIsLoading(false);
+    }
+  };
 
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', deviceID)
-
-          const unsub = onSnapshot(docRef, async (snap) => {
-            try {
-              if (snap.exists()) {
-                validateAccess(snap.data())
-              } else {
-                setStatus('New device found. Activating 3-day trial...')
-                const expiryDate = new Date()
-                expiryDate.setDate(expiryDate.getDate() + 3)
-
-                await setDoc(docRef, {
-                  id: deviceID,
-                  name: `Guest_${deviceID.slice(-4)}`,
-                  expires: Timestamp.fromDate(expiryDate),
-                  status: 'trial',
-                  createdAt: Timestamp.now()
-                })
-              }
-            } catch (err) {
-              console.error("Firestore Error:", err)
-              setError({ title: "Database Error", message: "Failed to sync user data." })
-              setIsLoading(false)
-            }
-          }, (err) => {
-            console.error("Snapshot error:", err)
-            setError({ title: "Connection Error", message: "Lost connection to approval server." })
-            setIsLoading(false)
-          })
-
-          return unsub
-        }
-
-        let firestoreUnsub = null
-
-        const handleUserDeviceChange = () => {
-          if (user && deviceID && !firestoreUnsub) {
-            firestoreUnsub = watchFirestore()
-          } else if ((!user || !deviceID) && firestoreUnsub) {
-            firestoreUnsub()
-            firestoreUnsub = null
-          }
-        }
-
-        handleUserDeviceChange()
-
-        return () => {
-          unsubscribeAuth()
-          if (firestoreUnsub) firestoreUnsub()
-        }
-      } catch (err) {
-        console.error("Firebase init error:", err)
-        setError({ title: "Startup Failed", message: "Could not load TV system. Try again or use /home.html" })
-        setIsLoading(false)
+  // 📋 Copy device ID
+  const copyDeviceId = () => {
+    if (deviceID) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(deviceID).then(
+          () => alert('Device ID copied to clipboard!'),
+          () => fallbackCopy(deviceID)
+        );
+      } else {
+        fallbackCopy(deviceID);
       }
     }
+  };
 
-    initFirebase()
-  }, [deviceID, user])
+  const fallbackCopy = (text) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('Device ID copied to clipboard!');
+  };
 
-  // Validation logic
-  const validateAccess = (data) => {
-    const today = new Date()
-    const expires = data.expires?.toDate ? data.expires.toDate() : new Date(data.expires)
-    const diffDays = Math.ceil((expires - today) / (1000 * 60 * 60 * 24))
+  // 🔄 Retry access check
+  const retryCheck = () => {
+    setError(null);
+    setUserInfo(null);
+    setStatus('Retrying access check...');
+    setIsLoading(true);
+    setTimeout(() => {
+      const id = initDeviceID();
+      checkAccess(id);
+    }, 500);
+  };
 
-    setUserInfo({ ...data, daysRemaining: Math.max(0, diffDays) })
-
-    if (expires < today) {
-      setError({
-        title: "Access Expired",
-        message: "Your trial or subscription has ended. Contact @S4ITMM for renewal.",
-        userInfo: data
-      })
-      setIsLoading(false)
-    } else {
-      setStatus('✅ Access Verified')
-      setIsLoading(false)
-    }
-  }
-
-  const copyId = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(deviceID).then(() => {
-        setStatus("ID Copied to Clipboard!")
-        setTimeout(() => setStatus("Checking access..."), 2000)
-      })
-    } else {
-      const el = document.createElement('textarea')
-      el.value = deviceID
-      document.body.appendChild(el)
-      el.select()
-      document.execCommand('copy')
-      document.body.removeChild(el)
-      setStatus("ID Copied!")
-      setTimeout(() => setStatus("Checking access..."), 2000)
-    }
-  }
+  // 🚀 Initialize on mount
+  useEffect(() => {
+    const id = initDeviceID();
+    checkAccess(id);
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-[#0a0f1e] text-slate-100">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-red-600 italic tracking-tighter">
-            S4ITMM<span className="text-white not-italic">TV</span>
-          </h1>
-          <div className="h-1 w-20 bg-red-600 mx-auto mt-2 rounded-full"></div>
-        </div>
-
-        <div className="bg-[#161d31] border border-slate-700/50 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-          <div className="absolute -top-24 -left-24 w-48 h-48 bg-red-600/10 rounded-full blur-3xl"></div>
-
-          {isLoading ? (
-            <div className="text-center py-6">
-              <div className="inline-block w-12 h-12 border-4 border-slate-700 border-t-red-600 rounded-full animate-spin mb-6"></div>
-              <p className="text-slate-400 font-medium animate-pulse">{status}</p>
-            </div>
-          ) : error ? (
-            <div className="text-center">
-              <div className="bg-red-500/10 text-red-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">!</div>
-              <h2 className="text-xl font-bold mb-2">{error.title}</h2>
-              <p className="text-slate-400 text-sm mb-6">{error.message}</p>
-              
-              {error.userInfo && (
-                <div className="bg-black/20 rounded-xl p-4 mb-6 text-sm text-left border border-slate-800">
-                  <div className="flex justify-between mb-1"><span className="text-slate-500">Device ID:</span><span>{error.userInfo.id}</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Expired On:</span><span className="text-red-400">{new Date(error.userInfo.expires.toDate?.() || error.userInfo.expires).toLocaleDateString()}</span></div>
-                </div>
-              )}
-
-              <button onClick={copyId} className="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold transition-all active:scale-95">
-                Copy Device ID
-              </button>
-            </div>
-          ) : (
-            <div className="text-center">
-              <div className="bg-green-500/10 text-green-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">✓</div>
-              <h2 className="text-xl font-bold text-green-400 mb-1">Access Approved</h2>
-              <p className="text-slate-500 text-xs uppercase tracking-widest mb-6">Device Verified</p>
-
-              <div className="space-y-3 mb-8">
-                <div className="flex justify-between p-3 bg-black/20 rounded-xl">
-                  <span className="text-slate-400 text-sm">Days Remaining:</span>
-                  <span className="text-green-400 font-bold">{userInfo.daysRemaining} Days</span>
-                </div>
-                <div className="flex justify-between p-3 bg-black/20 rounded-xl">
-                  <span className="text-slate-400 text-sm">Expired Date:</span>
-                  <span className="text-slate-200 text-sm">{new Date(userInfo.expires.toDate?.() || userInfo.expires).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => window.location.href = '/main'} 
-                className="w-full py-4 bg-red-600 hover:bg-red-700 rounded-2xl font-black text-lg shadow-lg shadow-red-900/20 transition-all hover:scale-[1.02] active:scale-95"
-              >
-                START WATCHING
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-8 space-y-4 text-center">
-          {isAndroidTV && (
-            <div className="text-xs text-blue-400/80 bg-blue-500/5 py-2 rounded-lg border border-blue-500/10">
-              Optimal TV Display Mode Enabled
-            </div>
-          )}
-          
-          <div className="bg-amber-500/5 border border-amber-500/20 p-4 rounded-2xl">
-            <p className="text-amber-500 text-xs font-bold mb-2">ဒီစာမျက်နှာမှာ id မပေါ်ပါက</p>
-            <a href="/home.html" className="text-slate-400 hover:text-white text-xs underline">
-              Use Simple HTML Version (Old TV Fix)
-            </a>
-          </div>
-
-          <div className="text-slate-500 text-xs">
-            Telegram: <span className="text-slate-300">@S4ITMM</span>
-          </div>
-        </div>
+    <div
+      className="flex flex-col items-center justify-center min-h-screen p-4"
+      style={{
+        background: 'linear-gradient(135deg, #0f172a, #1e293b)',
+        textAlign: 'center',
+      }}
+    >
+      {/* Logo */}
+      <div
+        className="logo"
+        style={{ fontSize: '2.5rem', color: '#ef4444', marginBottom: '20px' }}
+      >
+        <i className="fas fa-film" style={{ marginRight: '10px' }}></i>
+        S4ITMM TV
       </div>
 
-      <style jsx global>{`
+      {/* Android TV Indicator */}
+      {isAndroidTV && (
+        <div
+          className="android-tv-indicator mb-4"
+          style={{
+            background: 'rgba(59, 130, 246, 0.2)',
+            border: '1px solid #3b82f6',
+            borderRadius: '20px',
+            padding: '8px 16px',
+            color: '#60a5fa',
+            fontSize: '0.9rem',
+          }}
+        >
+          📺 Android TV/Box Mode
+        </div>
+      )}
+
+      {/* Loading Spinner */}
+      {isLoading && (
+        <div
+          className="spinner"
+          style={{
+            width: '50px',
+            height: '50px',
+            border: '5px solid rgba(255,255,255,0.3)',
+            borderRadius: '50%',
+            borderTopColor: '#ef4444',
+            animation: 'spin 1s linear infinite',
+          }}
+        ></div>
+      )}
+
+      {/* Approved User Info */}
+      {userInfo && !error && (
+        <div
+          className="user-info-container"
+          style={{
+            background: 'rgba(34, 197, 94, 0.1)',
+            border: '1px solid #22c55e',
+            borderRadius: '12px',
+            padding: '20px',
+            marginTop: '20px',
+            maxWidth: '500px',
+            width: '100%',
+            textAlign: 'left',
+          }}
+        >
+          <h3
+            style={{
+              color: '#22c55e',
+              marginTop: 0,
+              marginBottom: '15px',
+              textAlign: 'center',
+            }}
+          >
+            ✅ Access Approved
+          </h3>
+          <div style={{ display: 'grid', gap: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#94a3b8' }}>User ID:</span>
+              <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>
+                {userInfo.id}
+              </span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#94a3b8' }}>User Name:</span>
+              <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>
+                {userInfo.name}
+              </span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#94a3b8' }}>Expiry Date:</span>
+              <span
+                style={{
+                  color: userInfo.daysRemaining <= 7 ? '#fbbf24' : '#22c55e',
+                  fontWeight: 'bold',
+                }}
+              >
+                {formatDate(userInfo.expires)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#94a3b8' }}>Days Remaining:</span>
+              <span
+                style={{
+                  color: userInfo.daysRemaining <= 7 ? '#fbbf24' : '#22c55e',
+                  fontWeight: 'bold',
+                }}
+              >
+                {userInfo.daysRemaining} days
+              </span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#94a3b8' }}>
+                သက်တမ်းကုန်ဆုံးမည့်ရက်:
+              </span>
+              <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>
+                {formatMyanmarDate(userInfo.expires)}
+              </span>
+            </div>
+          </div>
+
+          {isAndroidTV && (
+            <div
+              style={{
+                marginTop: '20px',
+                padding: '10px',
+                background: 'rgba(59, 130, 246, 0.1)',
+                borderRadius: '8px',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ color: '#60a5fa', margin: 0 }}>
+                Redirecting to main page in 5 seconds...
+              </p>
+            </div>
+          )}
+
+          {!isAndroidTV && (
+            <button
+              onClick={() => router.push('/index.html')}
+              style={{
+                background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                width: '100%',
+                marginTop: '20px',
+              }}
+            >
+              Enter S4ITMM TV →
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Error Display */}
+      {error && (
+        <div
+          className="error-bg p-4 rounded-lg mt-6"
+          style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid #ef4444',
+            borderRadius: '12px',
+            maxWidth: '500px',
+            width: '100%',
+          }}
+        >
+          <h3 style={{ marginTop: 0, color: '#f87171' }}>{error.title}</h3>
+          <p style={{ margin: '10px 0', color: '#cbd5e1' }}>{error.message}</p>
+
+          {error.userInfo && (
+            <div
+              style={{
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: '8px',
+                padding: '15px',
+                margin: '15px 0',
+                textAlign: 'left',
+              }}
+            >
+              <h4 style={{ color: '#f8fafc', marginTop: 0 }}>
+                User Information:
+              </h4>
+              <div style={{ display: 'grid', gap: '8px' }}>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <span style={{ color: '#94a3b8' }}>User ID:</span>
+                  <span style={{ color: '#f8fafc' }}>{error.userInfo.id}</span>
+                </div>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <span style={{ color: '#94a3b8' }}>User Name:</span>
+                  <span style={{ color: '#f8fafc' }}>{error.userInfo.name}</span>
+                </div>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <span style={{ color: '#94a3b8' }}>Expiry Date:</span>
+                  <span style={{ color: '#f87171' }}>
+                    {formatDate(error.userInfo.expires)}
+                  </span>
+                </div>
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <span style={{ color: '#94a3b8' }}>
+                    သက်တမ်းကုန်ဆုံးမည့်ရက်:
+                  </span>
+                  <span style={{ color: '#f87171' }}>
+                    {formatMyanmarDate(error.userInfo.expires)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '10px',
+              justifyContent: 'center',
+              marginTop: '15px',
+              flexWrap: 'wrap',
+            }}
+          >
+            <button
+              onClick={copyDeviceId}
+              style={{
+                background: '#3b82f6',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                minWidth: '140px',
+              }}
+            >
+              📋 Copy Device ID
+            </button>
+            <button
+              onClick={retryCheck}
+              style={{
+                background: '#10b981',
+                color: 'white',
+                border: 'none',
+                padding: '10px 20px',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                minWidth: '140px',
+              }}
+            >
+              🔄 Retry Check
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Status Message */}
+      {!userInfo && !error && (
+        <div
+          className="message"
+          style={{
+            marginTop: '20px',
+            fontSize: '1rem',
+            color: '#cbd5e1',
+            maxWidth: '80%',
+          }}
+        >
+          {status}
+        </div>
+      )}
+
+      {/* Fallback for Old Devices */}
+      <div
+        className="mt-8 p-4"
+        style={{
+          background: 'rgba(245, 158, 11, 0.1)',
+          border: '1px solid #f59e0b',
+          borderRadius: '8px',
+          maxWidth: '500px',
+          width: '100%',
+        }}
+      >
+        <h4 style={{ color: '#f59e0b', marginBottom: '10px' }}>
+          ဒီစာမျက်နှာမှာ id မပေါ်ပါကအောက်ပါ Button ကိုနှိပ်ပါ
+        </h4>
+        <p style={{ color: '#cbd5e1', fontSize: '0.9rem', marginBottom: '15px' }}>
+          If you're seeing the loading screen for too long or experiencing
+          issues,
+          <br />
+          <strong>Click the button below to use Static Html</strong>
+        </p>
+        <a
+          href="/home.html"
+          style={{
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+            color: 'white',
+            border: 'none',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            width: '100%',
+            marginBottom: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            textDecoration: 'none',
+            transition: 'all 0.3s',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
+          <i className="fas fa-tv"></i>
+          Go to HTML Version (Old Devices)
+        </a>
+        <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
+          This will load a simpler version that works better on older TVs
+        </p>
+      </div>
+
+      {/* Contact Info */}
+      <div
+        className="contact mt-8"
+        style={{ color: '#94a3b8', fontSize: '0.9rem' }}
+      >
+        <p>Need access? Contact us:</p>
+        <p>
+          📱 Telegram:{' '}
+          <a
+            href="tg://resolve?domain=S4MMTV"
+            style={{ color: '#60a5fa', textDecoration: 'none' }}
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = 'tg://resolve?domain=S4MMTV';
+            }}
+          >
+            @S4ITMM
+          </a>
+        </p>
+        <p>
+          📧 Email:{' '}
+          <a
+            href="mailto:support@s4itmm.com"
+            style={{ color: '#60a5fa', textDecoration: 'none' }}
+          >
+            support@s4itmm.com
+          </a>
+        </p>
+      </div>
+
+      {/* Spinner Animation */}
+      <style jsx>{`
         @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        body {
-          background-color: #0a0f1e;
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
     </div>
-  )
+  );
         }
