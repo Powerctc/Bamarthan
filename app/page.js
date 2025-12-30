@@ -63,10 +63,9 @@ export default function HomePage() {
   const checkAccess = async (id) => {
     try {
       // 1️⃣ READ STATIC JSON
-      const res = await fetch("/api/users?_t=' +
-          Date.now(),
-        { cache: 'no-store' }
-      )
+      const res = await fetch(`/api/users?_t=${Date.now()}`, {
+  cache: 'no-store'
+})
 
       if (res.ok) {
         const list = await res.json()
