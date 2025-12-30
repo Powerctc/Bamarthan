@@ -1,69 +1,65 @@
-import { Buffer } from "buffer"
+// app/api/users/route.js
 
-export async function GET(req) {
-  const { searchParams } = new URL(req.url)
-  const id = searchParams.get("id")
-
-  if (!id || !/^\d{12}$/.test(id)) {
-    return Response.json({ status: "error", msg: "Invalid ID" })
-  }
-
-  const {
-    GITHUB_TOKEN,
-    GITHUB_OWNER,
-    GITHUB_REPO,
-    GITHUB_FILE,
-    GITHUB_BRANCH
-  } = process.env
-
+export async function GET() {
   try {
-    const api = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`
+    // 🔹 Hugging Face static JSON (READ ONLY)
+    const HF_JSON =
+      "https://m-sport-download.static.hf.space/approved_users.json"
 
-    // READ
-    const res = await fetch(api, {
+    const res = await fetch(HF_JSON, {
+      cache: "no-store",
       headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github+json"
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json"
       }
     })
 
-    const json = await res.json()
-    const content = JSON.parse(
-      Buffer.from(json.content, "base64").toString()
-    )
-
-    const exists = content.find(u => u.id === id)
-    if (exists) {
-      return Response.json({ status: "success", msg: "Already approved" })
+    if (!res.ok) {
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          msg: "Unable to fetch approved users"
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        }
+      )
     }
 
-    // ADD NEW USER
-    content.push({
-      id,
-      name: "Auto Approved",
-      expires: "2026-12-31"
-    })
+    const users = await res.json()
 
-    // WRITE BACK
-    await fetch(api, {
-      method: "PUT",
+    // 🔹 MUST be array
+    if (!Array.isArray(users)) {
+      return new Response(
+        JSON.stringify({
+          status: "error",
+          msg: "Invalid users data format"
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json" }
+        }
+      )
+    }
+
+    return new Response(JSON.stringify(users), {
+      status: 200,
       headers: {
-        Authorization: `token ${GITHUB_TOKEN}`,
-        Accept: "application/vnd.github+json"
-      },
-      body: JSON.stringify({
-        message: `auto approve ${id}`,
-        content: Buffer.from(JSON.stringify(content, null, 2)).toString("base64"),
-        sha: json.sha,
-        branch: GITHUB_BRANCH
-      })
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store"
+      }
     })
-
-    return Response.json({ status: "success", msg: "Approved" })
   } catch (e) {
-    return Response.json({
-      status: "error",
-      msg: "Approval service unavailable"
-    })
+    return new Response(
+      JSON.stringify({
+        status: "error",
+        msg: "Users service unavailable"
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      }
+    )
   }
-}
+      }
