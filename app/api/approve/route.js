@@ -22,7 +22,7 @@ export async function GET(request) {
   try {
     // ✅ သင့် real space name ကို အသုံးပြုပါ
     const hfRes = await fetch(
-      "https://livesportmm-s4itmm-tv-approver.hf.space/run/predict/",
+      "https://livesportmm-s4itmm-tv-approver.hf.space",
       {
         method: "POST",
         headers: {
