@@ -1,13 +1,11 @@
 // app/api/approve/route.js
 import { NextResponse } from 'next/server';
 
-// ⚠️ Environment variable အမည်ကို Vercel နှင့် တိကျစွာကိုက်ညီအောင်
-const HF_TOKEN = process.env.HF_TOKEN;
-const APPROVE_SECRET = process.env.HF_APPROVE_SECRET; // 👈 ဒီနာမည်ကိုသုံးနေပါသလား?
-
-const HF_USERNAME = 's4itmm';
-const HF_SPACE = 'm-sport-download';
+const HF_TOKEN = process.env.HF_TOKEN; // from Vercel env
+const HF_USERNAME = 'M-SPORT';        // 👈 သင့် HF username
+const HF_DATASET = 'Autoapproved';    // 👈 သင့် dataset name
 const FILE_PATH = 'approved_users.json';
+const APPROVE_SECRET = process.env.HF_APPROVE_SECRET; // must match Vercel env
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -15,19 +13,17 @@ export async function GET(request) {
   const secret = searchParams.get('secret');
   const name = searchParams.get('name') || 'Auto Approved';
 
-  // 🔒 Secret စစ်ဆေးခြင်း
   if (secret !== APPROVE_SECRET) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
 
-  // 📱 Device ID စစ်ဆေးခြင်း
   if (!deviceId || deviceId.length !== 12 || !/^\d+$/.test(deviceId)) {
     return NextResponse.json({ error: 'Invalid device ID' }, { status: 400 });
   }
 
   try {
-    // 1. လက်ရှိ approved_users.json ကို ဖတ်ပါ
-    const currentUrl = `https://${HF_SPACE}.static.hf.space/${FILE_PATH}`;
+    // 🔽 1. Read current file from Dataset
+    const currentUrl = `https://huggingface.co/datasets/${HF_USERNAME}/${HF_DATASET}/resolve/main/${FILE_PATH}`;
     let userList = [];
     try {
       const res = await fetch(currentUrl);
@@ -39,13 +35,13 @@ export async function GET(request) {
       console.warn('Starting with empty user list');
     }
 
-    // 2. ပြီးသား approve ဖြစ်နေလျှင် ပြန်ပို့ပါ
+    // 🔽 2. Check if already approved
     const exists = userList.some(user => user.id === deviceId);
     if (exists) {
       return NextResponse.json({ status: 'already_approved', id: deviceId });
     }
 
-    // 3. 30 ရက် expiry ဖြင့် ထည့်ပါ
+    // 🔽 3. Add new user
     const expiry = new Date();
     expiry.setDate(expiry.getDate() + 30);
     const newUser = {
@@ -53,12 +49,11 @@ export async function GET(request) {
       name: name,
       expires: expiry.toISOString().split('T')[0],
     };
-
     userList.push(newUser);
 
-    // 4. Hugging Face ကို update လုပ်ပါ
+    // 🔽 4. Commit to Hugging Face Dataset
     const commitRes = await fetch(
-      `https://huggingface.co/api/spaces/${HF_USERNAME}/${HF_SPACE}/commit/main`,
+      `https://huggingface.co/api/datasets/${HF_USERNAME}/${HF_DATASET}/commit/main`,
       {
         method: 'POST',
         headers: {
@@ -90,4 +85,4 @@ export async function GET(request) {
     console.error('Auto-approve error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
-}
+              }
