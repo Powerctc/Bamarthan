@@ -117,8 +117,8 @@ export default function HomePage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-             [id, "s4itmm_approve_2025"]
-          })
+  data: [id, "s4itmm_approve_2025"]
+})
         }
       )
 
