@@ -65,10 +65,10 @@ export default function HomePage() {
     }
   }
 
-  // 🔄 Check access: first try JSON, if not found → auto-approve
+  // 🔄 Check access: first try JSON, if not found → auto-approve via Vercel API
   const checkAccess = async (id) => {
     try {
-      // 📥 Step 1: Check approved_users.json
+      // 📥 Step 1: Check approved_users.json (Static HF)
       const jsonRes = await fetch("https://m-sport-download.static.hf.space/approved_users.json?_t=" + Date.now(), {
         cache: "no-store",
         headers: { 'Accept': 'application/json' }
@@ -79,7 +79,6 @@ export default function HomePage() {
         const user = data.find(u => u.id === id)
 
         if (user) {
-          // ✅ Found in approved list
           const today = new Date()
           const expiry = new Date(user.expires)
           const daysRemaining = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24))
@@ -108,32 +107,22 @@ export default function HomePage() {
         }
       }
 
-      // ❓ Not found → request auto-approval
+      // ❓ Not found → request auto-approval via Vercel API (✅ ဒီလိုပဲ)
       setStatus('Device not found. Requesting auto-approval...')
       
-      const approveRes = await fetch(
-        "https://livesportmm-s4itmm-auto-approver.hf.space/run/predict/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-  data: [id, "s4itmm_approve_2025"]
-})
-        }
-      )
-
+      const approveRes = await fetch(`/api/approve?id=${id}`) // ✅ အဓိကပြောင်းလဲချက်
+      
       const approveResult = await approveRes.json()
-      const output = approveResult.data?.[0]
 
-      if (output?.status === "success") {
+      if (approveResult?.status === "success") {
         setStatus('✅ Auto-approved! Reloading in 5 seconds...')
         setTimeout(() => {
-          location.reload() // နောက်တစ်ခါ approved_users.json မှာ ပါနေလိမ့်မယ်
+          location.reload()
         }, 5000)
       } else {
         setError({
           title: "Approval Required",
-          message: "Auto-approval failed. Please contact admin with your Device ID."
+          message: approveResult?.msg || "Contact admin with your Device ID."
         })
         setIsLoading(false)
       }
@@ -417,4 +406,4 @@ export default function HomePage() {
       `}</style>
     </div>
   )
-        }
+    }
