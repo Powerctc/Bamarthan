@@ -5,7 +5,7 @@ const HF_TOKEN = process.env.HF_TOKEN;
 const HF_USERNAME = 's4itmm'; // 👈 သင့် HF username
 const HF_SPACE = 'm-sport-download';
 const FILE_PATH = 'approved_users.json';
-const APPROVE_SECRET = process.env.APPROVE_SECRET;
+const APPROVE_SECRET = process.env.HF_APPROVE_SECRET; // အကယ်၍ Vercel တွင် key က `APPROVE_SECRET` ဖြစ်နေပါက
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
