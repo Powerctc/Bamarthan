@@ -1,62 +1,37 @@
 export const runtime = "edge";
 
-export async function GET(request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id || !/^\d{12}$/.test(id)) {
-      return new Response(
-        JSON.stringify({ status: "error", msg: "Invalid device ID" }),
-        { status: 400 }
-      );
-    }
-
-    const HF_TOKEN = process.env.HF_TOKEN;
-    const HF_SECRET = process.env.HF_APPROVE_SECRET;
-
-    if (!HF_TOKEN || !HF_SECRET) {
-      return new Response(
-        JSON.stringify({ status: "error", msg: "Missing server secrets" }),
-        { status: 500 }
-      );
-    }
-
-    const hfRes = await fetch(
-      "https://livesportmm-s4itmm-tv-approver.hf.space/run/predict",
+    const res = await fetch(
+      "https://m-sport-download.static.hf.space/approved_users.json",
       {
-        method: "POST",
         headers: {
-          "Authorization": `Bearer ${HF_TOKEN}`,
-          "Content-Type": "application/json"
+          "User-Agent": "Mozilla/5.0",
+          "Accept": "application/json"
         },
-        body: JSON.stringify({
-          data: [id, HF_SECRET]
-        })
+        cache: "no-store"
       }
     );
 
-    const result = await hfRes.json();
-    const output = result?.data?.[0];
-
-    if (!output) {
-      throw new Error("Invalid HF response");
+    if (!res.ok) {
+      throw new Error("HF fetch failed");
     }
 
-    return new Response(
-      JSON.stringify(output),
-      { status: 200 }
-    );
+    const data = await res.json();
 
-  } catch (err) {
-    console.error("APPROVE ERROR:", err);
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-store"
+      }
+    });
 
-    return new Response(
-      JSON.stringify({
-        status: "error",
-        msg: "Approval service unavailable"
-      }),
-      { status: 500 }
-    );
+  } catch (e) {
+    return new Response(JSON.stringify({
+      status: "error",
+      msg: "Approval service unavailable"
+    }), { status: 500 });
   }
 }
