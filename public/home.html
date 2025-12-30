@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Access Check - S4ITMM TV</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #111827;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .page {
+      background: #1f2937;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .page h2 {
+      color: #ef4444;
+      margin-bottom: 16px;
+    }
+    .page p {
+      margin: 6px 0;
+      color: #d1d5db;
+      font-size: 14px;
+    }
+    .device-id {
+      background: #374151;
+      color: #fbbf24;
+      padding: 8px;
+      border-radius: 6px;
+      margin: 12px 0;
+      font-weight: bold;
+      word-break: break-all;
+    }
+    .btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      width: 100%;
+      margin-top: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    a {
+      color: #60a5fa;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="access-page">
+    <h2>🔐 Access Required</h2>
+    <p>Verifying your device...</p>
+    <div class="device-id" id="device-id-display">—</div>
+    <p style="color:#9ca3af; font-size:12px;">Please wait...</p>
+  </div>
+
+  <script>
+    let deviceID = null;
+
+    // === Generate or retrieve device ID ===
+    function initDeviceID() {
+      try {
+        deviceID = localStorage.getItem("s4itmmdeviceid_12");
+        if (!deviceID || deviceID.length !== 12) {
+          const raw = (navigator.userAgent || "unknown") + (screen.width || 0) + (screen.height || 0) + Date.now();
+          let hash = 0;
+          for (let i = 0; i < raw.length; i++) {
+            hash = (hash << 5) - hash + raw.charCodeAt(i);
+          }
+          deviceID = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
+          localStorage.setItem("s4itmmdeviceid_12", deviceID);
+        }
+      } catch (e) {
+        // Fallback if localStorage fails
+        const raw = "fallback" + Date.now() + Math.random();
+        let hash = 0;
+        for (let i = 0; i < raw.length; i++) {
+          hash = (hash << 5) - hash + raw.charCodeAt(i);
+        }
+        deviceID = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
+      }
+      document.getElementById("device-id-display").textContent = deviceID;
+    }
+
+    // === Main access check logic ===
+    async function checkAccessAndRedirect() {
+      initDeviceID();
+
+      if (!deviceID) {
+        renderDenied("Device ID could not be generated.");
+        return;
+      }
+
+      try {
+        const res = await fetch("https://m-sport-download.static.hf.space/approved_users.json?_t=" + Date.now(), {
+          cache: "no-store"
+        });
+
+        if (!res.ok) throw new Error("Network error");
+
+        const data = await res.json();
+        const user = data.find(u => u.id === deviceID);
+
+        if (!user) {
+          renderDenied("Device not approved.");
+          return;
+        }
+
+        const today = new Date();
+        const expiry = new Date(user.expires);
+        if (expiry < today) {
+          renderDenied(`Access expired on ${user.expires}`);
+          return;
+        }
+
+        // ✅ Redirect to main content (change this URL as needed)
+        window.location.href = "/index.html"; // ← CHANGE THIS TO YOUR TARGET PAGE
+      } catch (err) {
+        console.error(err);
+        renderDenied("System error. Please check your internet connection.");
+      }
+    }
+
+    function renderDenied(reason) {
+      const page = document.getElementById("access-page");
+      page.innerHTML = `
+        <h2>❌ Access Denied</h2>
+        <p>${reason}</p>
+        <div class="device-id">${deviceID || 'Unknown'}</div>
+        <p style="color:#9ca3af; font-size:12px;">Contact support to get approved:</p>
+        <p>📞 Viber: <a href="viber://chat?number=+959123456789">09-123456789</a></p>
+        <p>📱 Telegram: <a href="tg://resolve?domain=S4MMTV">@S4ITMM</a></p>
+        <p>📧 Email: <a href="mailto:support@s4itmm.com">support@s4itmm.com</a></p>
+        <button class="btn" onclick="copyID()">📋 Copy Device ID</button>
+      `;
+    }
+
+    function copyID() {
+      const text = deviceID || '';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+      } else {
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert("Copied!");
+      }
+    }
+
+    // Start the process as soon as possible
+    checkAccessAndRedirect();
+  </script>
+</body>
+</html>

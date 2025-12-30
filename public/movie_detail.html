@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>ZETFLIX - Movie Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* ============ GLOBAL ============ */
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      background-color: #1a202c;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    /* ============ CONTAINER ============ */
+    #movie-detail-container {
+      background-color: #2d3748;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 32px;
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      #movie-detail-container {
+        flex-direction: row;
+        justify-content: center;
+        text-align: left;
+        align-items: flex-start;
+      }
+    }
+
+    /* ============ POSTER ============ */
+    .movie-poster-large {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ============ INFO ============ */
+    .movie-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .movie-info {
+        align-items: flex-start;
+      }
+    }
+
+    .movie-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      margin: 0 0 12px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .movie-title {
+        font-size: 36px;
+        text-align: left;
+      }
+    }
+
+    .movie-meta {
+      font-size: 20px;
+      color: #cbd5e0;
+      margin: 0 0 24px;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .movie-meta {
+        text-align: left;
+      }
+    }
+
+    /* ============ PLAY BUTTON ============ */
+    .play-button {
+      background-color: #ef4444;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .play-button:hover {
+      background-color: #dc2626;
+    }
+
+    /* ============ MODAL ============ */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: #2d3748;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-close-button {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #cbd5e0;
+      cursor: pointer;
+    }
+
+    .modal-close-button:hover {
+      color: white;
+    }
+
+    .app-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
+      border-radius: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .modal-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      margin: 0 0 12px;
+    }
+
+    .modal-text {
+      color: #cbd5e0;
+      margin: 0 0 24px;
+    }
+
+    .install-button {
+      background-color: #4299e1;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    .install-button:hover {
+      background-color: #3182ce;
+    }
+
+    /* ============ LOADING / ERROR ============ */
+    .loading-text {
+      text-align: center;
+      color: #a0aec0;
+      width: 100%;
+    }
+
+    .error-text {
+      color: #f87171;
+      text-align: center;
+      width: 100%;
+    }
+
+    .error-link {
+      color: #60a5fa;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Movie Detail -->
+  <div id="movie-detail-container">
+    <p class="loading-text">Loading movie details...</p>
+  </div>
+
+  <!-- Player Not Found Modal -->
+  <div id="player-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-button" id="close-modal">&times;</button>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnni40YRRPc9wGBd2tDOIX1qCTqddax0tPR5QsIxC8HA&s=10" alt="NS Player" class="app-logo">
+      <h3 class="modal-title">App Not Installed</h3>
+      <p class="modal-text">
+        The required player app is not installed on your device.<br>
+        Please install <strong>Network Streaming Video Player</strong> to continue.
+      </p>
+      <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank" class="install-button">
+        <i class="fab fa-android"></i> Install NS Player
+      </a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('movie-detail-container');
+      const modal = document.getElementById('player-modal');
+      const closeModalBtn = document.getElementById('close-modal');
+
+      // Close modal
+      function hideModal() {
+        modal.style.display = 'none';
+      }
+      closeModalBtn.addEventListener('click', hideModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+      });
+
+      // Get movie from localStorage
+      const stored = localStorage.getItem('selectedMovie');
+      if (!stored) {
+        container.innerHTML = `
+          <p class="error-text">
+            No movie selected. Please go back to the 
+            <a href="index.html" class="error-link">Home Page</a>.
+          </p>
+        `;
+        return;
+      }
+
+      const movie = JSON.parse(stored);
+
+      // Validate movie
+      if (!movie.title || !movie.url) {
+        container.innerHTML = `<p class="error-text">Invalid movie data.</p>`;
+        return;
+      }
+
+      // Render movie
+      container.innerHTML = `
+        <img src="${movie.logo || 'https://via.placeholder.com/320x450?text=No+Image'}" 
+             alt="${movie.title} Poster" 
+             class="movie-poster-large">
+        <div class="movie-info">
+          <h2 class="movie-title">${movie.title}</h2>
+          <p class="movie-meta">${movie.year || ''} ${movie.category ? `| ${movie.category}` : ''}</p>
+          <button id="watch-button" class="play-button">
+            <i class="fas fa-play"></i> Watch Now
+          </button>
+        </div>
+      `;
+
+      // Watch button
+      document.getElementById('watch-button').addEventListener('click', () => {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        if (!isAndroid) {
+          alert('This feature is only available on Android devices.');
+          return;
+        }
+
+        const url = movie.url;
+        const intent = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(movie.title)};end`;
+
+        // Try to open app
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = intent;
+        document.body.appendChild(iframe);
+        setTimeout(() => document.body.removeChild(iframe), 1000);
+
+        // Fallback: show install modal if app not opened
+        const fallback = setTimeout(() => {
+          modal.style.display = 'flex';
+        }, 1500);
+
+        // Cancel fallback if app opens (user leaves page)
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) clearTimeout(fallback);
+        }, { once: true });
+      });
+    });
+  </script>
+</body>
+</html>
