@@ -94,10 +94,11 @@ export default function HomePage() {
     }
   };
 
-  // 🔐 Check access from approved_users.json (array format)
+  // 🔐 Check access from approved_users.json (array format) – ✅ FIXED URL
   const checkAccess = async (id) => {
     try {
-      const url = `https://m-sport-download.static.hf.space/approved_users.json?t=${Date.now()}`;
+      // ✅ Use Dataset URL instead of static.hf.space
+      const url = `https://huggingface.co/datasets/M-SPORT/Autoapproved/resolve/main/approved_users.json?t=${Date.now()}`;
       const res = await fetch(url, {
         cache: 'no-store',
         headers: {
@@ -160,7 +161,7 @@ export default function HomePage() {
       setStatus('✅ Access granted!');
       const redirectDelay = isAndroidTV ? 5000 : 1000;
       setTimeout(() => {
-        router.push('/index.html'); // or '/home' if using Next.js route
+        router.push('/index.html');
       }, redirectDelay);
     } catch (err) {
       console.error('Access check error:', err);
@@ -594,4 +595,4 @@ export default function HomePage() {
       `}</style>
     </div>
   );
-        }
+            }
