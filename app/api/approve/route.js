@@ -1,61 +1,115 @@
 // app/api/approve/route.js
+
 export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get("id");
-  const secret = process.env.HF_APPROVE_SECRET;
-  const token = process.env.HF_TOKEN;
-
-  if (!id || typeof id !== "string" || id.length !== 12 || !/^\d+$/.test(id)) {
-    return new Response(JSON.stringify({ status: "error", msg: "Invalid device ID" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-
-  if (!secret || !token) {
-    return new Response(JSON.stringify({ status: "error", msg: "Missing secrets" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-
   try {
-    // ✅ သင့် real space name ကို အသုံးပြုပါ
-    const hfRes = await fetch(
-      "https://livesportmm-s4itmm-tv-approver.hf.space",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          data: [id, secret]
-        })
-      }
-    );
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
 
-    if (!hfRes.ok) {
-      const errText = await hfRes.text();
-      console.error("HF API Error:", hfRes.status, errText);
-      throw new Error(`HF returned ${hfRes.status}`);
+    const HF_SECRET = process.env.HF_APPROVE_SECRET
+    const HF_TOKEN = process.env.HF_TOKEN
+
+    /* =============================
+       VALIDATION
+    ============================= */
+    if (!id || typeof id !== 'string') {
+      return json(
+        { status: 'error', msg: 'Missing device ID' },
+        400
+      )
     }
 
-    const result = await hfRes.json();
-    const output = result.data?.[0];
+    if (!/^\d{12}$/.test(id)) {
+      return json(
+        { status: 'error', msg: 'Invalid device ID format' },
+        400
+      )
+    }
 
-    return new Response(JSON.stringify(output || { status: "error", msg: "Unexpected response" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
-  } catch (e) {
-    console.error("Auto-approve error:", e.message);
-    return new Response(JSON.stringify({ 
-      status: "error", 
-      msg: "Auto-approve system is currently unavailable. Please try again later." 
-    }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
+    if (!HF_SECRET || !HF_TOKEN) {
+      return json(
+        { status: 'error', msg: 'Server configuration error' },
+        500
+      )
+    }
+
+    /* =============================
+       CALL HF SPACE (GRADIO)
+       Space: livesportmm/s4itmm-tv-approver
+    ============================= */
+    const hfRes = await fetch(
+      'https://livesportmm-s4itmm-tv-approver.hf.space/run/predict',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${HF_TOKEN}`
+        },
+        body: JSON.stringify({
+          data: [id, HF_SECRET]
+        })
+      }
+    )
+
+    if (!hfRes.ok) {
+      const text = await hfRes.text()
+      console.error('HF error:', hfRes.status, text)
+
+      return json(
+        {
+          status: 'error',
+          msg: 'Approval service unavailable'
+        },
+        502
+      )
+    }
+
+    const hfJson = await hfRes.json()
+
+    /* =============================
+       EXPECTED HF RESPONSE
+       { data: [ { status, msg } ] }
+    ============================= */
+    const output = hfJson?.data?.[0]
+
+    if (!output || typeof output !== 'object') {
+      return json(
+        {
+          status: 'error',
+          msg: 'Invalid response from approval server'
+        },
+        500
+      )
+    }
+
+    return json(
+      {
+        status: output.status || 'error',
+        msg: output.msg || 'Unknown response'
+      },
+      200
+    )
+  } catch (err) {
+    console.error('Approve API error:', err)
+
+    return json(
+      {
+        status: 'error',
+        msg: 'Auto-approve system error'
+      },
+      500
+    )
   }
+}
+
+/* =============================
+   HELPER
+============================= */
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store'
+    }
+  })
 }
