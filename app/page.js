@@ -10,268 +10,199 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isAndroidTV, setIsAndroidTV] = useState(false)
 
-  // 1. Detect TV/Box/Mobile
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userAgent = navigator.userAgent?.toLowerCase() || ''
-      const isTV = userAgent.includes('android') && 
-                   (userAgent.includes('tv') || 
-                    userAgent.includes('box') ||
-                    window.screen.width >= 1280)
-      setIsAndroidTV(isTV)
-    }
-  }, [])
-
-  // 2. Logic: Auto-Approval (7 Days)
-  const checkAutoApproval = () => {
+  // 1. YOUR ORIGINAL STYLE: Device ID Generator
+  const initDeviceID = () => {
     try {
-      if (typeof window === 'undefined') return;
-
-      // Get or Create Device ID (Unique per device)
-      let id = localStorage.getItem("s4itmm_device_v3")
-      if (!id) {
-        id = 'S4-' + Math.random().toString(36).substr(2, 6).toUpperCase()
-        localStorage.setItem("s4itmm_device_v3", id)
+      let id = localStorage.getItem("s4itmmdeviceid_12")
+      if (!id || id.length !== 12) {
+        const raw = (navigator.userAgent || "unknown") + 
+                    (screen.width || 0) + 
+                    (screen.height || 0) + 
+                    Date.now() + 
+                    Math.random()
+        let hash = 0
+        for (let i = 0; i < raw.length; i++) {
+          hash = (hash << 5) - hash + raw.charCodeAt(i)
+        }
+        id = Math.abs(hash).toString().padStart(12, "0").slice(0, 12)
+        localStorage.setItem("s4itmmdeviceid_12", id)
       }
       setDeviceID(id)
-
-      // Get or Create First Join Date (The moment they first open the app)
-      let joinDateStr = localStorage.getItem("s4itmm_join_date")
-      let isNewUser = false
-
-      if (!joinDateStr) {
-        joinDateStr = new Date().toISOString()
-        localStorage.setItem("s4itmm_join_date", joinDateStr)
-        isNewUser = true
-      }
-
-      const joinDate = new Date(joinDateStr)
-      const today = new Date()
-      
-      // Calculate Expiry (7 Days from first run)
-      const expiryDate = new Date(joinDate)
-      expiryDate.setDate(joinDate.getDate() + 7)
-
-      // Calculate Remaining Days
-      const diffTime = expiryDate - today
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-      const currentInfo = {
-        id: id,
-        name: isNewUser ? "Trial User (New)" : "Trial Member",
-        expires: expiryDate.toISOString(),
-        daysRemaining: diffDays > 0 ? diffDays : 0,
-      }
-
-      setUserInfo(currentInfo)
-
-      // Check if trial is over
-      if (today > expiryDate) {
-        setError({
-          title: "Access Expired (သက်တမ်းကုန်ဆုံးပါပြီ)",
-          message: "သင်၏ ၇ ရက် အခမဲ့ စမ်းသပ်ကာလ ကုန်ဆုံးသွားပါပြီ။ ဆက်လက်ကြည့်ရှုရန် Admin ကို ဆက်သွယ်ပါ။",
-          userInfo: currentInfo
-        })
-        setIsLoading(false)
-      } else {
-        setStatus('✅ Access Granted (Trial Active)')
-        setTimeout(() => {
-          setIsLoading(false)
-        }, 2000)
-      }
-
+      return id
     } catch (e) {
-      console.error("Local Storage Error:", e)
-      setError({ title: "System Error", message: "Storage Access Denied. Please enable cookies/local storage." })
-      setIsLoading(false)
+      const id = Math.random().toString().slice(2, 14)
+      setDeviceID(id)
+      return id
     }
   }
 
+  // 2. YOUR ORIGINAL STYLE: Detection
   useEffect(() => {
-    // Small delay to show brand logo/loading
-    const timer = setTimeout(() => {
-      checkAutoApproval()
-    }, 1200)
-    return () => clearTimeout(timer)
+    const userAgent = navigator.userAgent.toLowerCase()
+    const isTV = userAgent.includes('android') && 
+                 (userAgent.includes('tv') || 
+                  userAgent.includes('box') ||
+                  screen.width >= 1280)
+    setIsAndroidTV(isTV)
+
+    const id = initDeviceID()
+    checkAccess(id)
   }, [])
 
-  // Helper: Format Date for Display
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric', month: 'long', day: 'numeric'
-    })
-  }
+  // 3. COMBINED LOGIC: JSON Check + Auto-Approval
+  const checkAccess = async (id) => {
+    try {
+      // Step A: Check your hosted JSON first
+      const res = await fetch("https://m-sport-download.static.hf.space/approved_users.json?_t=" + Date.now(), {
+        cache: "no-store"
+      })
+      
+      let approvedUsers = []
+      if (res.ok) {
+        approvedUsers = await res.json()
+      }
+      
+      const officialUser = approvedUsers.find(u => u.id === id)
 
-  // Helper: Format Myanmar Style Date
-  const formatMyanmarDate = (dateString) => {
-    const date = new Date(dateString)
-    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
-  }
+      if (officialUser) {
+        // User is officially in your JSON list
+        validateUser(officialUser)
+      } else {
+        // Step B: AUTO-APPROVAL LOGIC (Trial)
+        let joinDateStr = localStorage.getItem("s4itmm_trial_start")
+        if (!joinDateStr) {
+          joinDateStr = new Date().toISOString()
+          localStorage.setItem("s4itmm_trial_start", joinDateStr)
+        }
 
-  // Action: Copy Device ID
-  const copyDeviceId = () => {
-    if (deviceID) {
-      const el = document.createElement('textarea');
-      el.value = deviceID;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      alert("Device ID Copied to clipboard!");
+        const expiryDate = new Date(joinDateStr)
+        expiryDate.setDate(expiryDate.getDate() + 7) // 7 DAY TRIAL
+
+        const trialUser = {
+          id: id,
+          name: 'Trial User',
+          expires: expiryDate.toISOString()
+        }
+        validateUser(trialUser)
+      }
+    } catch (err) {
+      console.error("Fetch error, falling back to local trial:", err)
+      // Fallback if JSON fetch fails
+      const joinDateStr = localStorage.getItem("s4itmm_trial_start") || new Date().toISOString()
+      const expiryDate = new Date(joinDateStr)
+      expiryDate.setDate(expiryDate.getDate() + 7)
+      validateUser({ id, name: 'Offline Trial', expires: expiryDate.toISOString() })
     }
   }
 
-  // Action: Proceed to app
-  const handleEnter = () => {
-    window.location.href = '/index.html'; // Adjust this to your content page
+  const validateUser = (user) => {
+    const today = new Date()
+    const expiry = new Date(user.expires)
+    const diffTime = expiry - today
+    const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    setUserInfo({
+      ...user,
+      daysRemaining: daysRemaining > 0 ? daysRemaining : 0
+    })
+
+    if (expiry < today) {
+      setError({
+        title: "Access Expired (သက်တမ်းကုန်ဆုံးပါပြီ)",
+        message: "သင်၏ ၇ ရက် အခမဲ့ စမ်းသပ်ကာလ ကုန်ဆုံးသွားပါပြီ။ ဆက်လက်ကြည့်ရှုရန် Admin ကို ဆက်သွယ်ပါ။",
+        userInfo: user
+      })
+      setIsLoading(false)
+    } else {
+      setStatus('✅ Access granted!')
+      setTimeout(() => {
+        window.location.href = '/home.html'
+      }, isAndroidTV ? 5000 : 2000)
+    }
+  }
+
+  // YOUR ORIGINAL STYLE: Formatters
+  const formatDate = (ds) => new Date(ds).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const formatMyanmarDate = (ds) => {
+    const d = new Date(ds);
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`
+  }
+
+  const copyDeviceId = () => {
+    const textArea = document.createElement('textarea')
+    textArea.value = deviceID
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+    alert('Device ID copied to clipboard!')
   }
 
   return (
-    <div style={{ 
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      padding: '20px',
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-      textAlign: 'center',
-      color: 'white',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4" 
+         style={{ background: 'linear-gradient(135deg, #0f172a, #1e293b)', textAlign: 'center', color: 'white' }}>
       
-      {/* Header Logo */}
-      <div style={{ fontSize: '2.8rem', color: '#ef4444', marginBottom: '10px', fontWeight: '900', letterSpacing: '-1px' }}>
-        S4ITMM<span style={{ color: '#fff' }}>TV</span>
+      {/* YOUR ORIGINAL LOGO */}
+      <div style={{ fontSize: '2.5rem', color: '#ef4444', marginBottom: '20px', fontWeight: 'bold' }}>
+        S4ITMM TV
       </div>
 
       {isAndroidTV && (
-        <div style={{ 
-          background: 'rgba(59, 130, 246, 0.15)', 
-          border: '1px solid #3b82f6', 
-          borderRadius: '30px', 
-          padding: '6px 16px', 
-          color: '#60a5fa', 
-          fontSize: '0.75rem', 
-          marginBottom: '20px',
-          fontWeight: 'bold'
-        }}>
-          📺 ANDROID TV OPTIMIZED
+        <div style={{ background: 'rgba(59, 130, 246, 0.2)', border: '1px solid #3b82f6', borderRadius: '20px', padding: '8px 16px', color: '#60a5fa', fontSize: '0.9rem', marginBottom: '15px' }}>
+          📺 Android TV/Box Mode
         </div>
       )}
 
-      {/* Main Content Area */}
-      {isLoading ? (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-          <div className="loader"></div>
-          <p style={{ marginTop: '20px', color: '#94a3b8', fontSize: '1rem' }}>{status}</p>
-        </div>
-      ) : error ? (
-        <div style={{ 
-          background: 'rgba(239, 68, 68, 0.08)', 
-          border: '1px solid #ef4444', 
-          borderRadius: '20px', 
-          padding: '30px', 
-          maxWidth: '450px', 
-          width: '100%', 
-          boxSizing: 'border-box',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-        }}>
-          <h3 style={{ color: '#f87171', marginTop: 0, fontSize: '1.4rem' }}>{error.title}</h3>
-          <p style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.6', margin: '15px 0' }}>{error.message}</p>
-          
-          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '15px', borderRadius: '12px', textAlign: 'left' }}>
-            <p style={{ margin: '8px 0', fontSize: '0.85rem', color: '#94a3b8' }}>Device ID: <span style={{ color: '#fff', fontWeight: 'bold' }}>{error.userInfo.id}</span></p>
-            <p style={{ margin: '8px 0', fontSize: '0.85rem', color: '#94a3b8' }}>Expired On: <span style={{ color: '#f87171', fontWeight: 'bold' }}>{formatDate(error.userInfo.expires)}</span></p>
-          </div>
+      {isLoading && (
+        <div style={{ width: '50px', height: '50px', border: '5px solid rgba(255,255,255,0.1)', borderRadius: '50%', borderTopColor: '#ef4444', animation: 'spin 1s linear infinite' }}></div>
+      )}
 
-          <button onClick={copyDeviceId} style={{ 
-            background: '#3b82f6', 
-            color: 'white', 
-            border: 'none', 
-            padding: '14px', 
-            borderRadius: '12px', 
-            marginTop: '25px', 
-            width: '100%', 
-            cursor: 'pointer', 
-            fontWeight: 'bold',
-            fontSize: '1rem',
-            transition: 'transform 0.2s'
-          }}>
-            📋 Copy ID & Contact Admin
-          </button>
-        </div>
-      ) : (
-        <div style={{ 
-          background: 'rgba(34, 197, 94, 0.08)', 
-          border: '1px solid #22c55e', 
-          borderRadius: '20px', 
-          padding: '30px', 
-          maxWidth: '450px', 
-          width: '100%', 
-          textAlign: 'left', 
-          boxSizing: 'border-box',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-        }}>
-          <h3 style={{ color: '#22c55e', textAlign: 'center', marginTop: 0, fontSize: '1.4rem' }}>
-            ✅ ၇ ရက် အခမဲ့ စမ်းသပ်ခွင့်
-          </h3>
-          
-          <div style={{ marginTop: '25px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: '#94a3b8' }}>ကျန်ရှိရက်:</span>
-              <span style={{ color: '#22c55e', fontWeight: 'bold', fontSize: '1.1rem' }}>{userInfo.daysRemaining} Days</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-              <span style={{ color: '#94a3b8' }}>သက်တမ်းကုန်ရက်:</span>
-              <span style={{ color: '#fff', fontWeight: '500' }}>{formatMyanmarDate(userInfo.expires)}</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#94a3b8' }}>Device ID:</span>
-              <span style={{ color: '#fff', fontSize: '0.85rem' }}>{userInfo.id}</span>
-            </div>
+      {userInfo && !error && (
+        <div style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22c55e', borderRadius: '12px', padding: '20px', marginTop: '20px', maxWidth: '500px', width: '100%', textAlign: 'left' }}>
+          <h3 style={{ color: '#22c55e', marginTop: 0, marginBottom: '15px', textAlign: 'center' }}>✅ Access Approved</h3>
+          <div style={{ display: 'grid', gap: '12px' }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>User ID:</span><span style={{fontWeight:'bold'}}>{userInfo.id}</span></div>
+             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Expiry Date:</span><span>{formatDate(userInfo.expires)}</span></div>
+             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Days Left:</span><span style={{color: '#22c55e'}}>{userInfo.daysRemaining} days</span></div>
+             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>သက်တမ်းကုန်ရက်:</span><span>{formatMyanmarDate(userInfo.expires)}</span></div>
           </div>
-
-          <button 
-            onClick={handleEnter}
-            style={{ 
-              background: 'linear-gradient(to right, #22c55e, #16a34a)', 
-              color: 'white', 
-              border: 'none', 
-              padding: '18px', 
-              borderRadius: '14px', 
-              marginTop: '30px', 
-              width: '100%', 
-              cursor: 'pointer', 
-              fontWeight: 'bold', 
-              fontSize: '1.2rem',
-              boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)'
-            }}>
-            အခုပဲကြည့်မယ် →
-          </button>
+          <p style={{textAlign:'center', color:'#60a5fa', fontSize:'0.8rem', marginTop:'15px'}}>Redirecting to main page...</p>
         </div>
       )}
 
-      {/* Footer */}
-      <div style={{ marginTop: '50px', fontSize: '0.85rem', color: '#64748b' }}>
-        <p>Support Telegram: <span style={{ color: '#94a3b8' }}>@S4ITMM</span></p>
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: '12px', padding: '20px', marginTop: '20px', maxWidth: '500px', width: '100%', textAlign: 'left' }}>
+          <h3 style={{ color: '#f87171', marginTop: 0 }}>{error.title}</h3>
+          <p style={{ color: '#cbd5e1', fontSize: '0.9rem' }}>{error.message}</p>
+          <div style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '8px', padding: '15px', margin: '15px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize:'0.8rem' }}><span>Device ID:</span><span>{error.userInfo.id}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize:'0.8rem' }}><span>Expired:</span><span>{formatDate(error.userInfo.expires)}</span></div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={copyDeviceId} style={{ flex:1, background: '#3b82f6', color: 'white', border: 'none', padding: '10px', borderRadius: '6px', cursor: 'pointer' }}>📋 Copy ID</button>
+            <button onClick={() => window.location.reload()} style={{ flex:1, background: '#10b981', color: 'white', border: 'none', padding: '10px', borderRadius: '6px', cursor: 'pointer' }}>🔄 Retry</button>
+          </div>
+        </div>
+      )}
+
+      {!userInfo && !error && <div style={{ marginTop: '20px', color: '#cbd5e1' }}>{status}</div>}
+
+      {/* YOUR ORIGINAL: Static Button Section */}
+      <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid #f59e0b', borderRadius: '8px', padding: '15px', maxWidth: '500px', width: '100%', marginTop: '30px' }}>
+        <h4 style={{ color: '#f59e0b', margin: '0 0 10px 0' }}>ဒီစာမျက်နှာမှာ id မပေါ်ပါကအောက်ပါ Button ကိုနှိပ်ပါ</h4>
+        <a href="/home.html" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '12px', borderRadius: '8px', fontWeight: 'bold', display: 'block', textDecoration: 'none' }}>
+          Go to HTML Version (Old Devices)
+        </a>
+      </div>
+
+      <div style={{ marginTop: '30px', color: '#94a3b8', fontSize: '0.8rem' }}>
+        Telegram: <a href="tg://resolve?domain=S4ITMM" style={{ color: '#60a5fa' }}>@S4ITMM</a>
       </div>
 
       <style jsx>{`
-        .loader {
-          width: 45px;
-          height: 45px;
-          border: 4px solid rgba(255,255,255,0.05);
-          border-top-color: #ef4444;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </div>
   )
 }
 
-        
