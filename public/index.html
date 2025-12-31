@@ -234,11 +234,11 @@
       }
     }
 
-    // Set dummy expiry date (e.g., 90 days from now)
+    // Set dummy expiry date (e.g., 151 days from now)
     function getExpiryDate() {
       const today = new Date();
       const expiry = new Date(today);
-      expiry.setDate(today.getDate() + 90); // 90 days
+      expiry.setDate(today.getDate() + 151); // 151 days
       return expiry.toISOString().split('T')[0]; // YYYY-MM-DD
     }
 
