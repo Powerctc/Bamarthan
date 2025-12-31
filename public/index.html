@@ -74,9 +74,10 @@
       color: #60a5fa;
       margin-top: 4px;
       background: #1f2937;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
       display: inline-block;
+      border-left: 4px solid #ef4444;
     }
 
     .movie-grid {
@@ -84,6 +85,7 @@
       flex-wrap: wrap;
       gap: 12px;
       justify-content: flex-start;
+      margin-top: 20px;
     }
 
     .movie-col {
@@ -102,7 +104,12 @@
       cursor: pointer;
       padding: 8px;
       box-sizing: border-box;
-      position: relative;
+      transition: transform 0.2s;
+    }
+    
+    .movie-card:hover {
+      transform: scale(1.03);
+      background-color: #374151;
     }
 
     .movie-poster {
@@ -136,14 +143,16 @@
     footer {
       background-color: #1f2937;
       text-align: center;
-      padding: 14px;
+      padding: 20px;
       margin-top: 32px;
       font-size: 14px;
+      border-top: 1px solid #374151;
     }
 
     footer a {
-      color: #f87171;
-      text-decoration: underline;
+      color: #ef4444;
+      text-decoration: none;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -170,7 +179,7 @@
     <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item">
       <i class="fas fa-people-arrows mr-3"></i>MMA Live
     </a>
-    <a href="https://www.fotmob.com/my" class="nav-item" style="background:transparent;color:#d1d5db;">
+    <a href="https://www.fotmob.com/my" class="nav-item">
       <i class="fas fa-futbol mr-3"></i>Livescore
     </a>
     <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item">
@@ -193,86 +202,100 @@
   <!-- MAIN CONTENT -->
   <div class="main-content">
     <h2 class="page-title">Movies</h2>
-    <div class="device-info" id="device-info">Loading device info...</div>
+    <!-- DEVICE INFO DISPLAY -->
+    <div class="device-info" id="device-info">
+       <i class="fas fa-sync fa-spin"></i> Loading access info...
+    </div>
 
     <div id="movie-grid" class="movie-grid"></div>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <p>S4ITMM © All rights reserved</p>
-    <p>Created by Next Js
+    <p>Created by Next Js 
       <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung (Forever Study)</a>
     </p>
   </footer>
 
-  <!-- DEVICE ID GENERATOR (NO POPUP, NO APPROVAL CHECK) -->
+  <!-- STABLE DEVICE ID & DATABASE EXPIRY CHECKER -->
   <script>
-    let deviceID = null;
+    const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
 
-    function generateDeviceID() {
-      try {
-        deviceID = localStorage.getItem("s4itmmdeviceid_12");
-        if (!deviceID || deviceID.length !== 12) {
-          const raw = (navigator.userAgent || "unknown") + (screen.width || 0) + (screen.height || 0) + Date.now();
-          let hash = 0;
-          for (let i = 0; i < raw.length; i++) {
-            hash = (hash << 5) - hash + raw.charCodeAt(i);
-          }
-          deviceID = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
-          localStorage.setItem("s4itmmdeviceid_12", deviceID);
+    function getStableID() {
+        try {
+            // Check localStorage first
+            let id = localStorage.getItem("s4itmm_stable_id");
+            if (id && id.length === 12) return id;
+
+            // Generate using Canvas Fingerprint (Stable)
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const txt = 'S4ITMM-TV-DEVICE-ID-2026';
+            ctx.textBaseline = "top";
+            ctx.font = "14px 'Arial'";
+            ctx.fillText(txt, 2, 15);
+            const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
+            let hash = 0;
+            for (let i = 0; i < b64.length; i++) {
+                hash = (hash << 5) - hash + b64.charCodeAt(i);
+                hash = hash & hash;
+            }
+            const screenInfo = window.screen.width + "x" + window.screen.height;
+            const finalRaw = Math.abs(hash).toString() + navigator.platform + screenInfo;
+            let finalHash = 0;
+            for (let j = 0; j < finalRaw.length; j++) {
+                finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
+            }
+            id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
+            localStorage.setItem("s4itmm_stable_id", id);
+            return id;
+        } catch (e) {
+            return "000000000000";
         }
-        return deviceID;
-      } catch (e) {
-        const raw = "fallback" + Date.now() + Math.random();
-        let hash = 0;
-        for (let i = 0; i < raw.length; i++) {
-          hash = (hash << 5) - hash + raw.charCodeAt(i);
-        }
-        deviceID = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
-        return deviceID;
-      }
     }
 
-    // Set dummy expiry date (e.g., 151 days from now)
-    function getExpiryDate() {
-      const today = new Date();
-      const expiry = new Date(today);
-      expiry.setDate(today.getDate() + 151); // 151 days
-      return expiry.toISOString().split('T')[0]; // YYYY-MM-DD
+    async function updateAccessInfo() {
+        const infoDiv = document.getElementById("device-info");
+        const currentID = getStableID();
+        
+        try {
+            // Fetch from your Database (Hugging Face / GitHub)
+            const res = await fetch(`${HF_BASE_URL}/approved_users.json?_t=${Date.now()}`, { cache: "no-store" });
+            if (!res.ok) throw new Error();
+            
+            const users = await res.json();
+            const user = users.find(u => u.id === currentID);
+            
+            if (user) {
+                // Formatting Date
+                const expDate = new Date(user.expires);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                const formattedDate = expDate.toLocaleDateString('en-GB', options);
+                
+                infoDiv.innerHTML = `<i class="fas fa-tv"></i> Device ID: <b>${currentID}</b> | <i class="fas fa-calendar-alt"></i> Expires: <b>${formattedDate}</b>`;
+            } else {
+                infoDiv.innerHTML = `Device ID: ${currentID} | Trial Mode`;
+            }
+        } catch (e) {
+            infoDiv.innerHTML = `Device ID: ${currentID} | Offline Mode`;
+        }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const id = generateDeviceID();
-      const expiry = getExpiryDate();
-      
-      // Show on screen
-      document.getElementById("device-info").textContent = `Device ID: ${id} | Expires: ${expiry}`;
-
-      // Load movies
-      fetchMovies();
+        updateAccessInfo();
+        fetchMovies();
     });
   </script>
 
-  <!-- MOVIES LOADER -->
+  <!-- MOVIES LOADER (STAYS SAME) -->
   <script>
     async function fetchMovies() {
       const grid = document.getElementById('movie-grid');
-      if (!grid) return;
-
       try {
         const res = await fetch('https://zetflix-peach.vercel.app/Playlist/Movies/movies.json?_t=' + Date.now(), { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
-        const movies = Array.isArray(data) ? data : [];
-        
-        if (!Array.isArray(movies)) {
-          throw new Error("Expected array in movies.json");
-        }
-
-        renderMovies(movies);
+        const movies = await res.json();
+        renderMovies(Array.isArray(movies) ? movies : []);
       } catch (err) {
-        console.error(err);
         grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">❌ Failed to load movies.</div>';
       }
     }
@@ -280,42 +303,27 @@
     function renderMovies(movies) {
       const grid = document.getElementById('movie-grid');
       grid.innerHTML = '';
-
-      if (!Array.isArray(movies) || movies.length === 0) {
-        grid.innerHTML = '<div style="color:#9ca3af; text-align:center; width:100%; padding:30px;">No movies found.</div>';
-        return;
-      }
-
       movies.forEach(movie => {
         const col = document.createElement('div');
         col.className = 'movie-col';
-
         const card = document.createElement('div');
         card.className = 'movie-card';
-
         const poster = (movie.logo || '').trim() || 'https://via.placeholder.com/220x220?text=No+Image';
-        const title = movie.title || 'Untitled';
-        const category = movie.category || '';
-        const year = movie.year ? ` (${movie.year})` : '';
-
         card.innerHTML = `
-          <img src="${poster}" class="movie-poster" alt="${title}">
+          <img src="${poster}" class="movie-poster" alt="${movie.title}">
           <div class="info">
-            <h3>${title}</h3>
-            <p>${category}${year}</p>
+            <h3>${movie.title || 'Untitled'}</h3>
+            <p>${movie.category || ''} ${movie.year ? '('+movie.year+')' : ''}</p>
           </div>
         `;
-
         card.addEventListener('click', () => {
-          const cleanUrl = (movie.url || '').trim();
-          localStorage.setItem('selectedMovie', JSON.stringify({ ...movie, url: cleanUrl }));
+          localStorage.setItem('selectedMovie', JSON.stringify(movie));
           window.location.href = 'movie_detail.html';
         });
-
         col.appendChild(card);
         grid.appendChild(col);
       });
     }
   </script>
 </body>
-  </html>
+</html> 
