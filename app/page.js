@@ -1,4 +1,4 @@
-Trialial််se client'
+'use client'
 
 import { useState, useEffect } from 'react'
 
