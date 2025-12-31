@@ -116,7 +116,7 @@ export default function HomePage() {
     } else {
       setStatus('✅ Access granted!')
       setTimeout(() => {
-        window.location.href = '/home.html'
+        window.location.href = '/index.html'
       }, isAndroidTV ? 5000 : 2000)
     }
   }
