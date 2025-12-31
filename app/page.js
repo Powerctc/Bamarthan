@@ -10,26 +10,58 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
 
   const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space"; 
-  
-  // User အသစ်များအတွက် ပထမဆုံးပေးမည့် Season Pass ရက်စွဲ
   const DEFAULT_SEASON_PASS = "2026-05-31T23:59:59Z";
 
-  const initDeviceID = () => {
+  // ၁။ Stable Device ID Generator (Clear Data လုပ်လည်း မပြောင်းစေရန်)
+  const generateStableID = () => {
     try {
       if (typeof window === 'undefined') return null;
-      let id = localStorage.getItem("s4itmmdeviceid_12");
-      if (!id || id.length !== 12) {
-        const raw = (navigator.userAgent || "unknown") + Date.now().toString() + Math.random().toString();
-        let hash = 0;
-        for (let i = 0; i < raw.length; i++) {
-          hash = (hash << 5) - hash + raw.charCodeAt(i);
-        }
-        id = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
-        localStorage.setItem("s4itmmdeviceid_12", id);
+      
+      // ပထမဆုံး localStorage မှာ စစ်ပါ (ရှိရင် ယူသုံးမည်)
+      let storedId = localStorage.getItem("s4itmm_stable_id");
+      
+      // Canvas Fingerprint ထုတ်ယူခြင်း (Device တစ်ခုချင်းစီအတွက် unique ဖြစ်စေရန်)
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const txt = 'S4ITMM-TV-DEVICE-ID-2026';
+      ctx.textBaseline = "top";
+      ctx.font = "14px 'Arial'";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#f60";
+      ctx.fillRect(125,1,62,20);
+      ctx.fillStyle = "#069";
+      ctx.fillText(txt, 2, 15);
+      ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+      ctx.fillText(txt, 4, 17);
+      
+      const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
+      let hash = 0;
+      for (let i = 0; i < b64.length; i++) {
+        hash = (hash << 5) - hash + b64.charCodeAt(i);
+        hash = hash & hash;
       }
-      setDeviceID(id);
-      return id;
+      
+      // Browser ရဲ့ အခြား အချက်အလက်များကို ပေါင်းစပ်မည်
+      const screenInfo = window.screen.width + "x" + window.screen.height;
+      const platform = navigator.platform || "unknown";
+      const finalRaw = Math.abs(hash).toString() + platform + screenInfo;
+      
+      // ၁၂ လုံး ဂဏန်းအဖြစ် ပြောင်းလဲခြင်း
+      let finalHash = 0;
+      for (let j = 0; j < finalRaw.length; j++) {
+        finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
+      }
+      const finalID = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
+
+      // ပထမဆုံးအကြိမ်ဆိုလျှင် သိမ်းထားမည်
+      if (!storedId) {
+        localStorage.setItem("s4itmm_stable_id", finalID);
+      }
+      
+      setDeviceID(finalID);
+      return finalID;
     } catch (e) {
+      console.error("ID Generation Error", e);
       return "000000000000";
     }
   }
@@ -38,16 +70,14 @@ export default function HomePage() {
     try {
       setStatus("ဝင်ရောက်ခွင့်ကို အတည်ပြုနေပါသည်...");
       
-      // ၁။ လက်ရှိ Database ထဲမှာ User ရှိမရှိ အရင်စစ်မည်
       const res = await fetch(HF_BASE_URL + "/approved_users.json?_t=" + Date.now(), {
         cache: "no-store"
       });
       
       if (!res.ok) throw new Error("Server error");
       const approvedUsers = await res.json();
-      let user = approvedUsers.find(function(u) { return u.id === id; });
+      let user = approvedUsers.find(u => u.id === id);
 
-      // ၂။ အကယ်၍ User မရှိသေးပါက (User အသစ်ဖြစ်ပါက) Register လုပ်မည်
       if (!user) {
         setStatus("အသုံးပြုသူအသစ်အဖြစ် မှတ်ပုံတင်နေပါသည်...");
         await fetch(HF_BASE_URL + "/add_user", {
@@ -59,58 +89,40 @@ export default function HomePage() {
             name: "New_User"
           })
         });
-        // Register လုပ်ပြီးလျှင် data ကို ပြန်ယူပါ
         user = { id: id, expires: DEFAULT_SEASON_PASS };
       }
 
-      // ၃။ သက်တမ်းတွက်ချက်ခြင်း (Database ထဲက user.expires ကိုပဲ အဓိက သုံးမည်)
       const today = new Date();
       const expiry = new Date(user.expires);
       const diffTime = expiry.getTime() - today.getTime();
       const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
       if (expiry > today) {
-        setUserInfo({
-          id: user.id,
-          expires: user.expires,
-          daysRemaining: daysRemaining
-        });
+        setUserInfo({ id: user.id, expires: user.expires, daysRemaining: daysRemaining });
         setStatus('✅ ဝင်ရောက်ခွင့် အတည်ပြုပြီးပါပြီ!');
-        setTimeout(function() {
-          window.location.href = '/index.html';
-        }, 2500);
+        setTimeout(() => { window.location.href = '/index.html'; }, 2500);
       } else {
-        setError({ 
-          title: "Access Expired", 
-          message: "သင်၏ သက်တမ်းကုန်ဆုံးသွားပါပြီ။ ကျေးဇူးပြု၍ သက်တမ်းတိုးပါ။" 
-        });
+        setError({ title: "Access Expired", message: "သင်၏ သက်တမ်းကုန်ဆုံးသွားပါပြီ။" });
         setIsLoading(false);
       }
 
     } catch (err) {
-      setError({ 
-        title: "Error", 
-        message: "ဆာဗာနှင့် ချိတ်ဆက်၍မရပါ။ အင်တာနက် စစ်ဆေးပါ။" 
-      });
+      setError({ title: "Error", message: "ဆာဗာနှင့် ချိတ်ဆက်၍မရပါ။" });
       setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    const id = initDeviceID();
+    const id = generateStableID();
     if (id) checkAccess(id);
   }, []);
 
   const formatDate = (ds) => {
-    const d = new Date(ds);
-    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return new Date(ds).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
   return (
-    <div style={{ 
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
-      minHeight: '100vh', padding: '20px', background: '#0f172a', color: 'white', textAlign: 'center' 
-    }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', background: '#0f172a', color: 'white', textAlign: 'center' }}>
       <h1 style={{ color: '#ef4444', fontSize: '2.5rem', fontWeight: 'bold' }}>S4ITMM TV</h1>
       
       {isLoading && (
@@ -122,7 +134,7 @@ export default function HomePage() {
 
       {userInfo && !error && (
         <div style={{ background: '#1e293b', border: '1px solid #22c55e', borderRadius: '15px', padding: '20px', width: '100%', maxWidth: '400px', textAlign: 'left' }}>
-          <h3 style={{ color: '#22c55e', textAlign: 'center', marginTop: 0 }}>✅ အတည်ပြုပြီး</h3>
+          <h3 style={{ color: '#22c55e', textAlign: 'center' }}>✅ အတည်ပြုပြီး</h3>
           <p>Device ID: <b style={{ float: 'right' }}>{userInfo.id}</b></p>
           <p>သက်တမ်းကုန်ရက်: <b style={{ float: 'right' }}>{formatDate(userInfo.expires)}</b></p>
           <p>ကျန်ရှိရက်: <b style={{ float: 'right', color: '#22c55e' }}>{userInfo.daysRemaining} ရက်</b></p>
@@ -132,7 +144,7 @@ export default function HomePage() {
       {error && (
         <div style={{ background: '#1e293b', border: '1px solid #ef4444', borderRadius: '15px', padding: '20px', width: '100%', maxWidth: '400px' }}>
           <h3 style={{ color: '#f87171' }}>{error.title}</h3>
-          <p style={{ fontSize: '0.9rem' }}>{error.message}</p>
+          <p>{error.message}</p>
           <button onClick={() => window.location.reload()} style={{ width: '100%', padding: '12px', background: '#ef4444', border: 'none', borderRadius: '8px', color: 'white', fontWeight: 'bold', marginTop: '10px' }}>Retry</button>
         </div>
       )}
@@ -148,6 +160,4 @@ export default function HomePage() {
       `}</style>
     </div>
   )
-}
-
-    
+}   
