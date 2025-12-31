@@ -1,4 +1,4 @@
-'use client'
+Trialial််se client'
 
 import { useState, useEffect } from 'react'
 
@@ -43,17 +43,16 @@ export default function HomePage() {
   // 2. Auto-Approval & Access Logic
   const autoRegisterAndCheck = async (id) => {
     try {
-      // 7 ရက် Trial သတ်မှတ်ချက်
+      //  Trial သတ်မှတ်ချက်
       const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 7);
-      const expiresStr = expiryDate.toISOString();
+      expiryDate.setDate(expiryDate.getDate() + 8စမ်းသပ်ကာလconst expiresStr = expiryDate.toISOString();
 
       setStatus("Device ကို မှတ်ပုံတင်နေပါသည်...")
       
       // Hugging Face JSON ထဲသို့ ID သွားရေးမည်
       await fetch(`${HF_BASE_URL}/add_user`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headContent-Typeent-Type": "application/json" },
         body: JSON.stringify({
           id: id,
           expires: expiresStr,
@@ -89,7 +88,7 @@ export default function HomePage() {
       if (expiry < today) {
         setError({
           title: "Access Expired (သက်တမ်းကုန်ဆုံးပါပြီ)",
-          message: "သင်၏ ၇ ရက် အခမဲ့ စမ်းသပ်ကာလ ကုန်ဆုံးသွားပါပြီ။ ဆက်လက်ကြည့်ရှုရန် Admin ကို ဆက်သွယ်ပါ။",
+          message: "သင်၏စမ်းသပ်ကာလ ကုန်ဆုံးသွားပါပြီ။ ဆက်လက်ကြည့်ရှုရန် Admin ကို ဆက်သွယ်ပါ။",
           userInfo: user
         })
         setIsLoading(false)
@@ -97,7 +96,7 @@ export default function HomePage() {
         setStatus('✅ ခွင့်ပြုချက် ရရှိပါပြီ!')
         setTimeout(() => {
           // အောင်မြင်ပါက မူရင်း Home စာမျက်နှာသို့ သွားမည်
-          window.location.href = '/home.html'
+          window.location.href = '/index.html'
         }, isAndroidTV ? 4000 : 2000)
       }
 
