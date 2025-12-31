@@ -10,10 +10,10 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isAndroidTV, setIsAndroidTV] = useState(false)
 
-  // မင်းရဲ့ Hugging Face API Link
+  // ဦးမောင်ရဲ့ Hugging Face API Link
   const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space"; 
 
-  // 1. မင်းရဲ့ မူရင်း ID Generator Logic
+  // 1. Device ID ထုတ်လုပ်ခြင်း Logic (12 လုံး)
   const initDeviceID = () => {
     try {
       if (typeof window === 'undefined') return null;
@@ -43,16 +43,17 @@ export default function HomePage() {
   // 2. Auto-Approval & Access Logic
   const autoRegisterAndCheck = async (id) => {
     try {
-      //  Trial သတ်မှတ်ချက်
+      // Trial သတ်မှတ်ချက် (98 ရက်)
       const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 8စမ်းသပ်ကာလconst expiresStr = expiryDate.toISOString();
+      expiryDate.setDate(expiryDate.getDate() + 98); 
+      const expiresStr = expiryDate.toISOString();
 
-      setStatus("Device ကို မှတ်ပုံတင်နေပါသည်...")
+      setStatus("စက်ပစ္စည်းကို မှတ်ပုံတင်နေပါသည်...")
       
       // Hugging Face JSON ထဲသို့ ID သွားရေးမည်
       await fetch(`${HF_BASE_URL}/add_user`, {
         method: "POST",
-        headContent-Typeent-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: id,
           expires: expiresStr,
@@ -95,7 +96,6 @@ export default function HomePage() {
       } else {
         setStatus('✅ ခွင့်ပြုချက် ရရှိပါပြီ!')
         setTimeout(() => {
-          // အောင်မြင်ပါက မူရင်း Home စာမျက်နှာသို့ သွားမည်
           window.location.href = '/index.html'
         }, isAndroidTV ? 4000 : 2000)
       }
@@ -111,7 +111,6 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    // Device အမျိုးအစား စစ်ဆေးခြင်း
     const userAgent = navigator.userAgent.toLowerCase()
     const isTV = userAgent.includes('android') && 
                  (userAgent.includes('tv') || 
@@ -119,26 +118,24 @@ export default function HomePage() {
                   window.screen.width >= 1280)
     setIsAndroidTV(isTV)
 
-    // စနစ်ကို စတင်ခြင်း
     const id = initDeviceID()
     if (id) autoRegisterAndCheck(id)
   }, [])
 
-  // ရက်စွဲ ပြင်ဆင်မှုများ
-  const formatDate = (ds) => new Date(ds).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-  const formatMyanmarDate = (ds) => {
-    const d = new Date(ds);
-    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`
-  }
+  const formatDate = (ds) => new Date(ds).toLocaleDateString('en-US', { 
+    year: 'numeric', month: 'long', day: 'numeric' 
+  })
 
   const copyDeviceId = () => {
+    if (!deviceID) return;
     const textArea = document.createElement('textarea')
     textArea.value = deviceID
     document.body.appendChild(textArea)
     textArea.select()
     document.execCommand('copy')
     document.body.removeChild(textArea)
-    alert('Device ID ကို Copy ကူးပြီးပါပြီ!')
+    // Mobile မှာ alert ထက် ပိုကောင်းတဲ့ UI သုံးသင့်ပေမဲ့ အလွယ်တကူ alert သုံးထားပါတယ်
+    alert('Device ID: ' + deviceID + ' ကို Copy ကူးပြီးပါပြီ!')
   }
 
   return (
@@ -148,7 +145,6 @@ export default function HomePage() {
       textAlign: 'center', color: 'white', fontFamily: 'sans-serif' 
     }}>
       
-      {/* LOGO */}
       <div style={{ fontSize: '2.5rem', color: '#ef4444', marginBottom: '10px', fontWeight: 'bold' }}>
         S4ITMM TV
       </div>
@@ -159,7 +155,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* LOADING */}
       {isLoading && (
         <div style={{ margin: '30px auto' }}>
           <div className="loader"></div>
@@ -167,20 +162,18 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* SUCCESS */}
       {userInfo && !error && (
         <div style={{ background: 'rgba(34, 197, 94, 0.1)', border: '1px solid #22c55e', borderRadius: '15px', padding: '25px', marginTop: '20px', maxWidth: '450px', width: '100%', textAlign: 'left' }}>
           <h3 style={{ color: '#22c55e', textAlign: 'center', marginTop: 0 }}>✅ ဝင်ရောက်ခွင့် ရရှိပါပြီ</h3>
           <div style={{ display: 'grid', gap: '10px', fontSize: '0.9rem' }}>
              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>Device ID:</span><span style={{fontWeight:'bold'}}>{userInfo.id}</span></div>
              <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>သက်တမ်းကုန်ရက်:</span><span>{formatDate(userInfo.expires)}</span></div>
-             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>ကျန်ရှိရက်:</span><span style={{color: '#22c55e', fontWeight:'bold'}}>{userInfo.daysRemaining} Days</span></div>
+             <div style={{ display: 'flex', justifyContent: 'space-between' }}><span>ကျန်ရှိရက်:</span><span style={{color: '#22c55e', fontWeight:'bold'}}>{userInfo.daysRemaining} ရက်</span></div>
           </div>
           <p style={{textAlign:'center', color:'#60a5fa', fontSize:'0.75rem', marginTop:'20px'}}>ခေတ္တစောင့်ဆိုင်းပါ။ ပင်မစာမျက်နှာသို့ သွားနေပါသည်...</p>
         </div>
       )}
 
-      {/* ERROR / EXPIRED */}
       {error && (
         <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: '15px', padding: '25px', marginTop: '20px', maxWidth: '450px', width: '100%', textAlign: 'left' }}>
           <h3 style={{ color: '#f87171', marginTop: 0 }}>{error.title}</h3>
@@ -198,19 +191,14 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* REDIRECT BUTTON */}
       <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid #f59e0b', borderRadius: '12px', padding: '20px', maxWidth: '450px', width: '100%', marginTop: '40px' }}>
-        <p style={{ color: '#f59e0b', margin: '0 0 15px 0', fontSize: '0.9rem' }}>ဒီစာမျက်နှာမှာ id မပေါ်ပါက သို့မဟုတ် အဆင်မပြေပါက အောက်ပါ Button ကိုနှိပ်ပါ</p>
+        <p style={{ color: '#f59e0b', margin: '0 0 15px 0', fontSize: '0.9rem' }}>အကယ်၍ အဆင်မပြေပါက အောက်ပါခလုတ်ကို နှိပ်ပါ</p>
         <a href="/home.html" style={{ 
           background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '14px', 
           borderRadius: '10px', fontWeight: 'bold', display: 'block', textDecoration: 'none', fontSize: '1rem' 
         }}>
-          HTML Version (Old Devices)
+          HTML Version သို့သွားရန်
         </a>
-      </div>
-
-      <div style={{ marginTop: '40px', color: '#64748b', fontSize: '0.85rem' }}>
-        Telegram: <a href="https://t.me/S4ITMM" style={{ color: '#60a5fa', textDecoration: 'none' }}>@S4ITMM</a>
       </div>
 
       <style jsx>{`
@@ -227,4 +215,4 @@ export default function HomePage() {
   )
 }
 
-                  
+        
