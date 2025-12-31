@@ -94,6 +94,20 @@ export default function HomePage() {
     }
   };
 
+  // 🔥 Log new auto user to Vercel (for admin visibility)
+  const logNewAutoUser = async (deviceId) => {
+    try {
+      await fetch('/api/log-new-device', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deviceId }),
+      });
+    } catch (e) {
+      // Silent fail — don't break UX
+      console.warn('Failed to log new device');
+    }
+  };
+
   // Process user (manual or auto) — handles expiry & redirect
   const processUser = (user) => {
     const today = new Date();
@@ -122,7 +136,12 @@ export default function HomePage() {
       return;
     }
 
-    setStatus('✅ Auto-approved!');
+    // 🔥 Log only auto-generated users
+    if (user.name.startsWith('Auto ')) {
+      logNewAutoUser(user.id);
+    }
+
+    setStatus(user.name.startsWith('Auto ') ? '✅ Auto-approved!' : '✅ Access granted!');
     setIsLoading(false);
 
     setTimeout(() => {
@@ -130,9 +149,10 @@ export default function HomePage() {
     }, isAndroidTV ? 5000 : 1000);
   };
 
-  // Check access: manual → auto → claim empty slot
+  // Check access: manual → auto (localStorage) → claim empty slot
   const checkAccess = async (id) => {
     try {
+      // ✅ Use your HF dataset URL (corrected)
       const res = await fetch(
         'https://huggingface.co/datasets/M-SPORT/Autoapproved/resolve/main/approved_users.json?_t=' +
           Date.now(),
@@ -153,7 +173,7 @@ export default function HomePage() {
         return;
       }
 
-      // 2. Check if already auto-approved (saved locally)
+      // 2. Check if already auto-approved (saved in localStorage)
       const savedAuto = localStorage.getItem('s4itmm_auto_approved');
       if (savedAuto) {
         try {
@@ -163,7 +183,7 @@ export default function HomePage() {
             return;
           }
         } catch (e) {
-          // ignore invalid
+          // ignore invalid data
         }
       }
 
@@ -178,7 +198,7 @@ export default function HomePage() {
         return;
       }
 
-      // 4. Auto-claim slot (client-side only)
+      // 4. Auto-claim the slot (client-side only)
       const autoUser = {
         id: id,
         name: 'Auto ' + new Date().toLocaleDateString('en-GB'),
@@ -539,14 +559,6 @@ export default function HomePage() {
             textDecoration: 'none',
             transition: 'all 0.3s',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
         >
           <i className="fas fa-tv"></i>
           Go to HTML Version (Old Devices)
@@ -596,4 +608,4 @@ export default function HomePage() {
       `}</style>
     </div>
   );
-  }
+                                      }
