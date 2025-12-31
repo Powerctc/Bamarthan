@@ -23,150 +23,183 @@
       max-width: 400px;
       width: 100%;
       text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      border: 1px solid #374151;
     }
     .page h2 {
       color: #ef4444;
       margin-bottom: 16px;
+      font-size: 24px;
     }
     .page p {
-      margin: 6px 0;
+      margin: 8px 0;
       color: #d1d5db;
       font-size: 14px;
+      line-height: 1.5;
     }
     .device-id {
-      background: #374151;
+      background: #111827;
       color: #fbbf24;
-      padding: 8px;
-      border-radius: 6px;
-      margin: 12px 0;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
       font-weight: bold;
       word-break: break-all;
+      border: 1px solid #4b5563;
+      font-family: monospace;
+      font-size: 18px;
     }
     .btn {
       background: #ef4444;
       color: white;
       border: none;
-      border-radius: 6px;
-      padding: 10px;
+      border-radius: 8px;
+      padding: 12px;
       width: 100%;
       margin-top: 16px;
       cursor: pointer;
       font-weight: bold;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #dc2626;
     }
     a {
       color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover {
       text-decoration: underline;
     }
+    .loader {
+      border: 3px solid #374151;
+      border-top: 3px solid #ef4444;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 15px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
   <div class="page" id="access-page">
     <h2>🔐 Access Required</h2>
-    <p>Verifying your device...</p>
-    <div class="device-id" id="device-id-display">—</div>
-    <p style="color:#9ca3af; font-size:12px;">Please wait...</p>
+    <p>စက်ပစ္စည်းကို စစ်ဆေးနေပါသည်...</p>
+    <div class="loader"></div>
+    <div class="device-id" id="device-id-display">--------</div>
+    <p style="color:#9ca3af; font-size:12px;">ခေတ္တစောင့်ဆိုင်းပေးပါ...</p>
   </div>
 
   <script>
-    let deviceID = null;
-
-    // === Generate or retrieve device ID ===
-    function initDeviceID() {
+    // === Stable ID Generator (Canvas Fingerprint) ===
+    function getStableID() {
       try {
-        deviceID = localStorage.getItem("s4itmmdeviceid_12");
-        if (!deviceID || deviceID.length !== 12) {
-          const raw = (navigator.userAgent || "unknown") + (screen.width || 0) + (screen.height || 0) + Date.now();
-          let hash = 0;
-          for (let i = 0; i < raw.length; i++) {
-            hash = (hash << 5) - hash + raw.charCodeAt(i);
-          }
-          deviceID = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
-          localStorage.setItem("s4itmmdeviceid_12", deviceID);
-        }
-      } catch (e) {
-        // Fallback if localStorage fails
-        const raw = "fallback" + Date.now() + Math.random();
+        let id = localStorage.getItem("s4itmm_stable_id");
+        if (id && id.length === 12) return id;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const txt = 'S4ITMM-TV-DEVICE-ID-2026';
+        ctx.textBaseline = "top";
+        ctx.font = "14px 'Arial'";
+        ctx.fillText(txt, 2, 15);
+        
+        const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
         let hash = 0;
-        for (let i = 0; i < raw.length; i++) {
-          hash = (hash << 5) - hash + raw.charCodeAt(i);
+        for (let i = 0; i < b64.length; i++) {
+          hash = (hash << 5) - hash + b64.charCodeAt(i);
+          hash = hash & hash;
         }
-        deviceID = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
+        
+        const screenInfo = window.screen.width + "x" + window.screen.height;
+        const platform = navigator.platform || "unknown";
+        const finalRaw = Math.abs(hash).toString() + platform + screenInfo;
+        
+        let finalHash = 0;
+        for (let j = 0; j < finalRaw.length; j++) {
+          finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
+        }
+        
+        id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
+        localStorage.setItem("s4itmm_stable_id", id);
+        return id;
+      } catch (e) {
+        return "000000000000";
       }
-      document.getElementById("device-id-display").textContent = deviceID;
     }
 
     // === Main access check logic ===
     async function checkAccessAndRedirect() {
-      initDeviceID();
-
-      if (!deviceID) {
-        renderDenied("Device ID could not be generated.");
-        return;
-      }
+      const currentID = getStableID();
+      document.getElementById("device-id-display").textContent = currentID;
 
       try {
-        const res = await fetch("https://m-sport-download.static.hf.space/approved_users.json?_t=" + Date.now(), {
+        // ဦးမောင်ရဲ့ API URL (Hugging Face / Static Host)
+        // မှတ်ချက် - index.html မှာ သုံးထားတဲ့ URL နဲ့ တူညီအောင် ထားပေးပါ
+        const res = await fetch("https://livesportmm-s4itmmapprover.hf.space/approved_users.json?_t=" + Date.now(), {
           cache: "no-store"
         });
 
         if (!res.ok) throw new Error("Network error");
 
         const data = await res.json();
-        const user = data.find(u => u.id === deviceID);
+        const user = data.find(u => u.id === currentID);
 
         if (!user) {
-          renderDenied("Device not approved.");
+          renderDenied("ဤစက်ပစ္စည်းသည် ခွင့်ပြုချက်မရသေးပါ။", currentID);
           return;
         }
 
         const today = new Date();
         const expiry = new Date(user.expires);
         if (expiry < today) {
-          renderDenied(`Access expired on ${user.expires}`);
+          renderDenied(`အသုံးပြုခွင့်သက်တမ်း ကုန်ဆုံးသွားပါပြီ (${user.expires})`, currentID);
           return;
         }
 
-        // ✅ Redirect to main content (change this URL as needed)
-        window.location.href = "/index.html"; // ← CHANGE THIS TO YOUR TARGET PAGE
+        // ✅ အောင်မြင်လျှင် ပင်မစာမျက်နှာသို့ သွားမည်
+        window.location.href = "index.html"; 
       } catch (err) {
         console.error(err);
-        renderDenied("System error. Please check your internet connection.");
+        renderDenied("စနစ်အတွင်း ချိတ်ဆက်၍မရပါ။ အင်တာနက်ကို စစ်ဆေးပါ။", currentID);
       }
     }
 
-    function renderDenied(reason) {
+    function renderDenied(reason, id) {
       const page = document.getElementById("access-page");
       page.innerHTML = `
-        <h2>❌ Access Denied</h2>
-        <p>${reason}</p>
-        <div class="device-id">${deviceID || 'Unknown'}</div>
-        <p style="color:#9ca3af; font-size:12px;">Contact support to get approved:</p>
-        <p>📞 Viber: <a href="viber://chat?number=+959123456789">09-123456789</a></p>
-        <p>📱 Telegram: <a href="tg://resolve?domain=S4MMTV">@S4ITMM</a></p>
-        <p>📧 Email: <a href="mailto:support@s4itmm.com">support@s4itmm.com</a></p>
-        <button class="btn" onclick="copyID()">📋 Copy Device ID</button>
+        <h2 style="color:#f87171">❌ Access Denied</h2>
+        <p style="color:#fca5a5">${reason}</p>
+        <div class="device-id">${id}</div>
+        <p style="color:#9ca3af; font-size:12px; margin-top:15px;">အသုံးပြုခွင့်တောင်းရန် အောက်ပါတို့ကို ဆက်သွယ်ပါ:</p>
+        <div style="text-align:left; background:#111827; padding:15px; border-radius:8px; margin-top:10px;">
+            <p>📱 Telegram: <a href="https://t.me/S4ITMM" target="_blank">@S4ITMM</a></p>
+            <p>🌐 Facebook: <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung</a></p>
+        </div>
+        <button class="btn" onclick="copyID('${id}')">📋 Copy Device ID</button>
+        <p style="margin-top:15px;"><a href="javascript:location.reload()">🔄 ပြန်လည်စစ်ဆေးမည်</a></p>
       `;
     }
 
-    function copyID() {
-      const text = deviceID || '';
+    function copyID(text) {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+        navigator.clipboard.writeText(text).then(() => alert("Copied: " + text));
       } else {
         const el = document.createElement('textarea');
         el.value = text;
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
         document.body.appendChild(el);
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        alert("Copied!");
+        alert("Copied: " + text);
       }
     }
 
-    // Start the process as soon as possible
-    checkAccessAndRedirect();
+    // စတင်စစ်ဆေးမည်
+    window.onload = checkAccessAndRedirect;
   </script>
 </body>
 </html>
+
