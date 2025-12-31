@@ -1,4 +1,4 @@
-/export async function POST(request) {
+export async function POST(request) {
   try {
     const { deviceId } = await request.json();
     if (!deviceId || deviceId.length !== 12) {
