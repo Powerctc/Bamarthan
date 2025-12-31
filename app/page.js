@@ -13,7 +13,7 @@ export default function HomePage() {
   const [isAndroidTV, setIsAndroidTV] = useState(false);
   const router = useRouter();
 
-  // 🔍 Detect Android TV / Android Box
+  // Detect Android TV/Box
   useEffect(() => {
     const checkAndroidTV = () => {
       const userAgent = navigator.userAgent.toLowerCase();
@@ -34,11 +34,11 @@ export default function HomePage() {
     checkAndroidTV();
   }, []);
 
-  // 🔢 Generate or retrieve 12-digit device ID
+  // Generate or retrieve 12-digit device ID
   const initDeviceID = () => {
     try {
       let id = localStorage.getItem('s4itmmdeviceid_12');
-      if (!id || id.length !== 12 || !/^\d+$/.test(id)) {
+      if (!id || id.length !== 12) {
         const raw =
           (navigator.userAgent || 'unknown') +
           (screen.width || 0) +
@@ -67,7 +67,7 @@ export default function HomePage() {
     }
   };
 
-  // 📅 Format date (English)
+  // Format date (English)
   const formatDate = (dateString) => {
     try {
       const date = new Date(dateString);
@@ -81,7 +81,7 @@ export default function HomePage() {
     }
   };
 
-  // 🇲🇲 Format date (Myanmar YYYY-MM-DD)
+  // Format date (Myanmar: YYYY-MM-DD)
   const formatMyanmarDate = (dateString) => {
     try {
       const date = new Date(dateString);
@@ -94,112 +94,128 @@ export default function HomePage() {
     }
   };
 
-  // 🔐 Check access from approved_users.json (array format) – ✅ FIXED URL
-  const checkAccess = async (id) => {
-    try {
-      // ✅ Use Dataset URL instead of static.hf.space
-      const url = `https://huggingface.co/datasets/M-SPORT/Autoapproved/resolve/main/approved_users.json?t=${Date.now()}`;
-      const res = await fetch(url, {
-        cache: 'no-store',
-        headers: {
-          Accept: 'application/json',
+  // Process user (manual or auto) — handles expiry & redirect
+  const processUser = (user) => {
+    const today = new Date();
+    const expiry = new Date(user.expires);
+    const daysRemaining = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+
+    setUserInfo({
+      id: user.id,
+      name: user.name || 'N/A',
+      expires: user.expires,
+      daysRemaining: daysRemaining > 0 ? daysRemaining : 0,
+    });
+
+    if (expiry < today) {
+      setError({
+        title: 'Access Expired',
+        message: `Your access expired on ${formatDate(user.expires)}.`,
+        userInfo: {
+          id: user.id,
+          name: user.name || 'N/A',
+          expires: user.expires,
+          expired: true,
         },
       });
+      setIsLoading(false);
+      return;
+    }
 
-      if (!res.ok) {
-        throw new Error(`Failed to load access list (${res.status})`);
-      }
+    setStatus('✅ Auto-approved!');
+    setIsLoading(false);
 
-      let data;
-      try {
-        data = await res.json();
-        if (!Array.isArray(data)) {
-          throw new Error('Invalid JSON format: expected array');
+    setTimeout(() => {
+      router.push('/index.html');
+    }, isAndroidTV ? 5000 : 1000);
+  };
+
+  // Check access: manual → auto → claim empty slot
+  const checkAccess = async (id) => {
+    try {
+      const res = await fetch(
+        'https://huggingface.co/datasets/M-SPORT/Autoapproved/resolve/main/approved_users.json?_t=' +
+          Date.now(),
+        {
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
         }
-      } catch (parseErr) {
-        throw new Error('Corrupted or invalid approved_users.json');
+      );
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+
+      // 1. Check manual approval (non-empty ID match)
+      const manualUser = data.find((u) => u.id === id && u.id !== '');
+      if (manualUser) {
+        processUser(manualUser);
+        return;
       }
 
-      const user = data.find((u) => u.id === id);
-      if (!user) {
+      // 2. Check if already auto-approved (saved locally)
+      const savedAuto = localStorage.getItem('s4itmm_auto_approved');
+      if (savedAuto) {
+        try {
+          const autoUser = JSON.parse(savedAuto);
+          if (autoUser.id === id) {
+            processUser(autoUser);
+            return;
+          }
+        } catch (e) {
+          // ignore invalid
+        }
+      }
+
+      // 3. Find first empty slot
+      const emptySlot = data.find((u) => u.id === '' && u.name === '');
+      if (!emptySlot) {
         setError({
-          title: 'Device Not Approved',
-          message: 'Your device is not in the approved list. Please contact admin for access.',
+          title: 'No Free Slots',
+          message: 'All auto-approval slots are used. Please contact admin.',
         });
         setIsLoading(false);
         return;
       }
 
-      // Check expiry
-      const today = new Date();
-      const expiry = new Date(user.expires);
-      const daysRemaining = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+      // 4. Auto-claim slot (client-side only)
+      const autoUser = {
+        id: id,
+        name: 'Auto ' + new Date().toLocaleDateString('en-GB'),
+        expires: '2026-05-31',
+      };
 
-      setUserInfo({
-        id: user.id,
-        name: user.name || 'N/A',
-        expires: user.expires,
-        daysRemaining: daysRemaining > 0 ? daysRemaining : 0,
-      });
-
-      if (expiry < today) {
-        setError({
-          title: 'Access Expired',
-          message: `Your access expired on ${formatDate(user.expires)}. Please renew your subscription.`,
-          userInfo: {
-            id: user.id,
-            name: user.name || 'N/A',
-            expires: user.expires,
-            expired: true,
-          },
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // ✅ Approved
-      setStatus('✅ Access granted!');
-      const redirectDelay = isAndroidTV ? 5000 : 1000;
-      setTimeout(() => {
-        router.push('/index.html');
-      }, redirectDelay);
+      localStorage.setItem('s4itmm_auto_approved', JSON.stringify(autoUser));
+      processUser(autoUser);
     } catch (err) {
       console.error('Access check error:', err);
       setError({
         title: 'Network Error',
-        message: 'Cannot verify access. Please check your internet connection and try again.',
+        message: 'Cannot verify access. Please check your internet connection.',
       });
       setIsLoading(false);
     }
   };
 
-  // 📋 Copy device ID
+  // Copy Device ID
   const copyDeviceId = () => {
     if (deviceID) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(deviceID).then(
-          () => alert('Device ID copied to clipboard!'),
-          () => fallbackCopy(deviceID)
-        );
-      } else {
-        fallbackCopy(deviceID);
-      }
+      navigator.clipboard
+        .writeText(deviceID)
+        .then(() => alert('Device ID copied to clipboard!'))
+        .catch(() => {
+          const textArea = document.createElement('textarea');
+          textArea.value = deviceID;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          alert('Device ID copied to clipboard!');
+        });
     }
   };
 
-  const fallbackCopy = (text) => {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.opacity = '0';
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    alert('Device ID copied to clipboard!');
-  };
-
-  // 🔄 Retry access check
+  // Retry access check
   const retryCheck = () => {
     setError(null);
     setUserInfo(null);
@@ -211,7 +227,7 @@ export default function HomePage() {
     }, 500);
   };
 
-  // 🚀 Initialize on mount
+  // Main init
   useEffect(() => {
     const id = initDeviceID();
     checkAccess(id);
@@ -327,9 +343,7 @@ export default function HomePage() {
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#94a3b8' }}>
-                သက်တမ်းကုန်ဆုံးမည့်ရက်:
-              </span>
+              <span style={{ color: '#94a3b8' }}>သက်တမ်းကုန်ဆုံးမည့်ရက်:</span>
               <span style={{ color: '#f8fafc', fontWeight: 'bold' }}>
                 {formatMyanmarDate(userInfo.expires)}
               </span>
@@ -403,32 +417,22 @@ export default function HomePage() {
                 User Information:
               </h4>
               <div style={{ display: 'grid', gap: '8px' }}>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#94a3b8' }}>User ID:</span>
                   <span style={{ color: '#f8fafc' }}>{error.userInfo.id}</span>
                 </div>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#94a3b8' }}>User Name:</span>
                   <span style={{ color: '#f8fafc' }}>{error.userInfo.name}</span>
                 </div>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#94a3b8' }}>Expiry Date:</span>
                   <span style={{ color: '#f87171' }}>
                     {formatDate(error.userInfo.expires)}
                   </span>
                 </div>
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <span style={{ color: '#94a3b8' }}>
-                    သက်တမ်းကုန်ဆုံးမည့်ရက်:
-                  </span>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: '#94a3b8' }}>သက်တမ်းကုန်ဆုံးမည့်ရက်:</span>
                   <span style={{ color: '#f87171' }}>
                     {formatMyanmarDate(error.userInfo.expires)}
                   </span>
@@ -553,10 +557,7 @@ export default function HomePage() {
       </div>
 
       {/* Contact Info */}
-      <div
-        className="contact mt-8"
-        style={{ color: '#94a3b8', fontSize: '0.9rem' }}
-      >
+      <div className="contact mt-8" style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
         <p>Need access? Contact us:</p>
         <p>
           📱 Telegram:{' '}
@@ -595,4 +596,4 @@ export default function HomePage() {
       `}</style>
     </div>
   );
-            }
+  }
