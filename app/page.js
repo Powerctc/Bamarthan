@@ -10,7 +10,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
 
   const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space"; 
-  const SEASON_EXPIRY = "2026-03-31T23:59:59Z";
+  const SEASON_EXPIRY = "2026-05-31";
 
   // 1. Device ID Generator
   const initDeviceID = () => {
