@@ -43,7 +43,6 @@ export default function HomePage() {
     try {
       setStatus("ဝင်ရောက်ခွင့်ကို စစ်ဆေးနေပါသည်...")
       
-      // ပထမဆုံး အသုံးပြုသူအသစ်ဖြစ်ပါက Register လုပ်မည်
       await fetch(`${HF_BASE_URL}/add_user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -54,7 +53,6 @@ export default function HomePage() {
         })
       });
 
-      // API ထံမှ data ကို ပြန်ဖတ်မည်
       const res = await fetch(`${HF_BASE_URL}/approved_users.json?_t=${Date.now()}`, {
         cache: "no-store"
       });
@@ -71,7 +69,6 @@ export default function HomePage() {
       const diffTime = expiry - today;
       const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      // အကယ်၍ Expiry က အနာဂတ်မှာရှိရင် Error မပြရပါ
       if (expiry > today) {
         setUserInfo({
           ...user,
@@ -80,7 +77,7 @@ export default function HomePage() {
         setStatus('✅ ဝင်ရောက်ခွင့် ရရှိပါပြီ!');
         setTimeout(() => {
           window.location.href = '/index.html';
-        }, 2000);
+        }, 3000);
       } else {
         setError({
           title: "သက်တမ်းကုန်ဆုံးပါပြီ",
@@ -113,8 +110,19 @@ export default function HomePage() {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
       minHeight: '100vh', padding: '20px', background: '#0f172a', color: 'white', fontFamily: 'sans-serif' 
     }}>
-      <h1 style={{ color: '#ef4444', marginBottom: '5px' }}>S4ITMM TV</h1>
-      <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '30px' }}>Season Pass Mode</p>
+      <h1 style={{ color: '#ef4444', marginBottom: '5px', fontSize: '2.5rem', fontWeight: 'bold' }}>S4ITMM TV</h1>
+      
+      <div style={{ 
+        background: 'rgba(239, 68, 68, 0.1)', 
+        border: '1px solid #ef4444', 
+        padding: '5px 15px', 
+        borderRadius: '20px', 
+        fontSize: '0.8rem', 
+        marginBottom: '30px',
+        color: '#f87171'
+      }}>
+        ⚽ Premier League Season Pass Free Trial
+      </div>
 
       {isLoading && (
         <div style={{ textAlign: 'center' }}>
@@ -124,24 +132,42 @@ export default function HomePage() {
       )}
 
       {userInfo && !error && (
-        <div style={{ background: '#1e293b', border: '1px solid #22c55e', borderRadius: '15px', padding: '20px', width: '100%', maxWidth: '400px' }}>
-          <h3 style={{ color: '#22c55e', marginTop: 0 }}>✅ အောင်မြင်ပါသည်</h3>
-          <p style={{ fontSize: '0.85rem', margin: '5px 0' }}>Device ID: <b>{userInfo.id}</b></p>
-          <p style={{ fontSize: '0.85rem', margin: '5px 0' }}>Exp: <b>{formatDate(userInfo.expires)}</b></p>
-          <p style={{ fontSize: '0.85rem', margin: '5px 0' }}>ကျန်ရှိရက်: <b style={{ color: '#22c55e' }}>{userInfo.daysRemaining} ရက်</b></p>
+        <div style={{ background: '#1e293b', border: '1px solid #22c55e', borderRadius: '15px', padding: '20px', width: '100%', maxWidth: '400px', textAlign: 'left' }}>
+          <h3 style={{ color: '#22c55e', textAlign: 'center', marginTop: 0 }}>✅ အောင်မြင်ပါသည်</h3>
+          <p style={{ fontSize: '0.9rem', margin: '10px 0' }}>Device ID: <b style={{ float: 'right' }}>{userInfo.id}</b></p>
+          <p style={{ fontSize: '0.9rem', margin: '10px 0' }}>ကုန်ဆုံးရက်: <b style={{ float: 'right' }}>{formatDate(userInfo.expires)}</b></p>
+          <p style={{ fontSize: '0.9rem', margin: '10px 0' }}>ကျန်ရှိရက်: <b style={{ float: 'right', color: '#22c55e' }}>{userInfo.daysRemaining} ရက်</b></p>
+          <p style={{ textAlign: 'center', color: '#60a5fa', fontSize: '0.75rem', marginTop: '15px' }}>ပင်မစာမျက်နှာသို့ သွားနေပါသည်...</p>
         </div>
       )}
 
       {error && (
-        <div style={{ background: '#1e293b', border: '1px solid #ef4444', borderRadius: '15px', padding: '20px', width: '100%', maxWidth: '400px' }}>
+        <div style={{ background: '#1e293b', border: '1px solid #ef4444', borderRadius: '15px', padding: '20px', width: '100%', maxWidth: '400px', textAlign: 'left' }}>
           <h3 style={{ color: '#f87171', marginTop: 0 }}>{error.title}</h3>
           <p style={{ fontSize: '0.9rem', color: '#cbd5e1' }}>{error.message}</p>
-          <button onClick={() => window.location.reload()} style={{ width: '100%', padding: '10px', background: '#ef4444', border: 'none', borderRadius: '8px', color: 'white', fontWeight: 'bold', marginTop: '15px', cursor: 'pointer' }}>ပြန်လည်ကြိုးစားမည်</button>
+          <button onClick={() => window.location.reload()} style={{ width: '100%', padding: '12px', background: '#ef4444', border: 'none', borderRadius: '8px', color: 'white', fontWeight: 'bold', marginTop: '15px', cursor: 'pointer' }}>🔄 Retry</button>
         </div>
       )}
 
+      {/* REDIRECT BUTTON FOR OLD DEVICES */}
+      <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid #f59e0b', borderRadius: '12px', padding: '20px', maxWidth: '400px', width: '100%', marginTop: '40px' }}>
+        <p style={{ color: '#f59e0b', margin: '0 0 15px 0', fontSize: '0.85rem' }}>
+          အကယ်၍ ဤစာမျက်နှာ၌ အဆင်မပြေပါက သို့မဟုတ် Old Model TV များအတွက် အောက်ပါခလုတ်ကို နှိပ်ပါ
+        </p>
+        <a href="/home.html" style={{ 
+          background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '14px', 
+          borderRadius: '10px', fontWeight: 'bold', display: 'block', textDecoration: 'none', fontSize: '1rem' 
+        }}>
+          HTML Version သို့သွားရန်
+        </a>
+      </div>
+
+      <div style={{ marginTop: '30px', color: '#475569', fontSize: '0.8rem' }}>
+        Telegram: <a href="https://t.me/S4ITMM" style={{ color: '#60a5fa', textDecoration: 'none' }}>@S4ITMM</a>
+      </div>
+
       <style jsx>{`
-        .loader { width: 40px; height: 40px; border: 4px solid #334155; border-top-color: #ef4444; border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader { width: 40px; height: 40px; border: 4px solid #334155; border-top-color: #ef4444; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </div>
