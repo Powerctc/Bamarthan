@@ -1,204 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Access Check - S4ITMM TV</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S4ITMM TV - Checking Access</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto', sans-serif;
-      background: #111827;
-      color: white;
-      display: flex;
+    body, html {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background-color: #0f172a; color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    .view-container {
+      display: none;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .page {
-      background: #1f2937;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 400px;
+      height: 100vh;
       width: 100%;
       text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      border: 1px solid #374151;
+      padding: 20px;
     }
-    .page h2 {
-      color: #ef4444;
-      margin-bottom: 16px;
-      font-size: 24px;
-    }
-    .page p {
-      margin: 8px 0;
-      color: #d1d5db;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .device-id {
-      background: #111827;
-      color: #fbbf24;
-      padding: 12px;
+
+    .fade-in { animation: fadeIn 0.4s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .icon { font-size: 70px; margin-bottom: 20px; }
+    .loading-color { color: #3b82f6; }
+    .expired-color { color: #ef4444; }
+    .approved-color { color: #10b981; }
+
+    h2 { font-size: 1.8rem; margin-bottom: 10px; }
+    p { font-size: 1rem; color: #94a3b8; max-width: 450px; line-height: 1.5; }
+    
+    .id-box {
+      background: #1e293b;
+      padding: 10px 15px;
       border-radius: 8px;
-      margin: 15px 0;
-      font-weight: bold;
-      word-break: break-all;
-      border: 1px solid #4b5563;
       font-family: monospace;
-      font-size: 18px;
+      color: #fbbf24;
+      border: 1px solid #334155;
+      margin: 20px 0;
+      font-size: 1.1rem;
     }
+
     .btn {
-      background: #ef4444;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      width: 100%;
-      margin-top: 16px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
+      background: #ef4444; color: white; text-decoration: none;
+      padding: 14px 35px; border-radius: 10px; font-weight: bold;
+      font-size: 1.1rem; display: inline-block;
+      transition: background 0.2s;
     }
-    .btn:hover {
-      background: #dc2626;
-    }
-    a {
-      color: #60a5fa;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .loader {
-      border: 3px solid #374151;
-      border-top: 3px solid #ef4444;
-      border-radius: 50%;
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 15px auto;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .btn:hover { background: #dc2626; }
   </style>
 </head>
 <body>
-  <div class="page" id="access-page">
-    <h2>🔐 Access Required</h2>
-    <p>စက်ပစ္စည်းကို စစ်ဆေးနေပါသည်...</p>
-    <div class="loader"></div>
-    <div class="device-id" id="device-id-display">--------</div>
-    <p style="color:#9ca3af; font-size:12px;">ခေတ္တစောင့်ဆိုင်းပေးပါ...</p>
+
+  <!-- 1. LOADING VIEW (စစ်ဆေးနေစဉ် ပြသမည့်မျက်နှာပြင်) -->
+  <div id="loadingView" class="view-container" style="display: flex;">
+    <div class="icon loading-color"><i class="fas fa-circle-notch fa-spin"></i></div>
+    <h2>စစ်ဆေးနေပါသည်...</h2>
+    <p>Device ID ကို စစ်ဆေးနေပါသည်။ ခေတ္တစောင့်ဆိုင်းပေးပါ။</p>
+  </div>
+
+  <!-- 2. APPROVED VIEW (Redirect မလုပ်မီ ခဏပြသရန် - Optional) -->
+  <div id="approvedView" class="view-container fade-in">
+    <div class="icon approved-color"><i class="fas fa-check-circle"></i></div>
+    <h2>ဝင်ခွင့်ရရှိပါသည်</h2>
+    <p>ခေတ္တစောင့်ပါ။ အက်ပ်ထဲသို့ ခေါ်ဆောင်သွားနေပါသည်...</p>
+  </div>
+
+  <!-- 3. EXPIRED VIEW (သက်တမ်းကုန်လျှင် ရပ်တန့်မည့်မျက်နှာပြင်) -->
+  <div id="expiredView" class="view-container fade-in">
+    <div class="icon expired-color"><i class="fas fa-calendar-times"></i></div>
+    <h2 style="color:#ef4444;">သက်တမ်းကုန်ဆုံးပါပြီ</h2>
+    <div class="id-box" id="expiredID">ID: --------</div>
+    <p>သင်၏ (၉၀) ရက် အစမ်းသုံးကာလ ကုန်ဆုံးသွားပြီ ဖြစ်ပါသည်။ ဆက်လက်အသုံးပြုလိုပါက Admin ထံသို့ ID ပေးပို့၍ သက်တမ်းတိုးနိုင်ပါသည်။</p>
+    <br>
+    <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank" class="btn">Admin ကိုဆက်သွယ်ရန်</a>
   </div>
 
   <script>
-    // === Stable ID Generator (Canvas Fingerprint) ===
     function getStableID() {
-      try {
-        let id = localStorage.getItem("s4itmm_stable_id");
-        if (id && id.length === 12) return id;
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const txt = 'S4ITMM-TV-DEVICE-ID-2026';
-        ctx.textBaseline = "top";
-        ctx.font = "14px 'Arial'";
-        ctx.fillText(txt, 2, 15);
-        
-        const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
-        let hash = 0;
-        for (let i = 0; i < b64.length; i++) {
-          hash = (hash << 5) - hash + b64.charCodeAt(i);
-          hash = hash & hash;
-        }
-        
-        const screenInfo = window.screen.width + "x" + window.screen.height;
-        const platform = navigator.platform || "unknown";
-        const finalRaw = Math.abs(hash).toString() + platform + screenInfo;
-        
-        let finalHash = 0;
-        for (let j = 0; j < finalRaw.length; j++) {
-          finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
-        }
-        
-        id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
-        localStorage.setItem("s4itmm_stable_id", id);
-        return id;
-      } catch (e) {
-        return "000000000000";
+      let id = localStorage.getItem("s4itmm_stable_id");
+      if (id && id.length === 12) return id;
+      
+      const raw = (navigator.userAgent + navigator.platform + screen.width + Date.now());
+      let hash = 0;
+      for (let i = 0; i < raw.length; i++) {
+        hash = (hash << 5) - hash + raw.charCodeAt(i);
+        hash |= 0;
       }
+      id = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
+      localStorage.setItem("s4itmm_stable_id", id);
+      return id;
     }
 
-    // === Main access check logic ===
-    async function checkAccessAndRedirect() {
-      const currentID = getStableID();
-      document.getElementById("device-id-display").textContent = currentID;
+    function checkAccess() {
+      const id = getStableID();
+      const now = new Date().getTime();
+      let auth = localStorage.getItem("s4itmm_auth_data");
 
-      try {
-        // ဦးမောင်ရဲ့ API URL (Hugging Face / Static Host)
-        // မှတ်ချက် - index.html မှာ သုံးထားတဲ့ URL နဲ့ တူညီအောင် ထားပေးပါ
-        const res = await fetch("https://livesportmm-s4itmmapprover.hf.space/approved_users.json?_t=" + Date.now(), {
-          cache: "no-store"
-        });
-
-        if (!res.ok) throw new Error("Network error");
-
-        const data = await res.json();
-        const user = data.find(u => u.id === currentID);
-
-        if (!user) {
-          renderDenied("ဤစက်ပစ္စည်းသည် ခွင့်ပြုချက်မရသေးပါ။", currentID);
-          return;
-        }
-
-        const today = new Date();
-        const expiry = new Date(user.expires);
-        if (expiry < today) {
-          renderDenied(`အသုံးပြုခွင့်သက်တမ်း ကုန်ဆုံးသွားပါပြီ (${user.expires})`, currentID);
-          return;
-        }
-
-        // ✅ အောင်မြင်လျှင် ပင်မစာမျက်နှာသို့ သွားမည်
-        window.location.href = "index.html"; 
-      } catch (err) {
-        console.error(err);
-        renderDenied("စနစ်အတွင်း ချိတ်ဆက်၍မရပါ။ အင်တာနက်ကို စစ်ဆေးပါ။", currentID);
-      }
-    }
-
-    function renderDenied(reason, id) {
-      const page = document.getElementById("access-page");
-      page.innerHTML = `
-        <h2 style="color:#f87171">❌ Access Denied</h2>
-        <p style="color:#fca5a5">${reason}</p>
-        <div class="device-id">${id}</div>
-        <p style="color:#9ca3af; font-size:12px; margin-top:15px;">အသုံးပြုခွင့်တောင်းရန် အောက်ပါတို့ကို ဆက်သွယ်ပါ:</p>
-        <div style="text-align:left; background:#111827; padding:15px; border-radius:8px; margin-top:10px;">
-            <p>📱 Telegram: <a href="https://t.me/S4ITMM" target="_blank">@S4ITMM</a></p>
-            <p>🌐 Facebook: <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung</a></p>
-        </div>
-        <button class="btn" onclick="copyID('${id}')">📋 Copy Device ID</button>
-        <p style="margin-top:15px;"><a href="javascript:location.reload()">🔄 ပြန်လည်စစ်ဆေးမည်</a></p>
-      `;
-    }
-
-    function copyID(text) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(() => alert("Copied: " + text));
+      // ပထမဆုံးအကြိမ်ဆိုလျှင် Auto-Approve (၉၀ ရက်)
+      if (!auth) {
+        const ninetyDays = 90 * 24 * 60 * 60 * 1000;
+        auth = {
+          id: id,
+          expiry: now + ninetyDays
+        };
+        localStorage.setItem("s4itmm_auth_data", JSON.stringify(auth));
       } else {
-        const el = document.createElement('textarea');
-        el.value = text;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        alert("Copied: " + text);
+        auth = JSON.parse(auth);
       }
+
+      // စစ်ဆေးမှု လုပ်ဆောင်ချက်ကို ၁.၅ စက္ကန့် ခဏပြမည်
+      setTimeout(() => {
+        document.getElementById('loadingView').style.display = 'none';
+
+        if (now <= auth.expiry) {
+          // --- APPROVED ---
+          document.getElementById('approvedView').style.display = 'flex';
+          
+          // ၁ စက္ကန့်အကြာတွင် index.html သို့ Auto Redirect လုပ်မည်
+          setTimeout(() => {
+            window.location.href = "index.html"; 
+          }, 800);
+
+        } else {
+          // --- EXPIRED ---
+          document.getElementById('expiredView').style.display = 'flex';
+          document.getElementById('expiredID').textContent = "ID: " + id;
+        }
+      }, 1500);
     }
 
-    // စတင်စစ်ဆေးမည်
-    window.onload = checkAccessAndRedirect;
+    window.onload = checkAccess;
   </script>
 </body>
 </html>
