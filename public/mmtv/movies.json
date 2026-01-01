@@ -1,0 +1,153 @@
+[
+  
+  {
+    "title": "Mahar Bhawdi",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/maharbawdi.jpg",
+    "category": "Myanmar",
+    "url": "https://ppradio.b-cdn.net/LiveApp/streams/rHEBIW7pjQLU1677679374164.m3u8"
+  },
+  {
+    "title": "MRTV-4 HD",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv4.jpg",
+    "category": "Myanmar",
+    "url": "https://ppradio.b-cdn.net/LiveApp/streams/w3g3EYjBtqgJ1677679288037.m3u8"
+  },
+  {
+    "title": "MRTV-4 SD",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv4.jpg",
+    "category": "Myanmar",
+    "url": "https://pplive.comquas.com:5443/LiveApp/streams/w3g3EYjBtqgJ1677679288037.m3u8"
+  },
+  {
+    "title": "Channel-7 HD",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/channel7.jpg",
+    "category": "Myanmar",
+    "url": "https://ppradio.b-cdn.net/LiveApp/streams/GZ7f8XBrt4dI1677679357590.m3u8"
+  },
+  {
+    "title": "Channel-7 SD",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/channel7.jpg",
+    "category": "Myanmar",
+    "url": "https://pplive.comquas.com:5443/LiveApp/streams/CLcBFN71NkF61709008601656.m3u8"
+  },
+  {
+    "title": "Mahar",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mahar.jpg",
+    "category": "Myanmar",
+    "url": "https://tv.mahar.live/mahar/website.stream/mahar/website1/chunks.m3u8"
+  },
+  {
+    "title": "Mahar Esport",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/maharesport.png",
+    "category": "Myanmar",
+    "url": "https://tv.mahar.live/esports/mahar.stream/esports/mahar1/chunks.m3u8"
+  },
+  {
+    "title": "Channel-K",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/channelk.jpg",
+    "category": "Myanmar",
+    "url": "https://l1-xl1.myanmarnet.com/relay/channelk/ch1/stream.m3u8"
+  },
+  {
+    "title": "FortuneTv",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/fortune.jpeg",
+    "category": "Myanmar",
+    "url": "http://103.215.194.93:8282/hls/fortunetv/live/vmix_1080.m3u8"
+  },
+  {
+    "title": "5Plus",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/5plus.jpg",
+    "category": "Myanmar",
+    "url": "https://5a13fe32ef748.streamlock.net/mmplay/5plus/chunklist_w1869259503.m3u8"
+  },
+  {
+    "title": "MSC Movie",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/msc.png",
+    "category": "Myanmar",
+    "url": "https://l1-xl1.myanmarnet.com/relay2/mcs/ch1/stream_standard/index.m3u8"
+  },
+  {
+    "title": "TVM",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/tvm.jpeg",
+    "category": "Myanmar",
+    "url": "http://203.81.84.130/hls/mwd_serie/index.m3u8"
+  },
+  {
+    "title": "MVMTv",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mvm.png",
+    "category": "Myanmar",
+    "url": "https://edge6a.v2h-cdn.com/mvm/mvm.stream/playlist.m3u8"
+  },
+  {
+    "title": "MITV",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mitv.jpg",
+    "category": "Myanmar",
+    "url": "https://l1-xl1.myanmarnet.com/relay/mitv/ch1/stream.m3u8"
+  },
+  {
+    "title": "MNTV",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mntv.jpg",
+    "category": "Myanmar",
+    "url": "https://l1-xl1.myanmarnet.com/relay/mntv/ch1/stream.m3u8"
+  },
+  {
+    "title": "MRTV Entertainment",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtvent.jpg",
+    "category": "Myanmar",
+    "url": "https://5a13fe32ef748.streamlock.net/mmplay/mrtv-entertainment/chunklist_w1578284018.m3u8"
+  },
+  {
+    "title": "Music",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/music.jpg",
+    "category": "Myanmar",
+    "url": "https://l1-xl1.myanmarnet.com/relay/music/ch1/stream_hi/index.m3u8"
+  },
+  {
+    "title": "Light",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/light.jpeg",
+    "category": "Myanmar",
+    "url": "http://203.81.84.130/hls/mwd_family/index.m3u8"
+  },
+  {
+    "title": "Golden Land",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/goldenland.jpg",
+    "category": "Myanmar",
+    "url": "http://203.81.84.130/hls/mwd_document/index.m3u8"
+  },
+  {
+    "title": "MRTV",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv.jpg",
+    "category": "Myanmar",
+    "url": "https://5a13fe32ef748.streamlock.net/mmplay/mrtv/chunklist_w1986607729.m3u8"
+  },
+  {
+    "title": "MRTV NRC",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv.jpg",
+    "category": "Myanmar",
+    "url": "https://l1-xl1.myanmarnet.com/relay/mrtvnrc/ch1/stream.m3u8"
+  },
+  {
+    "title": "MRTV Hluttaw",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv.jpg",
+    "category": "Myanmar",
+    "url": "https://5a13fe32ef748.streamlock.net/mmplay/hluttaw/chunklist_w347202258.m3u8"
+  },
+  {
+    "title": "MWD HD",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mwd.png",
+    "category": "Myanmar",
+    "url": "http://203.81.84.130/hls/mwd/index.m3u8"
+  },
+  {
+    "title": "MWD Variety",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mwd.png",
+    "category": "Myanmar",
+    "url": "http://203.81.84.130/hls/mwd_variety/index.m3u8"
+  },
+  {
+    "title": "MWD School",
+    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mwd.png",
+    "category": "Myanmar",
+    "url": "http://203.81.84.130/hls/mwd_movie/index.m3u8"
+  }
+]
