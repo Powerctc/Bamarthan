@@ -25,6 +25,7 @@
       border-radius: 0.5rem;
       font-weight: bold;
       transition: background-color 0.2s;
+      cursor: pointer;
     }
     .play-button:hover {
       background-color: #dc2626;
@@ -81,6 +82,11 @@
       border-radius: 0.375rem;
       font-weight: bold;
       transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
     }
     .install-button:hover {
       background-color: #3182ce;
@@ -94,25 +100,24 @@
     }
   </style>
 </head>
+<body>
 
-    <main class="flex-1 flex items-center justify-center p-6">
-      <div id="movie-detail-container" class="bg-gray-800 rounded-lg shadow-xl p-8 flex flex-col md:flex-row items-center gap-8 w-full max-w-4xl">
-        <p class="text-center text-gray-400 w-full">Loading movie details...</p>
-      </div>
-    </main>
+  <main class="flex-1 flex items-center justify-center p-6 min-h-screen">
+    <div id="movie-detail-container" class="bg-gray-800 rounded-lg shadow-xl p-8 flex flex-col md:flex-row items-center gap-8 w-full max-w-4xl">
+      <p class="text-center text-gray-400 w-full">Loading movie details...</p>
+    </div>
+  </main>
 
-    <!-- ✅ App Not Found Modal -->
-    <div id="player-modal" class="modal-overlay">
-      <div class="modal-content">
-        <button class="modal-close-button" id="close-modal">&times;</button>
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnni40YRRPc9wGBd2tDOIX1qCTqddax0tPR5QsIxC8HA&s=10" alt="NS Player" class="app-logo">
-        <h3 class="text-2xl font-bold mb-4 text-white">App Not Installed</h3>
-        <p class="text-gray-300 mb-2">The required player app is not installed on your device.</p>
-        <p class="text-gray-300 mb-6">Please install <strong>Network Streaming Video Player</strong> to continue.</p>
-        <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank" class="install-button flex items-center justify-center gap-2">
-          <i class="fab fa-android"></i> Install NS Player
-        </a>
-      </div>
+  <div id="player-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close-button" id="close-modal">&times;</button>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnni40YRRPc9wGBd2tDOIX1qCTqddax0tPR5QsIxC8HA&s=10" alt="NS Player" class="app-logo">
+      <h3 class="text-2xl font-bold mb-4 text-white">App Not Installed</h3>
+      <p class="text-gray-300 mb-2">The required player app is not installed on your device.</p>
+      <p class="text-gray-300 mb-6">Please install <strong>Network Streaming Video Player</strong> to continue.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank" class="install-button">
+        <i class="fab fa-android"></i> Install NS Player
+      </a>
     </div>
   </div>
 
@@ -124,6 +129,7 @@
 
       const showModal = () => playerModal.classList.add('show');
       const hideModal = () => playerModal.classList.remove('show');
+      
       closeModalButton.addEventListener('click', hideModal);
       playerModal.addEventListener('click', (e) => {
         if (e.target === playerModal) hideModal();
@@ -159,27 +165,35 @@
         });
       }
 
-      // ✅ FUNCTION TO OPEN WITH INTENT + FALLBACK MODAL
+      // ✅ FUNCTION TO OPEN WITH INTENT + HUGGING FACE PROXY
       function openWithExternalPlayer(url) {
+        if (!url) return;
+
         const isAndroid = /Android/i.test(navigator.userAgent);
-        const intentUrl = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=MMTV%20SPORT;end`;
+        let finalUrl = url;
+
+        // Hugging Face Proxy Configuration
+        if (url.indexOf("niues.live") !== -1) {
+          const hfProxy = "https://livesportmm-s4itmm-proxy.hf.space/proxy?url=";
+          finalUrl = hfProxy + encodeURIComponent(url);
+        }
+
+        const intentUrl = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=ZETFLIX%20MOVIE;end`;
 
         if (isAndroid) {
           let timeout;
 
-          const iframe = document.createElement('iframe');
-          iframe.style.display = 'none';
-          iframe.src = intentUrl;
-          document.body.appendChild(iframe);
+          // Intent လှမ်းခေါ်ခြင်း
+          window.location.href = intentUrl;
 
-          setTimeout(() => {
-            document.body.removeChild(iframe);
-          }, 1000);
-
+          // Player မရှိပါက 3 စက္ကန့်အကြာတွင် Modal ပြရန်
           timeout = setTimeout(() => {
-            showModal();
-          }, 1500);
+            if (document.visibilityState !== 'hidden') {
+              showModal();
+            }
+          }, 3000);
 
+          // Player ပွင့်သွားပါက Timer ကို ပြန်ပိတ်ရန်
           const handleVisibility = () => {
             if (document.visibilityState === 'hidden') {
               clearTimeout(timeout);
@@ -188,7 +202,7 @@
 
           document.addEventListener('visibilitychange', handleVisibility, { once: true });
         } else {
-          alert('Only available on Android.');
+          alert('This player is only available on Android devices.');
         }
       }
     });
