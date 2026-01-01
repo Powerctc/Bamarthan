@@ -6,6 +6,7 @@
   <title>Live Match - S4ITMM TV</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
+    /* မူလ Style များကို အပြည့်အဝ ထိန်းသိမ်းထားပါသည် */
     body { background-color: #1a202c; color: #e2e8f0; font-family: sans-serif; margin: 0; padding: 0; }
     .flex-center { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
     .card { background-color: #2d3748; border-radius: 12px; padding: 25px; width: 100%; max-width: 500px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); text-align: center; }
@@ -22,13 +23,11 @@
       padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px;
       margin-bottom: 12px; border: 2px solid transparent; cursor: pointer; text-decoration: none; outline: none;
     }
-    /* Remote Focus ဖြစ်တဲ့အခါ အရောင်ပြောင်းရန် */
     .stream-button:focus { background-color: #ffffff; color: #ef4444; border-color: #ef4444; transform: scale(1.05); }
 
     .back-button { display: inline-block; margin-top: 20px; color: #63b3ed; text-decoration: none; font-size: 14px; outline: none; padding: 10px; }
     .back-button:focus { color: #ef4444; text-decoration: underline; }
 
-    /* Modal Styles */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-content { background: #2d3748; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; }
     .app-logo { width: 80px; height: 80px; border-radius: 15px; margin-bottom: 15px; }
@@ -49,7 +48,7 @@
       <h3 style="margin: 0 0 10px 0;">Player Not Found</h3>
       <p style="font-size: 14px; color: #cbd5e0;">Please install "Network Streaming Player" to watch.</p>
       <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" class="install-btn">Download from Play Store</a>
-      <button onclick="document.getElementById('player-modal').style.display='none'" style="background:none; border:none; color:#a0aec0; margin-top:15px; cursor:pointer;">Close</button>
+      <button onclick="document.getElementById('player-modal').style.display='none'" style="background:none; border:none; color:#a0aec0; margin-top:15px; cursor:pointer;" tabindex="200">Close</button>
     </div>
   </div>
 
@@ -65,23 +64,19 @@
 
       var match = JSON.parse(matchData);
       
-      // Header Section
       var html = '<h2 style="margin-bottom:5px;">' + (match.home_name + " VS " + match.away_name) + '</h2>';
       html += '<p style="color:#a0aec0; margin-bottom:20px;">' + (match.league || "") + '</p>';
       
-      // Logos
       html += '<div class="match-logo-container">' +
-                '<img src="' + match.home_img + '" class="team-logo">' +
+                '<img src="' + match.home_img + '" class="team-logo" onerror="this.src=\'https://via.placeholder.com/70\'">' +
                 '<div class="vs-label">VS</div>' +
-                '<img src="' + match.away_img + '" class="team-logo">' +
+                '<img src="' + match.away_img + '" class="team-logo" onerror="this.src=\'https://via.placeholder.com/70\'">' +
               '</div>';
 
-      // Stream Buttons
       html += '<div id="button-list" style="margin-top:20px;">';
       if (match.links && match.links.length > 0) {
         for (var i = 0; i < match.links.length; i++) {
           var link = match.links[i];
-          // Remote နဲ့ ရွေးလို့ရအောင် Button ကို tabindex ထည့်ထားသည်
           html += '<button class="stream-button" tabindex="' + (i + 1) + '" onclick="openPlayer(\'' + link.url + '\')">' + 
                   '<i class="fas fa-play-circle" style="margin-right:8px;"></i>' + link.name + 
                   '</button>';
@@ -91,12 +86,10 @@
       }
       html += '</div>';
 
-      // Back Button
       html += '<a href="javascript:history.back()" class="back-button" tabindex="100">← Back to List</a>';
 
       container.innerHTML = html;
 
-      // TV Remote အတွက် ပထမဆုံး Button ကို Focus ပေးခြင်း
       setTimeout(function() {
         var firstBtn = document.querySelector('.stream-button');
         if (firstBtn) firstBtn.focus();
@@ -104,33 +97,36 @@
     });
 
     window.openPlayer = function(url) {
-  if (!url) return;
+      if (!url) return;
 
-  var intentUrl = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
-  
-  // Player ကို လှမ်းဖွင့်လိုက်မယ်
-  window.location.href = intentUrl;
+      var finalUrl = url;
+      
+      // VPN လိုအပ်သော Domain များအား Vercel Proxy ဖြင့် လှည့်ပတ်သွားရန်
+      // niues.live link များအတွက် Proxy သုံးမည်
+      if (url.indexOf("niues.live") !== -1) {
+        finalUrl = window.location.origin + "/api/proxy?url=" + encodeURIComponent(url);
+        console.log("Using Vercel Proxy for VPN bypass");
+      }
 
-  // Popup ကို ခဏ ဖျောက်ထားဖို့ Timer ပေးမယ်
-  // ၃ စက္ကန့် (3000ms) လောက် စောင့်ကြည့်မယ်။ 
-  // TV Box နှေးရင် Timer ကို ၂၅၀၀ ကနေ ၃၀၀၀ ကြား ထားတာ အကောင်းဆုံးပဲ။
-  var checkTimer = setTimeout(function() {
-    // Browser က screen ပေါ်မှာ ရှိနေသေးရင် (ဆိုလိုတာက Player ပွင့်မလာရင်) Popup ပြမယ်
-    if (!document.hidden && !document.webkitHidden) {
-      document.getElementById('player-modal').style.display = 'flex';
-    }
-  }, 3000); 
+      var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+      
+      window.location.href = intentUrl;
 
-  // Player ပွင့်သွားလို့ Browser က Background ရောက်သွားရင် Timer ကို ပြန်ဖျက်မယ်
-  var handleVisibilityChange = function() {
-    if (document.hidden || document.webkitHidden) {
-      clearTimeout(checkTimer);
-    }
-  };
+      var checkTimer = setTimeout(function() {
+        if (!document.hidden && !document.webkitHidden) {
+          document.getElementById('player-modal').style.display = 'flex';
+        }
+      }, 3000); 
 
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-  document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
-};
+      var handleVisibilityChange = function() {
+        if (document.hidden || document.webkitHidden) {
+          clearTimeout(checkTimer);
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
+    };
   </script>
 </body>
 </html>
