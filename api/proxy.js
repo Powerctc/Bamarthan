@@ -17,27 +17,25 @@ export default async function handler(req, res) {
       const origin = urlObj.origin;
       const basePath = url.substring(0, url.lastIndexOf('/') + 1);
 
-      // Playlist ထဲက link တွေကို Full URL အဖြစ်ပြောင်းပေးခြင်း
+      // playlist ထဲက link တိုင်းကို ကိုယ့် Proxy ဆီ ပြန်လှည့်ပေးတာပါ (ဒါမှ VPN မလိုမှာ)
       text = text.replace(/^(?!http)(.*)$/mg, (match) => {
         if (match.trim() === '' || match.startsWith('#')) return match;
-        return match.startsWith('/') ? origin + match : basePath + match;
+        const fullUrl = match.startsWith('/') ? origin + match : basePath + match;
+        return `/api/proxy?url=${encodeURIComponent(fullUrl)}`;
       });
 
-      // Player က ဒါကို Video လို့ သိအောင် Header ပေးခြင်း
       res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
       res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Cache-Control', 'no-cache');
       return res.status(200).send(text);
     }
 
-    // Video Segment (.ts) ဖိုင်များအတွက်
-    const arrayBuffer = await response.arrayBuffer();
-    const contentType = response.headers.get('content-type') || 'video/mp2t';
-    res.setHeader('Content-Type', contentType);
+    // Video (.ts) chunks တွေကို Vercel ကနေ ပို့ပေးမယ်
+    const data = await response.arrayBuffer();
+    res.setHeader('Content-Type', response.headers.get('content-type') || 'video/mp2t');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.status(200).send(Buffer.from(arrayBuffer));
+    return res.send(Buffer.from(data));
 
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).send('Error: ' + error.message);
   }
-            }
+  }
