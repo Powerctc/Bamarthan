@@ -57,26 +57,23 @@
 </head>
 <body>
 
-  <!-- 1. LOADING VIEW (စစ်ဆေးနေစဉ် ပြသမည့်မျက်နှာပြင်) -->
   <div id="loadingView" class="view-container" style="display: flex;">
     <div class="icon loading-color"><i class="fas fa-circle-notch fa-spin"></i></div>
     <h2>စစ်ဆေးနေပါသည်...</h2>
     <p>Device ID ကို စစ်ဆေးနေပါသည်။ ခေတ္တစောင့်ဆိုင်းပေးပါ။</p>
   </div>
 
-  <!-- 2. APPROVED VIEW (Redirect မလုပ်မီ ခဏပြသရန် - Optional) -->
   <div id="approvedView" class="view-container fade-in">
     <div class="icon approved-color"><i class="fas fa-check-circle"></i></div>
     <h2>ဝင်ခွင့်ရရှိပါသည်</h2>
     <p>ခေတ္တစောင့်ပါ။ အက်ပ်ထဲသို့ ခေါ်ဆောင်သွားနေပါသည်...</p>
   </div>
 
-  <!-- 3. EXPIRED VIEW (သက်တမ်းကုန်လျှင် ရပ်တန့်မည့်မျက်နှာပြင်) -->
   <div id="expiredView" class="view-container fade-in">
     <div class="icon expired-color"><i class="fas fa-calendar-times"></i></div>
     <h2 style="color:#ef4444;">သက်တမ်းကုန်ဆုံးပါပြီ</h2>
     <div class="id-box" id="expiredID">ID: --------</div>
-    <p>သင်၏ (၉၀) ရက် အစမ်းသုံးကာလ ကုန်ဆုံးသွားပြီ ဖြစ်ပါသည်။ ဆက်လက်အသုံးပြုလိုပါက Admin ထံသို့ ID ပေးပို့၍ သက်တမ်းတိုးနိုင်ပါသည်။</p>
+    <p id="expiredMessage">သင်၏ အသုံးပြုခွင့် သက်တမ်းမှာ 31-5-2026 တွင် ကုန်ဆုံးသွားပြီ ဖြစ်ပါသည်။ ဆက်လက်အသုံးပြုလိုပါက Admin ထံသို့ ID ပေးပို့၍ သက်တမ်းတိုးနိုင်ပါသည်။</p>
     <br>
     <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank" class="btn">Admin ကိုဆက်သွယ်ရန်</a>
   </div>
@@ -100,18 +97,22 @@
     function checkAccess() {
       const id = getStableID();
       const now = new Date().getTime();
+      
+      // *** ဤနေရာတွင် Expired Date ကို တိကျစွာ သတ်မှတ်ထားပါသည် ***
+      // 2026 ခုနှစ်၊ မေလ ၃၁ ရက် ည ၁၁ နာရီ ၅၉ မိနစ်အထိ ပေးသုံးမည်
+      const expiryLimit = new Date("2026-05-31T23:59:59").getTime();
+
       let auth = localStorage.getItem("s4itmm_auth_data");
 
-      // ပထမဆုံးအကြိမ်ဆိုလျှင် Auto-Approve (၉၀ ရက်)
       if (!auth) {
-        const ninetyDays = 90 * 24 * 60 * 60 * 1000;
-        auth = {
-          id: id,
-          expiry: now + ninetyDays
-        };
+        // ပထမဆုံးအကြိမ် ဝင်ရောက်သူအတွက်
+        auth = { id: id, expiry: expiryLimit };
         localStorage.setItem("s4itmm_auth_data", JSON.stringify(auth));
       } else {
+        // ရှိပြီးသားသူဆိုလျှင်လည်း သတ်မှတ်ရက်စွဲအသစ်ဖြင့် အမြဲ Update လုပ်ပေးမည်
         auth = JSON.parse(auth);
+        auth.expiry = expiryLimit; 
+        localStorage.setItem("s4itmm_auth_data", JSON.stringify(auth));
       }
 
       // စစ်ဆေးမှု လုပ်ဆောင်ချက်ကို ၁.၅ စက္ကန့် ခဏပြမည်
@@ -119,16 +120,14 @@
         document.getElementById('loadingView').style.display = 'none';
 
         if (now <= auth.expiry) {
-          // --- APPROVED ---
+          // --- APPROVED (သက်တမ်းရှိသေးလျှင်) ---
           document.getElementById('approvedView').style.display = 'flex';
-          
-          // ၁ စက္ကန့်အကြာတွင် index.html သို့ Auto Redirect လုပ်မည်
           setTimeout(() => {
             window.location.href = "index.html"; 
           }, 800);
 
         } else {
-          // --- EXPIRED ---
+          // --- EXPIRED (သက်တမ်းကုန်သွားလျှင်) ---
           document.getElementById('expiredView').style.display = 'flex';
           document.getElementById('expiredID').textContent = "ID: " + id;
         }
@@ -139,4 +138,3 @@
   </script>
 </body>
 </html>
-
