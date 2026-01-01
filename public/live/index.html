@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Live Football - S4ITMM TV (Full Legacy Version)</title>
+  <title>Live Football - S4ITMM TV (Full Legacy Optimized)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -32,7 +32,16 @@
 
     .content-body { padding: 24px; }
 
-    /* ============ MATCH CARDS (FLEXBOX) ============ */
+    /* ============ FILTER BUTTONS ============ */
+    .btn-group { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn {
+      background: #374151; color: #d1d5db; border: none; padding: 8px 16px;
+      border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500;
+    }
+    .btn.active { background: #ef4444; color: white; }
+    .reload-btn { background: #3b82f6; color: white; }
+
+    /* ============ MATCH CARDS (FLEXBOX SUPPORT) ============ */
     .match-container { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-start; }
     .match-card {
       background: #1f2937; border-radius: 12px; padding: 16px;
@@ -91,6 +100,20 @@
     </div>
 
     <div class="content-body">
+      <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #fbbf24; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+        <p style="font-size: 0.85rem; color: #bfdbfe;">
+          <i class="fas fa-info-circle"></i> ပွဲစဉ်များ မပေါ်ပါက VPN ခဏဖွင့်ပါ။ ပေါ်လာလျှင် ပြန်ပိတ်နိုင်ပါသည်။
+        </p>
+      </div>
+
+      <div class="btn-group">
+        <button id="btn-live" class="btn" onclick="App.setView('live')">Live</button>
+        <button id="btn-hot" class="btn" onclick="App.setView('hot')">Hot</button>
+        <button id="btn-all" class="btn active" onclick="App.setView('all')">All Matches</button>
+        <button id="btn-tomorrow" class="btn" onclick="App.setView('tomorrow')">Tomorrow</button>
+        <button class="btn reload-btn" onclick="location.reload()"><i class="fas fa-sync"></i></button>
+      </div>
+
       <div id="loading" style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin fa-2x" style="color:#ef4444"></i></div>
       <div id="matchContainer" class="match-container"></div>
     </div>
@@ -114,9 +137,9 @@
       url: "https://raw.githubusercontent.com/devxseven/mdata/refs/heads/main/matches.json",
       userUrl: "https://livesportmm-s4itmmapprover.hf.space/approved_users.json",
       allMatches: [],
+      view: 'all',
 
       init: function() {
-        var self = this;
         var myId = this.getStableID();
         this.checkUser(myId);
         this.fetchMatches();
@@ -126,35 +149,30 @@
         try {
           var id = localStorage.getItem("s4itmm_stable_id");
           if (!id || id.length !== 12) {
-            id = Math.abs(Math.floor(Math.random() * 900000000000) + 100000000000).toString();
+            id = Math.abs(Math.floor(Math.random() * 900000000000) + 100000000000).toString().slice(0, 12);
             localStorage.setItem("s4itmm_stable_id", id);
           }
           return id;
         } catch(e) { return "000000000000"; }
       },
 
-      // User Expire Date စစ်ဆေးခြင်း (Legacy Version)
       checkUser: function(id) {
         var display = document.getElementById("id-display");
         var xhr = new XMLHttpRequest();
         xhr.open("GET", this.userUrl + "?_t=" + new Date().getTime(), true);
         xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              try {
-                var users = JSON.parse(xhr.responseText);
-                var found = false;
-                for(var i=0; i<users.length; i++) {
-                  if(users[i].id === id) {
-                    display.innerHTML = '<span style="color:#10b981"><i class="fas fa-check-circle"></i> ID: ' + id + ' | Exp: ' + users[i].expires + '</span>';
-                    found = true; break;
-                  }
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            try {
+              var users = JSON.parse(xhr.responseText);
+              var found = false;
+              for(var i=0; i<users.length; i++) {
+                if(users[i].id === id) {
+                  display.innerHTML = '<span style="color:#10b981"><i class="fas fa-check-circle"></i> ID: ' + id + ' | Exp: ' + users[i].expires + '</span>';
+                  found = true; break;
                 }
-                if(!found) display.innerText = "ID: " + id + " | Trial Access";
-              } catch(e) { display.innerText = "ID: " + id; }
-            } else {
-              display.innerText = "ID: " + id;
-            }
+              }
+              if(!found) display.innerText = "ID: " + id + " | Trial Access";
+            } catch(e) { display.innerText = "ID: " + id; }
           }
         };
         xhr.send();
@@ -170,25 +188,58 @@
             if (xhr.status === 200) {
               var data = JSON.parse(xhr.responseText);
               self.allMatches = data.context || [];
-              self.render(self.allMatches);
-            } else {
-              document.getElementById('matchContainer').innerHTML = "<p style='text-align:center; width:100%;'>Error loading matches. Please use VPN.</p>";
+              self.render();
             }
           }
         };
         xhr.send();
       },
 
-      render: function(matches) {
+      setView: function(v) {
+        this.view = v;
+        var btns = document.getElementsByClassName('btn');
+        for(var i=0; i<btns.length; i++) { btns[i].className = 'btn'; }
+        var activeBtn = document.getElementById('btn-' + v);
+        if(activeBtn) activeBtn.className = 'btn active';
+        this.render();
+      },
+
+      render: function() {
         var container = document.getElementById('matchContainer');
         container.innerHTML = '';
         var now = moment();
+        var filtered = [];
 
-        for (var i = 0; i < matches.length; i++) {
+        // Logic for filtering (Legacy friendly)
+        for (var i = 0; i < this.allMatches.length; i++) {
+          var m = this.allMatches[i];
+          var mt = moment(m.match_time * 1000);
+          
+          if (this.view === 'live') {
+            if (now.isBetween(mt, moment(mt).add(130, 'm'))) filtered.push(m);
+          } else if (this.view === 'hot') {
+            var hotLeagues = ['Premier League', 'UCL', 'Europa League', 'Laliga', 'Serie A', 'Bundesliga', 'NBA'];
+            var isHot = false;
+            for(var x=0; x<hotLeagues.length; x++) {
+              if(m.league && m.league.indexOf(hotLeagues[x]) !== -1) { isHot = true; break; }
+            }
+            if(isHot) filtered.push(m);
+          } else if (this.view === 'tomorrow') {
+            if (mt.isSame(moment().add(1,'d'), 'day')) filtered.push(m);
+          } else {
+            filtered.push(m);
+          }
+        }
+
+        if (filtered.length === 0) {
+          container.innerHTML = "<p style='text-align:center; width:100%; padding:40px; color:#9ca3af;'>No matches found.</p>";
+          return;
+        }
+
+        for (var j = 0; j < filtered.length; j++) {
           (function(m) {
             var mt = moment(m.match_time * 1000);
             var isLive = now.isBetween(mt, moment(mt).add(130, 'm'));
-            
             var card = document.createElement('div');
             card.className = 'match-card';
             card.innerHTML = 
@@ -202,10 +253,9 @@
                 '</div>' +
                 '<div class="team-box"><img src="' + (m.away_img || '') + '" onerror="this.src=\'https://via.placeholder.com/50\'"><div class="team-name">' + m.away_name + '</div></div>' +
               '</div>';
-            
             card.onclick = function() { App.showStreams(m); };
             container.appendChild(card);
-          })(matches[i]);
+          })(filtered[j]);
         }
       },
 
@@ -214,19 +264,17 @@
         var list = document.getElementById('streamList');
         list.innerHTML = '';
         var links = m.links || [];
-        
         if (links.length === 0) {
-          list.innerHTML = "<p style='padding:20px; color:#fbbf24;'>Streams available 15 mins before kickoff.</p>";
+          list.innerHTML = "<p style='padding:20px; color:#fbbf24;'>Available soon...</p>";
         } else {
-          for (var j = 0; j < links.length; j++) {
-            var l = links[j];
-            var btn = document.createElement('button');
-            btn.className = 'stream-link';
-            btn.innerHTML = '<i class="fas fa-play"></i> ' + (l.name || 'Server');
-            (function(url) {
-              btn.onclick = function() { App.play(url); };
-            })(l.url);
-            list.appendChild(btn);
+          for (var k = 0; k < links.length; k++) {
+            (function(l) {
+              var btn = document.createElement('button');
+              btn.className = 'stream-link';
+              btn.innerHTML = '<i class="fas fa-play"></i> ' + (l.name || 'Server');
+              btn.onclick = function() { App.play(l.url); };
+              list.appendChild(btn);
+            })(links[k]);
           }
         }
         document.getElementById('matchModal').style.display = 'flex';
