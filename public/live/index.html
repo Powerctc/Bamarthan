@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Live Football - S4ITMM TV (Legacy Support)</title>
+  <title>Live Football - S4ITMM TV (Full Legacy Version)</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -20,28 +20,26 @@
     .sidebar-header { padding: 16px; display: flex; align-items: center; border-bottom: 1px solid #374151; }
     .sidebar-header i { color: #ef4444; margin-right: 8px; font-size: 20px; }
     .logo-text { font-weight: bold; font-size: 18px; color: #f3f4f6; }
-    .nav-item { display: flex; align-items: center; padding: 12px 16px; color: #d1d5db; text-decoration: none; font-size: 14px; }
+    .nav-item { display: flex; align-items: center; padding: 12px 16px; color: #d1d5db; text-decoration: none; font-size: 14px; border-bottom: 1px solid #2d3748; }
     .nav-item i { width: 24px; margin-right: 10px; }
     .nav-item.active { background-color: #ef4444; color: white; }
 
     /* ============ MAIN CONTENT ============ */
     .main-content { margin-left: 192px; padding: 0; min-height: 100vh; }
-    .header-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #1f2937; position: sticky; top: 0; z-index: 1000; }
+    .header-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: #1f2937; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     .header-bar h1 { font-size: 1.25rem; color: #ef4444; }
+    .id-box { background: #111827; padding: 4px 10px; border-radius: 6px; border: 1px solid #374151; font-size: 11px; text-align: right; }
+
     .content-body { padding: 24px; }
 
-    /* ============ MATCH CARDS (LEGACY FLEXBOX) ============ */
-    .match-container {
-      display: -webkit-flex; display: flex;
-      -webkit-flex-wrap: wrap; flex-wrap: wrap;
-      gap: 16px; justify-content: flex-start;
-    }
+    /* ============ MATCH CARDS (FLEXBOX) ============ */
+    .match-container { display: flex; flex-wrap: wrap; gap: 16px; justify-content: flex-start; }
     .match-card {
       background: #1f2937; border-radius: 12px; padding: 16px;
       cursor: pointer; border: 1px solid #374151;
-      width: 300px; margin-bottom: 10px; /* TV Box အတွက် ပုံသေ Width ပေးထားခြင်း */
+      width: 300px; margin-bottom: 10px;
     }
-    .league-tag { font-size: 0.7rem; color: #60a5fa; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: block; text-align: center; }
+    .league-tag { font-size: 0.7rem; color: #60a5fa; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; display: block; text-align: center; background: rgba(0,0,0,0.2); border-radius: 4px; padding: 2px; }
     .match-flex { display: flex; align-items: center; justify-content: space-between; }
     .team-box { width: 35%; text-align: center; }
     .team-box img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 8px; background: white; padding: 2px; border-radius: 50%; }
@@ -52,10 +50,14 @@
     .live-dot { color: #ef4444; font-size: 0.75rem; font-weight: bold; animation: blink 1.5s infinite; }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+    /* ============ FOOTER ============ */
+    footer { text-align: center; padding: 30px; color: #6b7280; font-size: 12px; border-top: 1px solid #1f2937; margin-top: 20px; }
+    footer a { color: #ef4444; text-decoration: none; }
+
     /* ============ MODAL ============ */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
     .modal-content { background: #1f2937; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; position: relative; text-align: center; border: 1px solid #4b5563; }
-    .stream-link { display: block; width: 100%; padding: 14px; margin: 10px 0; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; text-decoration: none; }
+    .stream-link { display: block; width: 100%; padding: 14px; margin: 10px 0; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; text-decoration: none; text-align:center; }
 
     @media (max-width: 768px) {
       .sidebar { width: 60px; }
@@ -69,55 +71,99 @@
 
   <div class="sidebar">
     <div class="sidebar-header"><i class="fas fa-film"></i><span class="logo-text">S4ITMM TV</span></div>
-    <a href="#" class="nav-item active"><i class="fas fa-futbol"></i><span>Futbol Live</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item"><i class="fas fa-home"></i><span>HOME</span></a>
+    <a href="#" class="nav-item active"><i class="fas fa-futbol"></i><span>Futbol Live(D1)</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/live/indexl.html" class="nav-item"><i class="fas fa-futbol"></i><span>Futbol Live(D2)</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item"><i class="fas fa-hand-fist"></i><span>MMA Live</span></a>
+    <a href="https://www.fotmob.com/my" class="nav-item" target="_blank"><i class="fas fa-chart-line"></i><span>Livescore</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item"><i class="fas fa-tv"></i><span>Series</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item"><i class="fas fa-satellite-dish"></i><span>Myanmar TV</span></a>
+    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item"><i class="fas fa-user-gear"></i><span>About</span></a>
   </div>
 
   <div class="main-content">
     <div class="header-bar">
       <h1><i class="fas fa-futbol"></i> Live Football</h1>
-      <div id="id-display" style="font-size:12px; color:#94a3b8;">Loading ID...</div>
+      <div id="device-info-box" class="id-box">
+        <div id="id-display">Loading ID...</div>
+      </div>
     </div>
 
     <div class="content-body">
       <div id="loading" style="text-align: center; padding: 50px;"><i class="fas fa-spinner fa-spin fa-2x" style="color:#ef4444"></i></div>
       <div id="matchContainer" class="match-container"></div>
     </div>
+
+    <footer>
+      <p>S4ITMM © 2026 | All rights reserved</p>
+      <p>Created by <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung (Forever Study)</a></p>
+    </footer>
   </div>
 
   <div id="matchModal" class="modal">
     <div class="modal-content">
-      <h3 id="modalTitle" style="margin-bottom:20px;">Select Channel</h3>
+      <h3 id="modalTitle" style="margin-bottom:20px; color:#fff;">Select Channel</h3>
       <div id="streamList"></div>
-      <button onclick="document.getElementById('matchModal').style.display='none'" style="margin-top:15px; background:none; border:none; color:#aaa; cursor:pointer;">CLOSE</button>
+      <button onclick="document.getElementById('matchModal').style.display='none'" style="margin-top:15px; background:none; border:none; color:#9ca3af; cursor:pointer; font-weight:bold;">CLOSE</button>
     </div>
   </div>
 
   <script>
-    // TV Box Version အဟောင်းတွေအတွက် ES5 Format ဖြင့်ပြန်ရေးထားသော Script
     var App = {
       url: "https://raw.githubusercontent.com/devxseven/mdata/refs/heads/main/matches.json",
+      userUrl: "https://livesportmm-s4itmmapprover.hf.space/approved_users.json",
       allMatches: [],
 
       init: function() {
-        this.fetchData();
-        document.getElementById("id-display").innerText = "ID: " + this.getStableID();
+        var self = this;
+        var myId = this.getStableID();
+        this.checkUser(myId);
+        this.fetchMatches();
       },
 
       getStableID: function() {
         try {
-          var id = localStorage.getItem("s4itmm_id");
-          if (!id) {
-            id = Math.floor(Math.random() * 900000000000) + 100000000000;
-            localStorage.setItem("s4itmm_id", id);
+          var id = localStorage.getItem("s4itmm_stable_id");
+          if (!id || id.length !== 12) {
+            id = Math.abs(Math.floor(Math.random() * 900000000000) + 100000000000).toString();
+            localStorage.setItem("s4itmm_stable_id", id);
           }
           return id;
-        } catch(e) { return "123456789012"; }
+        } catch(e) { return "000000000000"; }
       },
 
-      fetchData: function() {
+      // User Expire Date စစ်ဆေးခြင်း (Legacy Version)
+      checkUser: function(id) {
+        var display = document.getElementById("id-display");
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", this.userUrl + "?_t=" + new Date().getTime(), true);
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              try {
+                var users = JSON.parse(xhr.responseText);
+                var found = false;
+                for(var i=0; i<users.length; i++) {
+                  if(users[i].id === id) {
+                    display.innerHTML = '<span style="color:#10b981"><i class="fas fa-check-circle"></i> ID: ' + id + ' | Exp: ' + users[i].expires + '</span>';
+                    found = true; break;
+                  }
+                }
+                if(!found) display.innerText = "ID: " + id + " | Trial Access";
+              } catch(e) { display.innerText = "ID: " + id; }
+            } else {
+              display.innerText = "ID: " + id;
+            }
+          }
+        };
+        xhr.send();
+      },
+
+      fetchMatches: function() {
         var self = this;
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", this.url + "?t=" + new Date().getTime(), true);
+        xhr.open("GET", this.url + "?_t=" + new Date().getTime(), true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4) {
             document.getElementById('loading').style.display = 'none';
@@ -126,7 +172,7 @@
               self.allMatches = data.context || [];
               self.render(self.allMatches);
             } else {
-              document.getElementById('matchContainer').innerHTML = "<p>Error loading data. Check Internet/VPN.</p>";
+              document.getElementById('matchContainer').innerHTML = "<p style='text-align:center; width:100%;'>Error loading matches. Please use VPN.</p>";
             }
           }
         };
@@ -148,13 +194,13 @@
             card.innerHTML = 
               '<span class="league-tag">' + (m.league || 'Football') + '</span>' +
               '<div class="match-flex">' +
-                '<div class="team-box"><img src="' + m.home_img + '" onerror="this.src=\'https://via.placeholder.com/50\'"><div class="team-name">' + m.home_name + '</div></div>' +
+                '<div class="team-box"><img src="' + (m.home_img || '') + '" onerror="this.src=\'https://via.placeholder.com/50\'"><div class="team-name">' + m.home_name + '</div></div>' +
                 '<div class="center-box">' +
                   '<div class="match-date">' + mt.format('DD MMM') + '</div>' +
                   '<div class="match-time">' + mt.format('hh:mm A') + '</div>' +
                   (isLive ? '<div class="live-dot">● LIVE</div>' : '') +
                 '</div>' +
-                '<div class="team-box"><img src="' + m.away_img + '" onerror="this.src=\'https://via.placeholder.com/50\'"><div class="team-name">' + m.away_name + '</div></div>' +
+                '<div class="team-box"><img src="' + (m.away_img || '') + '" onerror="this.src=\'https://via.placeholder.com/50\'"><div class="team-name">' + m.away_name + '</div></div>' +
               '</div>';
             
             card.onclick = function() { App.showStreams(m); };
@@ -170,7 +216,7 @@
         var links = m.links || [];
         
         if (links.length === 0) {
-          list.innerHTML = "<p style='color:#fbbf24;'>Available soon...</p>";
+          list.innerHTML = "<p style='padding:20px; color:#fbbf24;'>Streams available 15 mins before kickoff.</p>";
         } else {
           for (var j = 0; j < links.length; j++) {
             var l = links[j];
