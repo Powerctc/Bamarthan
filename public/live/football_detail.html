@@ -97,26 +97,29 @@
     });
 
     window.openPlayer = function(url) {
-      if (!url) return;
+  if (!url) return;
 
-      var finalUrl = url;
-      
-      // VPN လိုအပ်သော Domain များအား Vercel Proxy ဖြင့် လှည့်ပတ်သွားရန်
-      // niues.live link များအတွက် Proxy သုံးမည်
-      if (url.indexOf("niues.live") !== -1) {
-        finalUrl = window.location.origin + "/api/proxy?url=" + encodeURIComponent(url);
-        console.log("Using Vercel Proxy for VPN bypass");
-      }
+  var finalUrl = url;
+  
+  // niues.live link တွေဆိုရင် VPN block ကျော်ဖို့ Proxy သုံးမယ်
+  if (url.indexOf("niues.live") !== -1) {
+    // window.location.origin သုံးပြီး Vercel domain အပြည့်အစုံကို ယူပါ
+    finalUrl = window.location.origin + "/api/proxy?url=" + encodeURIComponent(url);
+  }
 
-      var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
-      
-      window.location.href = intentUrl;
+  // Player ကို လှမ်းပို့မည့် Intent URL
+  var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+  
+  window.location.href = intentUrl;
 
-      var checkTimer = setTimeout(function() {
-        if (!document.hidden && !document.webkitHidden) {
-          document.getElementById('player-modal').style.display = 'flex';
-        }
-      }, 3000); 
+  // ကျန်တဲ့ Timer logic များ...
+  var checkTimer = setTimeout(function() {
+    if (!document.hidden && !document.webkitHidden) {
+      document.getElementById('player-modal').style.display = 'flex';
+    }
+  }, 3000);
+};
+
 
       var handleVisibilityChange = function() {
         if (document.hidden || document.webkitHidden) {
