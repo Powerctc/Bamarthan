@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZETFLIX - Movie Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #1a202c;
+      color: #e2e8f0;
+    }
+    .movie-poster-large {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+    }
+    .play-button {
+      background-color: #ef4444;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .play-button:hover {
+      background-color: #dc2626;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-content {
+      background-color: #2d3748;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      transform: translateY(-20px);
+      transition: transform 0.3s ease-in-out;
+      position: relative;
+    }
+    .modal-overlay.show .modal-content {
+      transform: translateY(0);
+    }
+    .modal-close-button {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #cbd5e0;
+      cursor: pointer;
+    }
+    .modal-close-button:hover {
+      color: #ffffff;
+    }
+    .install-button {
+      background-color: #4299e1;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.375rem;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    .install-button:hover {
+      background-color: #3182ce;
+    }
+    .app-logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      border-radius: 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+  </style>
+</head>
+
+    <main class="flex-1 flex items-center justify-center p-6">
+      <div id="movie-detail-container" class="bg-gray-800 rounded-lg shadow-xl p-8 flex flex-col md:flex-row items-center gap-8 w-full max-w-4xl">
+        <p class="text-center text-gray-400 w-full">Loading movie details...</p>
+      </div>
+    </main>
+
+    <!-- ✅ App Not Found Modal -->
+    <div id="player-modal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close-button" id="close-modal">&times;</button>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnni40YRRPc9wGBd2tDOIX1qCTqddax0tPR5QsIxC8HA&s=10" alt="NS Player" class="app-logo">
+        <h3 class="text-2xl font-bold mb-4 text-white">App Not Installed</h3>
+        <p class="text-gray-300 mb-2">The required player app is not installed on your device.</p>
+        <p class="text-gray-300 mb-6">Please install <strong>Network Streaming Video Player</strong> to continue.</p>
+        <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank" class="install-button flex items-center justify-center gap-2">
+          <i class="fab fa-android"></i> Install NS Player
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const movieDetailContainer = document.getElementById('movie-detail-container');
+      const playerModal = document.getElementById('player-modal');
+      const closeModalButton = document.getElementById('close-modal');
+
+      const showModal = () => playerModal.classList.add('show');
+      const hideModal = () => playerModal.classList.remove('show');
+      closeModalButton.addEventListener('click', hideModal);
+      playerModal.addEventListener('click', (e) => {
+        if (e.target === playerModal) hideModal();
+      });
+
+      const storedMovie = localStorage.getItem('selectedMovie');
+
+      if (storedMovie) {
+        const movie = JSON.parse(storedMovie);
+        displayMovieDetails(movie);
+      } else {
+        movieDetailContainer.innerHTML = `
+          <div class="text-center text-red-400 w-full">
+            <p>No movie selected. Please go back to the <a href="index.html" class="underline text-blue-400 hover:text-blue-500">Home Page</a>.</p>
+          </div>
+        `;
+      }
+
+      function displayMovieDetails(movie) {
+        movieDetailContainer.innerHTML = `
+          <img src="${movie.logo}" alt="${movie.title} Poster" class="movie-poster-large mb-6 md:mb-0">
+          <div class="flex flex-col items-center md:items-start text-center md:text-left">
+            <h2 class="text-4xl font-bold mb-2 text-white">${movie.title}</h2>
+            <p class="text-gray-300 text-xl mb-4">${movie.year} | ${movie.category}</p>
+            <button id="watch-button" class="play-button flex items-center justify-center gap-2">
+              <i class="fas fa-play"></i> Watch Now
+            </button>
+          </div>
+        `;
+
+        document.getElementById('watch-button').addEventListener('click', () => {
+          openWithExternalPlayer(movie.url);
+        });
+      }
+
+      // ✅ FUNCTION TO OPEN WITH INTENT + FALLBACK MODAL
+      function openWithExternalPlayer(url) {
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const intentUrl = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=MMTV%20SPORT;end`;
+
+        if (isAndroid) {
+          let timeout;
+
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = intentUrl;
+          document.body.appendChild(iframe);
+
+          setTimeout(() => {
+            document.body.removeChild(iframe);
+          }, 1000);
+
+          timeout = setTimeout(() => {
+            showModal();
+          }, 1500);
+
+          const handleVisibility = () => {
+            if (document.visibilityState === 'hidden') {
+              clearTimeout(timeout);
+            }
+          };
+
+          document.addEventListener('visibilitychange', handleVisibility, { once: true });
+        } else {
+          alert('Only available on Android.');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
