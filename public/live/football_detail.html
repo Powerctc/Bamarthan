@@ -101,20 +101,24 @@
     });
 
     window.openPlayer = function(url) {
+  ifwindow.openPlayer = function(url) {
   if (!url) return;
 
   var finalUrl = url;
   
+  // VPN လိုတဲ့ link တွေဆိုရင် မင်းရဲ့ Hugging Face Proxy ကို သုံးမယ်
   if (url.indexOf("niues.live") !== -1) {
-    // URL ကို Base64 ပြောင်းလိုက်ခြင်း
-    var encodedUrl = btoa(url); 
-    finalUrl = window.location.origin + "/api/proxy?b64=" + encodedUrl;
+    // မင်းပေးထားတဲ့ Hugging Face Direct URL
+    var hfProxy = "https://livesportmm-s4itmm-proxy.hf.space/proxy?url=";
+    finalUrl = hfProxy + encodeURIComponent(url);
   }
 
+  // Player ကို လှမ်းဖွင့်မည့် Intent URL
   var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+  
   window.location.href = intentUrl;
 
-  // Timer logic
+  // Player မရှိရင် Modal ပြဖို့ Timer
   if (checkTimer) clearTimeout(checkTimer);
   checkTimer = setTimeout(function() {
     if (!document.hidden && !document.webkitHidden) {
@@ -122,6 +126,7 @@
     }
   }, 3000);
 };
+
 
     // Stop timer if player actually opens and browser goes to background
     var handleVisibilityChange = function() {
