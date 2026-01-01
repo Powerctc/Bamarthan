@@ -11,31 +11,33 @@ export default async function handler(req, res) {
       }
     });
 
-    // Playlist (.m3u8) ဖြစ်ခဲ့ရင်
     if (url.includes('.m3u8')) {
       let text = await response.text();
-      const origin = new URL(url).origin;
       const urlObj = new URL(url);
-      const basePath = urlObj.href.substring(0, urlObj.href.lastIndexOf('/') + 1);
+      const origin = urlObj.origin;
+      const basePath = url.substring(0, url.lastIndexOf('/') + 1);
 
-      // Playlist ထဲက Relative Links တွေကို Full URL ပြောင်းပေးခြင်း (Player နားလည်အောင်)
+      // Playlist ထဲက link တွေကို Full URL အဖြစ်ပြောင်းပေးခြင်း
       text = text.replace(/^(?!http)(.*)$/mg, (match) => {
         if (match.trim() === '' || match.startsWith('#')) return match;
         return match.startsWith('/') ? origin + match : basePath + match;
       });
 
-      res.setHeader('Content-Type', 'application/vnd.apple.mpegurl'); // ဒါမှ Player က ဗီဒီယိုမှန်းသိမှာ
+      // Player က ဒါကို Video လို့ သိအောင် Header ပေးခြင်း
+      res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
       res.setHeader('Access-Control-Allow-Origin', '*');
-      return res.send(text);
+      res.setHeader('Cache-Control', 'no-cache');
+      return res.status(200).send(text);
     }
 
-    // တခြား Video Data (.ts chunks) တွေအတွက်
+    // Video Segment (.ts) ဖိုင်များအတွက်
     const arrayBuffer = await response.arrayBuffer();
-    res.setHeader('Content-Type', response.headers.get('content-type') || 'video/mp2t');
+    const contentType = response.headers.get('content-type') || 'video/mp2t';
+    res.setHeader('Content-Type', contentType);
     res.setHeader('Access-Control-Allow-Origin', '*');
-    return res.send(Buffer.from(arrayBuffer));
+    return res.status(200).send(Buffer.from(arrayBuffer));
 
   } catch (error) {
-    return res.status(500).send('Proxy Error: ' + error.message);
+    return res.status(500).json({ error: error.message });
   }
-}
+            }
