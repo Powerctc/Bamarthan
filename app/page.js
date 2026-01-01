@@ -149,15 +149,84 @@ export default function HomePage() {
         </div>
       )}
 
-      <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px dashed #f59e0b', borderRadius: '12px', padding: '15px', maxWidth: '400px', width: '100%', marginTop: '30px' }}>
-        <p style={{ color: '#f59e0b', margin: '0 0 10px 0', fontSize: '0.8rem' }}>Smart TV များတွင် အဆင်မပြေပါက အောက်ပါခလုတ်ကို နှိပ်ပါ</p>
-        <a href="/home.html" style={{ background: '#f59e0b', color: 'white', padding: '10px', borderRadius: '8px', display: 'block', textDecoration: 'none', fontWeight: 'bold' }}>HTML Version</a>
+      {/* Special section for old devices */}
+      <div className="mt-8 p-4" style={{ 
+        background: 'rgba(245, 158, 11, 0.1)', 
+        border: '1px solid #f59e0b',
+        borderRadius: '8px',
+        maxWidth: '500px',
+        width: '100%'
+      }}>
+        <h4 style={{ color: '#f59e0b', marginBottom: '10px' }}>ဒီစာမျက်နှာမှာ id မပေါ်ပါကအောက်ပါ Button ကိုနှိပ်ပါ</h4>
+        <p style={{ color: '#cbd5e1', fontSize: '0.9rem', marginBottom: '15px' }}>
+          If you're seeing the loading screen for too long or experiencing issues,<br />
+          <strong>Click the button below to use Static Html</strong>
+        </p>
+        <a
+          href="/home.html"
+          style={{
+            background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+            color: 'white',
+            border: 'none',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '1rem',
+            fontWeight: 'bold',
+            width: '100%',
+            marginBottom: '10px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+            textDecoration: 'none',
+            transition: 'all 0.3s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = 'none';
+          }}
+        >
+          <i className="fas fa-tv"></i>
+          Go to HTML Version (Old Devices)
+        </a>
+        <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
+          This will load a simpler version that works better on older TVs
+        </p>
       </div>
 
+      {/* Contact info */}
+      <div className="contact mt-8" style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
+        <p>Need access? Contact us:</p>
+        <p>📱 Telegram: <a 
+          href="tg://resolve?domain=S4MMTV" 
+          style={{ color: '#60a5fa', textDecoration: 'none' }}
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.href = 'tg://resolve?domain=S4MMTV';
+          }}
+        >
+          @S4ITMM
+        </a></p>
+        <p>📧 Email: <a 
+          href="mailto:support@s4itmm.com" 
+          style={{ color: '#60a5fa', textDecoration: 'none' }}
+        >
+          support@s4itmm.com
+        </a></p>
+      </div>
+
+      {/* Add CSS for spinner animation */}
       <style jsx>{`
-        .loader { width: 40px; height: 40px; border: 4px solid #334155; border-top-color: #ef4444; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
       `}</style>
     </div>
   )
-}   
+            }
