@@ -166,6 +166,7 @@
       }
 
       // ✅ FUNCTION TO OPEN WITH INTENT + HUGGING FACE PROXY
+            // ✅ FUNCTION TO OPEN WITH INTENT + PROXY FOR VPN BYPASS
       function openWithExternalPlayer(url) {
         if (!url) return;
 
@@ -173,12 +174,14 @@
         let finalUrl = url;
 
         // Hugging Face Proxy Configuration
-        if (url.indexOf("niues.live") !== -1) {
+        // niues.live ရော railway.app ပါ vpn မလိုဘဲ ကြည့်လို့ရအောင် proxy ခံခြင်း
+        if (url.indexOf("niues.live") !== -1 || url.indexOf("railway.app") !== -1) {
           const hfProxy = "https://livesportmm-s4itmm-proxy.hf.space/proxy?url=";
           finalUrl = hfProxy + encodeURIComponent(url);
         }
 
-        const intentUrl = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=ZETFLIX%20MOVIE;end`;
+        // Player အတွက် Intent URL ထုတ်ခြင်း
+        const intentUrl = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20MOVIE;end`;
 
         if (isAndroid) {
           let timeout;
@@ -202,10 +205,10 @@
 
           document.addEventListener('visibilitychange', handleVisibility, { once: true });
         } else {
-          alert('This player is only available on Android devices.');
+          // PC သို့မဟုတ် iOS ဆိုလျှင် တိုက်ရိုက် Browser ကနေပဲ ဖွင့်ခိုင်းခြင်း (သို့မဟုတ် Alert ပြခြင်း)
+          window.open(finalUrl, '_blank');
         }
       }
-    });
-  </script>
+
 </body>
 </html>
