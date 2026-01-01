@@ -27,7 +27,6 @@
     .back-button { display: inline-block; margin-top: 20px; color: #63b3ed; text-decoration: none; font-size: 14px; outline: none; padding: 10px; }
     .back-button:focus { color: #ef4444; text-decoration: underline; }
 
-    /* Modal Styles */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-content { background: #2d3748; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; }
     .app-logo { width: 80px; height: 80px; border-radius: 15px; margin-bottom: 15px; }
@@ -66,7 +65,6 @@
 
       var match = JSON.parse(matchData);
       
-      // Build HTML
       var html = '<h2 style="margin-bottom:5px;">' + (match.home_name || "Match") + ' VS ' + (match.away_name || "") + '</h2>';
       html += '<p style="color:#a0aec0; margin-bottom:20px;">' + (match.league || "Live Stream") + '</p>';
       
@@ -93,7 +91,6 @@
 
       container.innerHTML = html;
 
-      // Auto-focus first button for TV Remote
       setTimeout(function() {
         var firstBtn = document.querySelector('.stream-button');
         if (firstBtn) firstBtn.focus();
@@ -101,34 +98,28 @@
     });
 
     window.openPlayer = function(url) {
-  ifwindow.openPlayer = function(url) {
-  if (!url) return;
+      if (!url) return;
 
-  var finalUrl = url;
-  
-  // VPN လိုတဲ့ link တွေဆိုရင် မင်းရဲ့ Hugging Face Proxy ကို သုံးမယ်
-  if (url.indexOf("niues.live") !== -1) {
-    // မင်းပေးထားတဲ့ Hugging Face Direct URL
-    var hfProxy = "https://livesportmm-s4itmm-proxy.hf.space/proxy?url=";
-    finalUrl = hfProxy + encodeURIComponent(url);
-  }
+      var finalUrl = url;
+      
+      // VPN Bypass using Hugging Face Proxy
+      if (url.indexOf("niues.live") !== -1) {
+        var hfProxy = "https://livesportmm-s4itmm-proxy.hf.space/proxy?url=";
+        finalUrl = hfProxy + encodeURIComponent(url);
+      }
 
-  // Player ကို လှမ်းဖွင့်မည့် Intent URL
-  var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
-  
-  window.location.href = intentUrl;
+      var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+      
+      window.location.href = intentUrl;
 
-  // Player မရှိရင် Modal ပြဖို့ Timer
-  if (checkTimer) clearTimeout(checkTimer);
-  checkTimer = setTimeout(function() {
-    if (!document.hidden && !document.webkitHidden) {
-      document.getElementById('player-modal').style.display = 'flex';
-    }
-  }, 3000);
-};
+      if (checkTimer) clearTimeout(checkTimer);
+      checkTimer = setTimeout(function() {
+        if (!document.hidden && !document.webkitHidden) {
+          document.getElementById('player-modal').style.display = 'flex';
+        }
+      }, 3000);
+    };
 
-
-    // Stop timer if player actually opens and browser goes to background
     var handleVisibilityChange = function() {
       if (document.hidden || document.webkitHidden) {
         if (checkTimer) clearTimeout(checkTimer);
