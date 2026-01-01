@@ -350,7 +350,7 @@
       const grid = document.getElementById('movie-grid');
       grid.innerHTML = '<div style="text-align:center; width:100%; padding:30px;"><i class="fas fa-spinner fa-spin"></i> Loading matches...</div>';
       try {
-        const res = await fetch('https://raw.githubusercontent.com/devxseven/mdata/refs/heads/main/matches.json?_t=' + Date.now(), { cache: 'no-store' });
+        const res = await fetch('https://tv-version-eight.vercel.app/api/get-matches.js?_t=' + Date.now(), { cache: 'no-store' });
         const data = await res.json();
         allMatches = data.context || [];
         applyFilter(currentFilter);
