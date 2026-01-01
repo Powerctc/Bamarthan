@@ -12,24 +12,33 @@ export default async function handler(req, res) {
     });
 
     const contentType = response.headers.get('content-type');
-    let data = await response.text();
-
-    // အရေးကြီးဆုံးအပိုင်း: .m3u8 ထဲက Link တွေကို Proxy Link အဖြစ် ပြောင်းပေးခြင်း
+    
+    // m3u8 playlist ဖြစ်ရင် အထဲက link တွေကို ပြင်မယ်
     if (url.includes('.m3u8')) {
-      const baseUrl = url.substring(0, url.lastIndexOf('/') + 1);
-      
-      // .ts link တွေ ဒါမှမဟုတ် အခြား m3u8 link တွေကို ရှာပြီး Proxy ခံပေးတာပါ
+      let data = await response.text();
+      const origin = new URL(url).origin;
+      const path = url.substring(0, url.lastIndexOf('/') + 1);
+
+      // စာသားသက်သက် Proxy လို့ မပေါ်အောင် Link တွေကို Full Path ပြောင်းပေးခြင်း
       data = data.replace(/^(?!http)(.*)$/mg, (match) => {
         if (match.trim() === '' || match.startsWith('#')) return match;
-        const fullUrl = new URL(match, baseUrl).href;
-        return `/api/proxy?url=${encodeURIComponent(fullUrl)}`;
+        // Link က / နဲ့စရင် origin ကယူမယ်၊ မဟုတ်ရင် လက်ရှိ path ကယူမယ်
+        const fullUrl = match.startsWith('/') ? origin + match : path + match;
+        return fullUrl; // ဒီနေရာမှာ Proxy ပြန်မခံဘဲ မူရင်း Full URL ပဲ ပေးလိုက်တာ ပိုစိတ်ချရတယ်
       });
+
+      res.setHeader('Content-Type', 'application/vnd.apple.mpegurl');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      return res.send(data);
     }
 
-    res.setHeader('Content-Type', contentType || 'application/vnd.apple.mpegurl');
+    // တခြား file (ts chunks) တွေဆိုရင် တိုက်ရိုက် stream လုပ်ပေးမယ်
+    const arrayBuffer = await response.arrayBuffer();
+    res.setHeader('Content-Type', contentType);
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.send(data);
+    res.send(Buffer.from(arrayBuffer));
+
   } catch (error) {
-    res.status(500).send('Stream Proxy Error');
+    res.status(500).send('Proxy Error: ' + error.message);
   }
 }
