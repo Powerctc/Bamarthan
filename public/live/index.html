@@ -36,10 +36,13 @@
     }
     .match-card:focus { border-color: #ef4444; background: #2d3748; transform: scale(1.02); }
     
-    /* Live Card Highlight */
     .match-card.is-live-border { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
 
-    .league-tag { font-size: 11px; color: #60a5fa; display: block; text-align: center; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
+    .league-tag { font-size: 11px; color: #60a5fa; display: block; text-align: center; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; }
+    
+    /* New Date Style */
+    .match-date-info { font-size: 10px; color: #9ca3af; display: block; text-align: center; margin-bottom: 10px; font-weight: normal; }
+
     .match-flex { display: flex; justify-content: space-between; align-items: center; }
     .team-box { width: 35%; text-align: center; }
     .team-box img { width: 45px; height: 45px; background: white; border-radius: 50%; padding: 2px; object-fit: contain; }
@@ -156,7 +159,6 @@
         var container = document.getElementById('matchContainer');
         container.innerHTML = '';
         
-        // လက်ရှိအချိန်ကို Moment နဲ့ ယူပါ
         var now = moment();
         
         for (var i = 0; i < this.allMatches.length; i++) {
@@ -164,23 +166,22 @@
             var matchStartTime = moment(match.match_time * 1000);
             var matchEndTime = moment(matchStartTime).add(130, 'minutes');
             
-            // Live ဖြစ်နေခြင်း ရှိ/မရှိ စစ်ဆေးခြင်း
             var isLive = now.isSameOrAfter(matchStartTime) && now.isBefore(matchEndTime);
             
-            // Filter Logic
             if(App.view === 'live' && !isLive) return;
             if(App.view === 'tomorrow' && !matchStartTime.isSame(moment().add(1,'d'), 'day')) return;
 
             var card = document.createElement('div');
-            // Live ဖြစ်ရင် Border အနီရောင်ပြောင်းရန် Class ထည့်ခြင်း
             card.className = 'match-card' + (isLive ? ' is-live-border' : '');
             card.tabIndex = 3; 
             
-            // 12-hour format (AM/PM)
             var timeStr = matchStartTime.format('hh:mm A');
+            // Day and Date format: Sat 02/01
+            var dateStr = matchStartTime.format('ddd DD/MM');
             
             card.innerHTML = 
               '<span class="league-tag">' + (match.league || 'Football') + '</span>' +
+              '<span class="match-date-info">' + dateStr + '</span>' +
               '<div class="match-flex">' +
                 '<div class="team-box"><img src="'+match.home_img+'" onerror="this.src=\'https://via.placeholder.com/50\'"> <div class="team-name">'+match.home_name+'</div></div>' +
                 '<div class="center-box">' +
@@ -209,4 +210,5 @@
     window.onload = function() { App.init(); };
 </script>
 </body>
-</html>
+  </html>
+  
