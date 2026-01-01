@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protected Page</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#111827;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+.box{
+  background:#1f2937;
+  padding:24px;
+  border-radius:10px;
+  width:90%;
+  max-width:360px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+
+h2{
+  color:#ef4444;
+  margin-bottom:10px;
+}
+
+.ad-gif{
+  width:100%;
+  border-radius:8px;
+  margin:14px 0;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#374151;
+  color:white;
+  margin-bottom:12px;
+  text-align:center;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.unlock-btn{
+  background:#ef4444;
+  color:white;
+}
+
+.continue-btn{
+  background:#10b981;
+  color:white;
+  display:none;
+}
+
+.contact-btn{
+  display:block;
+  margin-top:10px;
+  font-size:14px;
+  color:#60a5fa;
+  text-decoration:underline;
+}
+
+.error{
+  color:#f87171;
+  font-size:14px;
+  height:18px;
+  margin-bottom:6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🔒 Password Protected</h2>
+
+  <!-- AD GIF -->
+  <img src="https://phone-version-inky.vercel.app/Adult/ad_banner.gif" class="ad-gif" alt="Ad Here">
+
+  <p style="color:#9ca3af;font-size:14px;">Enter password to continue</p>
+
+  <div class="error" id="error"></div>
+
+  <input type="password" id="password" placeholder="Enter password">
+
+  <button class="unlock-btn" onclick="unlock()">Unlock</button>
+
+  <!-- CONTINUE -->
+  <button class="continue-btn" id="continueBtn" onclick="goNext()">
+    Continue
+  </button>
+
+  <!-- CONTACT -->
+  <a class="contact-btn" href="https://t.me/yourusername" target="_blank">
+    📞 Contact for Ad
+  </a>
+</div>
+
+<script>
+const PASSWORD = "2026"; // 🔑 CHANGE PASSWORD
+const NEXT_PAGE = "adults.html"; // 👉 CONTINUE GO TO
+
+// Auto unlock (remember)
+if(sessionStorage.getItem("unlocked") === "yes"){
+  showContinue();
+}
+
+function unlock(){
+  const pass = document.getElementById("password").value.trim();
+  const error = document.getElementById("error");
+
+  if(!pass){
+    error.textContent = "Enter password";
+    return;
+  }
+
+  if(pass === PASSWORD){
+    sessionStorage.setItem("unlocked","yes");
+    showContinue();
+  }else{
+    error.textContent = "Wrong password";
+  }
+}
+
+function showContinue(){
+  document.querySelector(".unlock-btn").style.display="none";
+  document.getElementById("password").style.display="none";
+  document.getElementById("error").textContent="";
+  document.getElementById("continueBtn").style.display="block";
+}
+
+function goNext(){
+  window.location.replace(NEXT_PAGE);
+}
+</script>
+
+</body>
+</html>
