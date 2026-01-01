@@ -6,7 +6,6 @@
   <title>Live Match - S4ITMM TV</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* မူလ Style များကို အပြည့်အဝ ထိန်းသိမ်းထားပါသည် */
     body { background-color: #1a202c; color: #e2e8f0; font-family: sans-serif; margin: 0; padding: 0; }
     .flex-center { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
     .card { background-color: #2d3748; border-radius: 12px; padding: 25px; width: 100%; max-width: 500px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); text-align: center; }
@@ -53,6 +52,9 @@
   </div>
 
   <script>
+    // Global variable for timer
+    var checkTimer;
+
     document.addEventListener('DOMContentLoaded', function() {
       var container = document.getElementById('match-detail-container');
       var matchData = localStorage.getItem('selectedMatch');
@@ -97,39 +99,35 @@
     });
 
     window.openPlayer = function(url) {
-  if (!url) return;
+      if (!url) return;
 
-  var finalUrl = url;
-  
-  // niues.live link တွေဆိုရင် VPN block ကျော်ဖို့ Proxy သုံးမယ်
-  if (url.indexOf("niues.live") !== -1) {
-    // window.location.origin သုံးပြီး Vercel domain အပြည့်အစုံကို ယူပါ
-    finalUrl = window.location.origin + "/api/proxy?url=" + encodeURIComponent(url);
-  }
+      var finalUrl = url;
+      
+      if (url.indexOf("niues.live") !== -1) {
+        finalUrl = window.location.origin + "/api/proxy?url=" + encodeURIComponent(url);
+      }
 
-  // Player ကို လှမ်းပို့မည့် Intent URL
-  var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
-  
-  window.location.href = intentUrl;
+      var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+      
+      window.location.href = intentUrl;
 
-  // ကျန်တဲ့ Timer logic များ...
-  var checkTimer = setTimeout(function() {
-    if (!document.hidden && !document.webkitHidden) {
-      document.getElementById('player-modal').style.display = 'flex';
-    }
-  }, 3000);
-};
-
-
-      var handleVisibilityChange = function() {
-        if (document.hidden || document.webkitHidden) {
-          clearTimeout(checkTimer);
+      // Start timer
+      checkTimer = setTimeout(function() {
+        if (!document.hidden && !document.webkitHidden) {
+          document.getElementById('player-modal').style.display = 'flex';
         }
-      };
-
-      document.addEventListener("visibilitychange", handleVisibilityChange);
-      document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
+      }, 3000);
     };
+
+    // Modal behavior logic
+    var handleVisibilityChange = function() {
+      if (document.hidden || document.webkitHidden) {
+        if (checkTimer) clearTimeout(checkTimer);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
   </script>
 </body>
 </html>
