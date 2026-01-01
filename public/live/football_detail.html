@@ -101,28 +101,27 @@
     });
 
     window.openPlayer = function(url) {
-      if (!url) return;
+  if (!url) return;
 
-      var finalUrl = url;
-      
-      // VPN Bypass Logic using Vercel Proxy
-      if (url.indexOf("niues.live") !== -1) {
-        finalUrl = window.location.origin + "/api/proxy?url=" + encodeURIComponent(url);
-      }
+  var finalUrl = url;
+  
+  if (url.indexOf("niues.live") !== -1) {
+    // URL ကို Base64 ပြောင်းလိုက်ခြင်း
+    var encodedUrl = btoa(url); 
+    finalUrl = window.location.origin + "/api/proxy?b64=" + encodedUrl;
+  }
 
-      // Android Intent for Network Streaming Video Player
-      var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
-      
-      window.location.href = intentUrl;
+  var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+  window.location.href = intentUrl;
 
-      // Start "App Not Found" timer
-      if (checkTimer) clearTimeout(checkTimer);
-      checkTimer = setTimeout(function() {
-        if (!document.hidden && !document.webkitHidden) {
-          document.getElementById('player-modal').style.display = 'flex';
-        }
-      }, 3000);
-    };
+  // Timer logic
+  if (checkTimer) clearTimeout(checkTimer);
+  checkTimer = setTimeout(function() {
+    if (!document.hidden && !document.webkitHidden) {
+      document.getElementById('player-modal').style.display = 'flex';
+    }
+  }, 3000);
+};
 
     // Stop timer if player actually opens and browser goes to background
     var handleVisibilityChange = function() {
