@@ -292,7 +292,7 @@
     async function fetchMovies() {
       const grid = document.getElementById('movie-grid');
       try {
-        const res = await fetch('https://zetflix-peach.vercel.app/Playlist/Movies/movies.json?_t=' + Date.now(), { cache: 'no-store' });
+        const res = await fetch('/movies.json?_t=' + Date.now(), { cache: 'no-store' });
         const movies = await res.json();
         renderMovies(Array.isArray(movies) ? movies : []);
       } catch (err) {
