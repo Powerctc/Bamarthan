@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* ============ GLOBAL & SIDEBAR (လက်ရှိ Style အတိုင်း) ============ */
+    /* ============ GLOBAL & SIDEBAR ============ */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
     body { background-color: #111827; color: white; overflow-x: hidden; }
 
@@ -27,24 +27,38 @@
     .btn { background: #374151; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; outline: none; font-weight: bold; font-size: 13px; }
     .btn:focus, .btn.active { background: #ef4444; border: 2px solid white; }
 
-    /* ============ MATCH CARDS (Legacy Layout) ============ */
+    /* ============ MATCH CARDS ============ */
     .match-container { display: flex; flex-wrap: wrap; gap: 16px; }
     .match-card { 
       background: #1f2937; border-radius: 12px; padding: 18px; 
       width: 300px; border: 2px solid #374151; outline: none; cursor: pointer;
-      display: inline-block; vertical-align: top;
+      display: inline-block; vertical-align: top; transition: 0.3s;
     }
     .match-card:focus { border-color: #ef4444; background: #2d3748; transform: scale(1.02); }
     
+    /* Live Card Highlight */
+    .match-card.is-live-border { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+
     .league-tag { font-size: 11px; color: #60a5fa; display: block; text-align: center; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
     .match-flex { display: flex; justify-content: space-between; align-items: center; }
     .team-box { width: 35%; text-align: center; }
-    .team-box img { width: 45px; height: 45px; background: white; border-radius: 50%; padding: 2px; }
-    .team-name { font-size: 12px; margin-top: 8px; font-weight: 500; color: #f3f4f6; }
+    .team-box img { width: 45px; height: 45px; background: white; border-radius: 50%; padding: 2px; object-fit: contain; }
+    .team-name { font-size: 12px; margin-top: 8px; font-weight: 500; color: #f3f4f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    
     .center-box { text-align: center; width: 30%; }
-    .match-time { color: #fbbf24; font-size: 16px; font-weight: bold; }
-    .live-dot { color: #ef4444; font-size: 11px; font-weight: bold; animation: blink 1.5s infinite; }
-    @keyframes blink { 50% { opacity: 0.3; } }
+    .match-time { color: #fbbf24; font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+    .live-indicator { 
+      display: inline-block;
+      background: #ef4444; 
+      color: white; 
+      font-size: 10px; 
+      padding: 2px 8px; 
+      border-radius: 4px; 
+      font-weight: bold; 
+      animation: blink 1.5s infinite;
+    }
+    
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     footer { text-align: center; padding: 30px; color: #6b7280; font-size: 12px; border-top: 1px solid #1f2937; margin-top: 20px; }
     
@@ -60,39 +74,15 @@
 
   <div class="sidebar">
     <div class="sidebar-header"><span class="logo-text">S4ITMM TV</span></div>
-    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item">
-      <i class="fas fa-search mr-3"></i>Search
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item">
-      <i class="fas fa-home mr-3"></i>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/Live/index.html" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/live/indexl.html" class="nav-item active">
-      <i class="fas fa-futbol mr-3"></i>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item">
-      <i class="fas fa-people-arrows mr-3"></i>
-    </a>
-    <a href="https://www.fotmob.com/my" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item">
-      <i class="fas fa-tv mr-3"></i>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item">
-      <i class="fas fa-satellite-dish mr-3"></i>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/adults/index.html" class="nav-item">
-      <i class="fas fa-ban mr-3"></i>
-    </a>
-    <a href="https://tinyurl.com/3dhv27he" class="nav-item">
-      <i class="fas fa-download mr-3"></i><span></span>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item">
-      <i class="fas fa-user mr-3"></i><span></span>
-    </a> </div>
+    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item"><i class="fas fa-search mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item"><i class="fas fa-home mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/Live/index.html" class="nav-item"><i class="fas fa-futbol mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/live/indexl.html" class="nav-item active"><i class="fas fa-futbol mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item"><i class="fas fa-people-arrows mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item"><i class="fas fa-tv mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item"><i class="fas fa-satellite-dish mr-3"></i></a>
+    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item"><i class="fas fa-user mr-3"></i></a>
+  </div>
 
   <div class="main-content">
     <div class="header-bar">
@@ -144,9 +134,11 @@
         xhr.onreadystatechange = function() {
           if (xhr.readyState === 4 && xhr.status === 200) {
             document.getElementById('loading').style.display = 'none';
-            var data = JSON.parse(xhr.responseText);
-            self.allMatches = data.context || [];
-            self.render();
+            try {
+              var data = JSON.parse(xhr.responseText);
+              self.allMatches = data.context || [];
+              self.render();
+            } catch(e) { console.error("Data error"); }
           }
         };
         xhr.send();
@@ -163,51 +155,50 @@
       render: function() {
         var container = document.getElementById('matchContainer');
         container.innerHTML = '';
+        
+        // လက်ရှိအချိန်ကို Moment နဲ့ ယူပါ
         var now = moment();
         
         for (var i = 0; i < this.allMatches.length; i++) {
           (function(match) {
-            var mt = moment(match.match_time * 1000);
+            var matchStartTime = moment(match.match_time * 1000);
+            var matchEndTime = moment(matchStartTime).add(130, 'minutes');
+            
+            // Live ဖြစ်နေခြင်း ရှိ/မရှိ စစ်ဆေးခြင်း
+            var isLive = now.isSameOrAfter(matchStartTime) && now.isBefore(matchEndTime);
             
             // Filter Logic
-            if(App.view === 'live' && !now.isBetween(mt, moment(mt).add(130, 'm'))) return;
-            if(App.view === 'tomorrow' && !mt.isSame(moment().add(1,'d'), 'day')) return;
+            if(App.view === 'live' && !isLive) return;
+            if(App.view === 'tomorrow' && !matchStartTime.isSame(moment().add(1,'d'), 'day')) return;
 
             var card = document.createElement('div');
-            card.className = 'match-card';
-            card.tabIndex = 3; // Remote Control Focus Support
+            // Live ဖြစ်ရင် Border အနီရောင်ပြောင်းရန် Class ထည့်ခြင်း
+            card.className = 'match-card' + (isLive ? ' is-live-border' : '');
+            card.tabIndex = 3; 
             
-            var isLive = now.isBetween(mt, moment(mt).add(130, 'm'));
+            // 12-hour format (AM/PM)
+            var timeStr = matchStartTime.format('hh:mm A');
             
             card.innerHTML = 
               '<span class="league-tag">' + (match.league || 'Football') + '</span>' +
               '<div class="match-flex">' +
                 '<div class="team-box"><img src="'+match.home_img+'" onerror="this.src=\'https://via.placeholder.com/50\'"> <div class="team-name">'+match.home_name+'</div></div>' +
                 '<div class="center-box">' +
-                  '<div class="match-time">'+mt.format('HH:mm')+'</div>' +
-                  (isLive ? '<div class="live-dot">● LIVE</div>' : '') +
+                  '<div class="match-time">' + timeStr + '</div>' +
+                  (isLive ? '<div class="live-indicator">● LIVE</div>' : '') +
                 '</div>' +
                 '<div class="team-box"><img src="'+match.away_img+'" onerror="this.src=\'https://via.placeholder.com/50\'"> <div class="team-name">'+match.away_name+'</div></div>' +
               '</div>';
             
-            // မင်းတောင်းဆိုထားတဲ့ SelectedMatch သိမ်းပြီး Detail Page သွားတဲ့အပိုင်း
             var goToDetail = function() {
               try {
                 localStorage.setItem('selectedMatch', JSON.stringify(match));
                 window.location.href = 'football_detail.html';
-              } catch(e) {
-                alert("Error: Browser storage is full or disabled.");
-              }
+              } catch(e) { console.error("Storage error"); }
             };
 
             card.onclick = goToDetail;
-            
-            // Remote OK Button အတွက်
-            card.onkeydown = function(e) {
-              if(e.keyCode === 13) {
-                goToDetail();
-              }
-            };
+            card.onkeydown = function(e) { if(e.keyCode === 13) goToDetail(); };
 
             container.appendChild(card);
           })(this.allMatches[i]);
@@ -216,6 +207,6 @@
     };
 
     window.onload = function() { App.init(); };
-  </script>
+</script>
 </body>
 </html>
