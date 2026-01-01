@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>S4ITMM TV - Remote Fixed</title>
+  <title>S4ITMM TV - Legacy TV Support</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* လက်ရှိ Style များကို အပြည့်အဝ ထိန်းသိမ်းထားပါသည် */
+    /* ============ GLOBAL & SIDEBAR (လက်ရှိ Style အတိုင်း) ============ */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
     body { background-color: #111827; color: white; overflow-x: hidden; }
 
@@ -16,7 +16,6 @@
     .sidebar-header { padding: 20px; border-bottom: 1px solid #374151; text-align: center; }
     .logo-text { font-weight: bold; font-size: 18px; color: #ef4444; }
     .nav-item { display: flex; align-items: center; padding: 15px 20px; color: #d1d5db; text-decoration: none; font-size: 14px; outline: none; }
-    .nav-item i { margin-right: 12px; }
     .nav-item:focus, .nav-item.active { background-color: #ef4444; color: white; }
 
     .main-content { margin-left: 192px; min-height: 100vh; padding-bottom: 50px; }
@@ -28,39 +27,39 @@
     .btn { background: #374151; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; outline: none; font-weight: bold; font-size: 13px; }
     .btn:focus, .btn.active { background: #ef4444; border: 2px solid white; }
 
+    /* ============ MATCH CARDS (Legacy Layout) ============ */
     .match-container { display: flex; flex-wrap: wrap; gap: 16px; }
-    .match-card { background: #1f2937; border-radius: 12px; padding: 18px; width: 300px; border: 2px solid #374151; outline: none; cursor: pointer; }
-    .match-card:focus { border-color: #ef4444; background: #2d3748; }
+    .match-card { 
+      background: #1f2937; border-radius: 12px; padding: 18px; 
+      width: 300px; border: 2px solid #374151; outline: none; cursor: pointer;
+      display: inline-block; vertical-align: top;
+    }
+    .match-card:focus { border-color: #ef4444; background: #2d3748; transform: scale(1.02); }
+    
     .league-tag { font-size: 11px; color: #60a5fa; display: block; text-align: center; margin-bottom: 10px; font-weight: bold; text-transform: uppercase; }
     .match-flex { display: flex; justify-content: space-between; align-items: center; }
     .team-box { width: 35%; text-align: center; }
     .team-box img { width: 45px; height: 45px; background: white; border-radius: 50%; padding: 2px; }
-    .team-name { font-size: 12px; margin-top: 8px; font-weight: 500; }
+    .team-name { font-size: 12px; margin-top: 8px; font-weight: 500; color: #f3f4f6; }
     .center-box { text-align: center; width: 30%; }
     .match-time { color: #fbbf24; font-size: 16px; font-weight: bold; }
     .live-dot { color: #ef4444; font-size: 11px; font-weight: bold; animation: blink 1.5s infinite; }
     @keyframes blink { 50% { opacity: 0.3; } }
 
-    /* STREAM LIST MODAL */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
-    .modal-content { background: #1f2937; padding: 25px; border-radius: 15px; width: 85%; max-width: 450px; border: 1px solid #4b5563; }
-    .stream-link { 
-      display: block; width: 100%; padding: 15px; margin-bottom: 10px; 
-      background: #374151; color: white; border-radius: 10px; 
-      text-decoration: none; font-weight: bold; text-align: center;
-      border: 2px solid transparent; outline: none; font-size: 15px;
-    }
-    .stream-link:focus { background: #ef4444; border-color: white; color: white; }
-
     footer { text-align: center; padding: 30px; color: #6b7280; font-size: 12px; border-top: 1px solid #1f2937; margin-top: 20px; }
-    footer a { color: #ef4444; text-decoration: none; }
+    
+    @media (max-width: 768px) {
+      .sidebar { width: 60px; }
+      .sidebar span, .logo-text { display: none; }
+      .main-content { margin-left: 60px; }
+      .match-card { width: 100%; }
+    }
   </style>
 </head>
 <body>
 
   <div class="sidebar">
     <div class="sidebar-header"><span class="logo-text">S4ITMM TV</span></div>
-    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item" tabindex="1"><i class="fas fa-search"></i><span>Search</span></a>
     <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item" tabindex="1"><i class="fas fa-home"></i><span>HOME</span></a>
     <a href="#" class="nav-item active" tabindex="1"><i class="fas fa-futbol"></i><span>Futbol Live</span></a>
     <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item" tabindex="1"><i class="fas fa-satellite-dish"></i><span>Myanmar TV</span></a>
@@ -69,7 +68,7 @@
   <div class="main-content">
     <div class="header-bar">
       <h1>Live Football</h1>
-      <div id="id-display" class="id-box">Loading...</div>
+      <div id="id-display" class="id-box">Loading ID...</div>
     </div>
 
     <div class="content-body">
@@ -85,16 +84,8 @@
     </div>
 
     <footer>
-      <p>S4ITMM © 2026 | Created by <a href="#">U Maung</a></p>
+      <p>S4ITMM © 2026 | Created by U Maung</p>
     </footer>
-  </div>
-
-  <div id="matchModal" class="modal">
-    <div class="modal-content">
-      <h3 id="modalTitle" style="text-align:center; margin-bottom:20px;">Channels</h3>
-      <div id="streamList"></div>
-      <button class="btn" style="width:100%; margin-top:10px;" onclick="App.closeModal()" tabindex="5">CLOSE</button>
-    </div>
   </div>
 
   <script>
@@ -146,78 +137,52 @@
         var now = moment();
         
         for (var i = 0; i < this.allMatches.length; i++) {
-          (function(m) {
-            var mt = moment(m.match_time * 1000);
+          (function(match) {
+            var mt = moment(match.match_time * 1000);
+            
+            // Filter Logic
             if(App.view === 'live' && !now.isBetween(mt, moment(mt).add(130, 'm'))) return;
             if(App.view === 'tomorrow' && !mt.isSame(moment().add(1,'d'), 'day')) return;
 
             var card = document.createElement('div');
             card.className = 'match-card';
-            card.tabIndex = 3;
+            card.tabIndex = 3; // Remote Control Focus Support
+            
+            var isLive = now.isBetween(mt, moment(mt).add(130, 'm'));
+            
             card.innerHTML = 
-              '<span class="league-tag">' + (m.league || 'Football') + '</span>' +
+              '<span class="league-tag">' + (match.league || 'Football') + '</span>' +
               '<div class="match-flex">' +
-                '<div class="team-box"><img src="'+m.home_img+'"> <div class="team-name">'+m.home_name+'</div></div>' +
-                '<div class="center-box"><div class="match-time">'+mt.format('HH:mm')+'</div></div>' +
-                '<div class="team-box"><img src="'+m.away_img+'"> <div class="team-name">'+m.away_name+'</div></div>' +
+                '<div class="team-box"><img src="'+match.home_img+'" onerror="this.src=\'https://via.placeholder.com/50\'"> <div class="team-name">'+match.home_name+'</div></div>' +
+                '<div class="center-box">' +
+                  '<div class="match-time">'+mt.format('HH:mm')+'</div>' +
+                  (isLive ? '<div class="live-dot">● LIVE</div>' : '') +
+                '</div>' +
+                '<div class="team-box"><img src="'+match.away_img+'" onerror="this.src=\'https://via.placeholder.com/50\'"> <div class="team-name">'+match.away_name+'</div></div>' +
               '</div>';
             
-            card.onclick = function() { App.showStreams(m); };
-            card.onkeydown = function(e) { if(e.keyCode === 13) App.showStreams(m); };
+            // မင်းတောင်းဆိုထားတဲ့ SelectedMatch သိမ်းပြီး Detail Page သွားတဲ့အပိုင်း
+            var goToDetail = function() {
+              try {
+                localStorage.setItem('selectedMatch', JSON.stringify(match));
+                window.location.href = 'football_detail.html';
+              } catch(e) {
+                alert("Error: Browser storage is full or disabled.");
+              }
+            };
+
+            card.onclick = goToDetail;
+            
+            // Remote OK Button အတွက်
+            card.onkeydown = function(e) {
+              if(e.keyCode === 13) {
+                goToDetail();
+              }
+            };
+
             container.appendChild(card);
           })(this.allMatches[i]);
         }
-      },
-
-      showStreams: function(m) {
-        document.getElementById('modalTitle').innerText = m.home_name + " VS " + m.away_name;
-        var list = document.getElementById('streamList');
-        list.innerHTML = '';
-        var links = m.links || [];
-
-        if(links.length === 0) {
-          list.innerHTML = "<p style='text-align:center;'>No Channels Available</p>";
-        } else {
-          // VN SD တွေ မရတဲ့ error ပြင်ရန် Link တစ်ခုချင်းစီကို သေချာ Loop ပတ်ပြီး scope ခွဲပေးခြင်း
-          for (var j = 0; j < links.length; j++) {
-            (function(linkItem) {
-              var btn = document.createElement('button');
-              btn.className = "stream-link";
-              btn.tabIndex = 4;
-              btn.innerHTML = '<i class="fas fa-play-circle"></i> ' + linkItem.name;
-              
-              // Click Event
-              btn.onclick = function() { App.play(linkItem.url); };
-              
-              // Remote OK/Enter Event
-              btn.onkeydown = function(e) {
-                if(e.keyCode === 13) {
-                  e.preventDefault();
-                  App.play(linkItem.url);
-                }
-              };
-              
-              list.appendChild(btn);
-            })(links[j]);
-          }
-        }
-        document.getElementById('matchModal').style.display = 'flex';
-        // ပထမဆုံး Button ကို Focus ပေးခြင်း
-        setTimeout(function() {
-          var firstBtn = document.querySelector('.stream-link');
-          if(firstBtn) firstBtn.focus();
-        }, 100);
-      },
-
-      closeModal: function() {
-        document.getElementById('matchModal').style.display = 'none';
-      },
-
-      play: function(url) {
-        if(!url) return;
-        var pkg = "com.genuine.leone";
-        // Intent စနစ်ဖြင့် Player သို့ လွှတ်ခြင်း
-        window.location.href = "intent:" + url + "#Intent;package=" + pkg + ";S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
       }
     };
 
