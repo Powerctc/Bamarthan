@@ -104,21 +104,33 @@
     });
 
     window.openPlayer = function(url) {
-      if (!url) return;
+  if (!url) return;
 
-      // Android Intent URL
-      var intentUrl = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
-      
-      var start = Date.now();
-      window.location.href = intentUrl;
+  var intentUrl = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+  
+  // Player ကို လှမ်းဖွင့်လိုက်မယ်
+  window.location.href = intentUrl;
 
-      // Player မရှိရင် Modal ပြရန် (၁.၅ စက္ကန့် စောင့်ကြည့်သည်)
-      setTimeout(function() {
-        if (Date.now() - start < 2000) {
-          document.getElementById('player-modal').style.display = 'flex';
-        }
-      }, 1500);
-    };
+  // Popup ကို ခဏ ဖျောက်ထားဖို့ Timer ပေးမယ်
+  // ၃ စက္ကန့် (3000ms) လောက် စောင့်ကြည့်မယ်။ 
+  // TV Box နှေးရင် Timer ကို ၂၅၀၀ ကနေ ၃၀၀၀ ကြား ထားတာ အကောင်းဆုံးပဲ။
+  var checkTimer = setTimeout(function() {
+    // Browser က screen ပေါ်မှာ ရှိနေသေးရင် (ဆိုလိုတာက Player ပွင့်မလာရင်) Popup ပြမယ်
+    if (!document.hidden && !document.webkitHidden) {
+      document.getElementById('player-modal').style.display = 'flex';
+    }
+  }, 3000); 
+
+  // Player ပွင့်သွားလို့ Browser က Background ရောက်သွားရင် Timer ကို ပြန်ဖျက်မယ်
+  var handleVisibilityChange = function() {
+    if (document.hidden || document.webkitHidden) {
+      clearTimeout(checkTimer);
+    }
+  };
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  document.addEventListener("webkitvisibilitychange", handleVisibilityChange);
+};
   </script>
 </body>
 </html>
