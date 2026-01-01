@@ -3,224 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Live Match - Stream</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Live Match - S4ITMM TV</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    body {
-      background-color: #1a202c;
-      color: #e2e8f0;
+    body { background-color: #1a202c; color: #e2e8f0; font-family: sans-serif; margin: 0; padding: 0; }
+    .flex-center { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 15px; }
+    .card { background-color: #2d3748; border-radius: 12px; padding: 25px; width: 100%; max-width: 500px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); text-align: center; }
+    
+    .match-logo-container { 
+      background: #1a202c; border-radius: 10px; padding: 20px; 
+      display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0;
     }
-    .match-logo {
-      width: 100%;
-      max-width: 300px;
-      height: 180px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      background: #2d3748;
-      border-radius: 0.5rem;
-      padding: 12px;
-    }
-    .team-logo {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-    }
-    .vs-label {
-      color: #a0aec0;
-      font-weight: bold;
-      font-size: 0.9rem;
-    }
+    .team-logo { width: 70px; height: 70px; object-fit: contain; background: white; border-radius: 50%; padding: 5px; }
+    .vs-label { color: #ef4444; font-weight: bold; font-size: 1.2rem; }
+    
     .stream-button {
-      background-color: #ef4444;
-      color: white;
-      padding: 0.6rem 1rem;
-      border-radius: 0.375rem;
-      font-weight: bold;
-      margin: 0.25rem 0;
-      width: 100%;
-      text-align: center;
-      transition: background-color 0.2s;
+      display: block; width: 100%; background-color: #ef4444; color: white;
+      padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px;
+      margin-bottom: 12px; border: 2px solid transparent; cursor: pointer; text-decoration: none; outline: none;
     }
-    .stream-button:hover {
-      background-color: #dc2626;
-    }
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.75);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
-    }
-    .modal-overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    .modal-content {
-      background-color: #2d3748;
-      padding: 2rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-      width: 90%;
-      max-width: 420px;
-      text-align: center;
-      transform: translateY(-20px);
-      transition: transform 0.3s ease-in-out;
-      position: relative;
-    }
-    .modal-overlay.show .modal-content {
-      transform: translateY(0);
-    }
-    .modal-close-button {
-      position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: #cbd5e0;
-      cursor: pointer;
-    }
-    .modal-close-button:hover {
-      color: #ffffff;
-    }
-    .install-button {
-      background-color: #4299e1;
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 0.375rem;
-      font-weight: bold;
-      transition: background-color 0.2s;
-    }
-    .install-button:hover {
-      background-color: #3182ce;
-    }
-    .app-logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1rem;
-      border-radius: 18px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
+    /* Remote Focus ဖြစ်တဲ့အခါ အရောင်ပြောင်းရန် */
+    .stream-button:focus { background-color: #ffffff; color: #ef4444; border-color: #ef4444; transform: scale(1.05); }
+
+    .back-button { display: inline-block; margin-top: 20px; color: #63b3ed; text-decoration: none; font-size: 14px; outline: none; padding: 10px; }
+    .back-button:focus { color: #ef4444; text-decoration: underline; }
+
+    /* Modal Styles */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: #2d3748; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; }
+    .app-logo { width: 80px; height: 80px; border-radius: 15px; margin-bottom: 15px; }
+    .install-btn { background: #4299e1; color: white; padding: 12px; border-radius: 8px; display: block; text-decoration: none; font-weight: bold; margin-top: 15px; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-  <main class="flex-1 flex items-center justify-center p-4">
-    <div id="match-detail-container" class="bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-2xl">
-      <p class="text-center text-gray-400">Loading match streams...</p>
+  <div class="flex-center">
+    <div id="match-detail-container" class="card">
+      <p>Loading streams...</p>
     </div>
-  </main>
+  </div>
 
-  <!-- App Not Found Modal -->
   <div id="player-modal" class="modal-overlay">
     <div class="modal-content">
-      <button class="modal-close-button" id="close-modal">&times;</button>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnni40YRRPc9wGBd2tDOIX1qCTqddax0tPR5QsIxC8HA&s=10" alt="NS Player" class="app-logo">
-      <h3 class="text-2xl font-bold mb-4 text-white">App Not Installed</h3>
-      <p class="text-gray-300 mb-2">The required player app is not installed.</p>
-      <p class="text-gray-300 mb-6">Please install <strong>Network Streaming Video Player</strong>.</p>
-      <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" target="_blank" class="install-button flex items-center justify-center gap-2">
-        <i class="fab fa-android"></i> Install NS Player
-      </a>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnni40YRRPc9wGBd2tDOIX1qCTqddax0tPR5QsIxC8HA&s=10" class="app-logo">
+      <h3 style="margin: 0 0 10px 0;">Player Not Found</h3>
+      <p style="font-size: 14px; color: #cbd5e0;">Please install "Network Streaming Player" to watch.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.genuine.leone" class="install-btn">Download from Play Store</a>
+      <button onclick="document.getElementById('player-modal').style.display='none'" style="background:none; border:none; color:#a0aec0; margin-top:15px; cursor:pointer;">Close</button>
     </div>
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const container = document.getElementById('match-detail-container');
-      const modal = document.getElementById('player-modal');
-      const closeBtn = document.getElementById('close-modal');
+    document.addEventListener('DOMContentLoaded', function() {
+      var container = document.getElementById('match-detail-container');
+      var matchData = localStorage.getItem('selectedMatch');
 
-      const showModal = () => modal.classList.add('show');
-      const hideModal = () => modal.classList.remove('show');
-
-      closeBtn.addEventListener('click', hideModal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) hideModal();
-      });
-
-      const match = JSON.parse(localStorage.getItem('selectedMatch'));
-      if (!match) {
-        container.innerHTML = `
-          <div class="text-center text-red-400">
-            <p>No match selected.</p>
-            <button onclick="history.back()" class="mt-4 text-blue-400 underline">← Go Back</button>
-          </div>
-        `;
+      if (!matchData) {
+        container.innerHTML = '<p>No match selected.</p><a href="index.html" class="back-button">← Back</a>';
         return;
       }
 
-      // Render logos
-      const logoHtml = `
-        <div class="match-logo mb-6">
-          <img src="${match.home_img || 'https://via.placeholder.com/64'}" alt="${match.home_name}" class="team-logo">
-          <div class="vs-label">VS</div>
-          <img src="${match.away_img || 'https://via.placeholder.com/64'}" alt="${match.away_name}" class="team-logo">
-        </div>
-      `;
+      var match = JSON.parse(matchData);
+      
+      // Header Section
+      var html = '<h2 style="margin-bottom:5px;">' + (match.home_name + " VS " + match.away_name) + '</h2>';
+      html += '<p style="color:#a0aec0; margin-bottom:20px;">' + (match.league || "") + '</p>';
+      
+      // Logos
+      html += '<div class="match-logo-container">' +
+                '<img src="' + match.home_img + '" class="team-logo">' +
+                '<div class="vs-label">VS</div>' +
+                '<img src="' + match.away_img + '" class="team-logo">' +
+              '</div>';
 
-      // Render stream buttons from links
-      let buttonsHtml = '';
+      // Stream Buttons
+      html += '<div id="button-list" style="margin-top:20px;">';
       if (match.links && match.links.length > 0) {
-        buttonsHtml = match.links.map(link => `
-          <button class="stream-button" onclick="openPlayer('${link.url}')">
-            ${link.name}
-          </button>
-        `).join('');
+        for (var i = 0; i < match.links.length; i++) {
+          var link = match.links[i];
+          // Remote နဲ့ ရွေးလို့ရအောင် Button ကို tabindex ထည့်ထားသည်
+          html += '<button class="stream-button" tabindex="' + (i + 1) + '" onclick="openPlayer(\'' + link.url + '\')">' + 
+                  '<i class="fas fa-play-circle" style="margin-right:8px;"></i>' + link.name + 
+                  '</button>';
+        }
       } else {
-        buttonsHtml = '<p class="text-center text-gray-400">No streams available.</p>';
+        html += '<p>No streams available for this match.</p>';
       }
+      html += '</div>';
 
-      container.innerHTML = `
-        <div class="text-center">
-          <h2 class="text-2xl font-bold mb-2 text-white">${match.title}</h2>
-          <p class="text-gray-300 mb-4">${match.league} • ${match.time}</p>
-          ${logoHtml}
-          <div class="mt-6 space-y-2">${buttonsHtml}</div>
-          <button onclick="history.back()" class="mt-6 text-blue-400 underline text-sm">← Back to Matches</button>
-        </div>
-      `;
+      // Back Button
+      html += '<a href="javascript:history.back()" class="back-button" tabindex="100">← Back to List</a>';
+
+      container.innerHTML = html;
+
+      // TV Remote အတွက် ပထမဆုံး Button ကို Focus ပေးခြင်း
+      setTimeout(function() {
+        var firstBtn = document.querySelector('.stream-button');
+        if (firstBtn) firstBtn.focus();
+      }, 300);
     });
 
-    // Global function for stream launch
     window.openPlayer = function(url) {
-      const isAndroid = /Android/i.test(navigator.userAgent);
-      if (!isAndroid) {
-        alert('Streaming only works on Android devices.');
-        return;
-      }
+      if (!url) return;
 
-      const intentUrl = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=Live%20Football;end`;
-      let timeout;
+      // Android Intent URL
+      var intentUrl = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
+      
+      var start = Date.now();
+      window.location.href = intentUrl;
 
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = intentUrl;
-      document.body.appendChild(iframe);
-
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 1000);
-
-      timeout = setTimeout(() => {
-        document.getElementById('player-modal').classList.add('show');
+      // Player မရှိရင် Modal ပြရန် (၁.၅ စက္ကန့် စောင့်ကြည့်သည်)
+      setTimeout(function() {
+        if (Date.now() - start < 2000) {
+          document.getElementById('player-modal').style.display = 'flex';
+        }
       }, 1500);
-
-      const handleVis = () => {
-        if (document.visibilityState === 'hidden') clearTimeout(timeout);
-      };
-      document.addEventListener('visibilitychange', handleVis, { once: true });
     };
   </script>
 </body>
-  </html>
+</html>
