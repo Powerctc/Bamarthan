@@ -97,15 +97,16 @@
       }, 300);
     });
 
-    window.openPlayer = function(url) {
+        window.openPlayer = function(url) {
       if (!url) return;
 
       var finalUrl = url;
       
-      // VPN Bypass using Hugging Face Proxy
-      if (url.indexOf("niues.live") !== -1) {
-        var hfProxy = "https://livesportmm-s4itmm-proxy.hf.space/proxy?url=";
-        finalUrl = hfProxy + encodeURIComponent(url);
+      // Koyeb Proxy ကို အသုံးပြုပြီး VPN ကျော်မယ်
+      // niur.live ကော niues.live ပါ proxy ပတ်ပေးတာ ပိုစိတ်ချရပါတယ်
+      if (url.indexOf("niur.live") !== -1 || url.indexOf("niues.live") !== -1) {
+        var myProxy = "https://medical-rattlesnake-s4itmm-f68ced25.koyeb.app/?url=";
+        finalUrl = myProxy + encodeURIComponent(url);
       }
 
       var intentUrl = "intent:" + finalUrl + "#Intent;package=com.genuine.leone;type=video/*;S.title=S4ITMM%20TV;end";
@@ -119,6 +120,7 @@
         }
       }, 3000);
     };
+
 
     var handleVisibilityChange = function() {
       if (document.hidden || document.webkitHidden) {
