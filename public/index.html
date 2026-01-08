@@ -1,368 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>S4MM TV - Movies Professional</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+<title>S4MM TV - Movies Professional</title>
 
-  <style>
-    :root {
-      --primary-red: #ef4444;
-      --bg-dark: #111827;
-      --card-bg: #1f2937;
-      --hover-bg: #374151;
-      --text-gray: #9ca3af;
-    }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
-    body {
-      margin: 0;
-      font-family: 'Roboto', 'Segoe UI', sans-serif;
-      background-color: var(--bg-dark);
-      color: white;
-    }
+<style>
+:root {
+  --red:#ef4444;
+  --bg:#111827;
+  --card:#1f2937;
+  --hover:#374151;
+  --text:#9ca3af;
+}
 
-    /* SIDEBAR */
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 200px;
-      height: 100vh;
-      background-color: var(--card-bg);
-      overflow-y: auto;
-      z-index: 100;
-    }
+body {
+  margin:0;
+  font-family:Segoe UI, Roboto, sans-serif;
+  background:var(--bg);
+  color:#fff;
+}
 
-    .sidebar-header {
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      font-weight: bold;
-      color: var(--primary-red);
-      border-bottom: 1px solid var(--hover-bg);
-    }
+/* SIDEBAR */
+.sidebar {
+  position:fixed;
+  left:0; top:0;
+  width:200px;
+  height:100vh;
+  background:var(--card);
+}
 
-    .sidebar-header i { margin-right: 10px; font-size: 20px; }
+.sidebar-header {
+  padding:18px;
+  font-weight:bold;
+  color:var(--red);
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid var(--hover);
+}
 
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 20px;
-      color: #d1d5db;
-      text-decoration: none;
-      font-size: 14px;
-      transition: 0.2s;
-    }
+.sidebar-header i { margin-right:10px; }
 
-    .nav-item:hover:not(.active) { background-color: var(--hover-bg); color: white; }
-    .nav-item.active { background-color: var(--primary-red); color: white; }
-    .nav-item i { width: 20px; margin-right: 12px; }
+.nav-item {
+  display:flex;
+  align-items:center;
+  padding:12px 18px;
+  color:#d1d5db;
+  text-decoration:none;
+}
 
-    /* MAIN CONTENT */
-    .main-content {
-      margin-left: 200px;
-      padding: 24px;
-      min-height: 100vh;
-    }
+.nav-item i { width:22px; margin-right:10px; }
+.nav-item:hover { background:var(--hover); }
+.nav-item.active { background:var(--red); color:#fff; }
 
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
+/* MAIN */
+.main-content {
+  margin-left:200px;
+  padding:24px;
+}
 
-    .page-title { font-size: 28px; font-weight: bold; color: var(--primary-red); margin: 0; }
+.page-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
 
-    /* FILTERS & CONTROLS */
-    .control-panel {
-      background: var(--card-bg);
-      padding: 16px;
-      border-radius: 12px;
-      margin-bottom: 24px;
-      border: 1px solid var(--hover-bg);
-    }
+.page-title {
+  font-size:26px;
+  color:var(--red);
+}
 
-    .filter-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
+.device-info {
+  background:#020617;
+  padding:8px 14px;
+  border-radius:8px;
+  font-size:13px;
+  border-left:4px solid var(--red);
+}
 
-    .filter-row:last-child { margin-bottom: 0; }
+/* CONTROL */
+.control-panel {
+  background:var(--card);
+  padding:16px;
+  border-radius:12px;
+  margin-bottom:24px;
+}
 
-    .btn {
-      background: var(--hover-bg);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: 0.2s;
-    }
+.filter-row {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
 
-    .btn:hover { background: #4b5563; }
-    .btn.active { background: var(--primary-red); }
+.btn {
+  background:var(--hover);
+  border:none;
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  font-size:14px;
+  cursor:pointer;
+}
 
-    .select-input {
-      background: var(--hover-bg);
-      color: white;
-      border: 1px solid #4b5563;
-      padding: 7px 12px;
-      border-radius: 6px;
-      outline: none;
-      font-size: 13px;
-    }
+.btn:hover,
+.btn:focus {
+  background:var(--red);
+}
 
-    .device-info {
-      font-size: 13px;
-      color: #60a5fa;
-      background: #111827;
-      padding: 10px 15px;
-      border-radius: 8px;
-      border-left: 4px solid var(--primary-red);
-    }
+/* TV MENU */
+.tv-menu {
+  display:none;
+  position:absolute;
+  background:var(--card);
+  border:1px solid var(--hover);
+  border-radius:12px;
+  padding:10px;
+  margin-top:10px;
+  z-index:1000;
+}
 
-    /* MOVIE GRID */
-    .movie-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
-    }
+.tv-menu-item {
+  padding:12px 20px;
+  border-radius:8px;
+  font-size:15px;
+  cursor:pointer;
+}
 
-    .movie-card {
-      background-color: var(--card-bg);
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      position: relative;
-    }
-    
-    .movie-card:hover { transform: scale(1.05); }
+.tv-menu-item:hover,
+.tv-menu-item:focus {
+  background:var(--red);
+}
 
-    .movie-poster {
-      width: 100%;
-      aspect-ratio: 2/3;
-      object-fit: cover;
-      display: block;
-    }
+/* MOVIES */
+.movie-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:20px;
+}
 
-    .movie-card .info { padding: 12px; }
+.movie-card {
+  background:var(--card);
+  border-radius:10px;
+  overflow:hidden;
+  transition:.3s;
+}
 
-    .movie-card .info h3 {
-      font-size: 14px;
-      margin: 0 0 5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+.movie-card:hover {
+  transform:scale(1.06);
+}
 
-    .movie-card .info p {
-      font-size: 12px;
-      color: var(--text-gray);
-      margin: 0;
-    }
+.movie-poster {
+  width:100%;
+  aspect-ratio:2/3;
+  object-fit:cover;
+}
 
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      margin-top: 40px;
-      color: var(--text-gray);
-      border-top: 1px solid var(--hover-bg);
-    }
+.movie-card .info {
+  padding:12px;
+}
 
-    @media (max-width: 768px) {
-      .sidebar { width: 60px; }
-      .sidebar .logo-text, .nav-item span { display: none; }
-      .main-content { margin-left: 60px; }
-      .movie-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-    }
-  </style>
+.movie-card h3 {
+  font-size:14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.movie-card p {
+  font-size:12px;
+  color:var(--text);
+}
+
+footer {
+  margin-top:40px;
+  text-align:center;
+  color:var(--text);
+}
+
+/* MOBILE / TV */
+@media(max-width:768px){
+.sidebar { width:60px; }
+.sidebar span { display:none; }
+.main-content { margin-left:60px; }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <i class="fas fa-film"></i>
-      <span class="logo-text">S4ITMM TV</span>
-    </div>
-    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item"><i class="fas fa-search"></i><span>Search</span></a>
-    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item active"><i class="fas fa-home"></i><span>HOME</span></a>
-    <a href="https://nextjs-tv-one.vercel.app/Live/index.html" class="nav-item"><i class="fas fa-futbol"></i><span>Futbol (D1)</span></a>
-    <a href="https://nextjs-tv-one.vercel.app/Iptv/index.html" class="nav-item"><i class="fas fa-satellite"></i><span>IPTV Player</span></a>
-    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item"><i class="fas fa-tv"></i><span>Series</span></a>
-    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item"><i class="fas fa-user"></i><span>About</span></a>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <i class="fas fa-film"></i><span>S4ITMM TV</span>
+  </div>
+  <a class="nav-item active"><i class="fas fa-home"></i><span>Home</span></a>
+  <a class="nav-item"><i class="fas fa-tv"></i><span>Series</span></a>
+  <a class="nav-item"><i class="fas fa-user"></i><span>About</span></a>
+</div>
+
+<div class="main-content">
+  <div class="page-header">
+    <h2 class="page-title">Movies Explorer</h2>
+    <div class="device-info" id="device-info">Checking ID...</div>
   </div>
 
-  <div class="main-content">
-    <div class="page-header">
-      <h2 class="page-title">Movies Explorer</h2>
-      <div class="device-info" id="device-info">
-         <i class="fas fa-sync fa-spin"></i> Checking ID...
-      </div>
+  <div class="control-panel">
+    <div class="filter-row">
+      <button class="btn" onclick="toggleMenu('genreMenu')">
+        <i class="fas fa-list"></i> All Genres
+      </button>
+
+      <button class="btn" onclick="toggleMenu('yearMenu')">
+        <i class="fas fa-calendar"></i> All Years
+      </button>
+
+      <button class="btn" onclick="fetchMovies()">
+        <i class="fas fa-sync"></i> Refresh
+      </button>
     </div>
 
-    <div class="control-panel">
-      <div class="filter-row">
-        <button class="btn active" id="btn-new" onclick="switchModel('new')"><i class="fas fa-bolt"></i> New Model</button>
-        <button class="btn" id="btn-old" onclick="switchModel('old')"><i class="fas fa-history"></i> Old Model</button>
-        <button class="btn" style="margin-left: auto;" onclick="alert('TV Optimized Layout Enabled')"><i class="fas fa-tv"></i> TV Version</button>
-      </div>
-
-      <hr style="border: 0; border-top: 1px solid #374151; margin: 15px 0;">
-
-      <div class="filter-row">
-        <span style="font-size: 13px; color: #9ca3af;">Sources:</span>
-        <button class="btn active source-btn" onclick="loadSource(this, 'movies.json')">Source 1</button>
-        <button class="btn source-btn" onclick="loadSource(this, 'movies-1.json')">Source 2</button>
-        <button class="btn source-btn" onclick="loadSource(this, 'movies-2.json')">Source 3</button>
-        <button class="btn source-btn" onclick="loadSource(this, 'movies-3.json')">Source 4</button>
-      </div>
-
-      <div class="filter-row" style="margin-top: 10px;">
-        <select class="select-input" id="genre-filter" onchange="applyFilters()">
-          <option value="">All Genres</option>
-          <option value="Action">Action</option>
-          <option value="Adventure">Adventure</option>
-          <option value="Comedy">Comedy</option>
-          <option value="Horror">Horror</option>
-          <option value="Drama">Drama</option>
-        </select>
-
-        <select class="select-input" id="year-filter" onchange="applyFilters()">
-          <option value="">All Years</option>
-          <option value="2025">2025</option>
-          <option value="2024">2024</option>
-          <option value="2023">2023</option>
-          <option value="2022">2022</option>
-          <option value="Older">Older</option>
-        </select>
-        
-        <button class="btn" onclick="fetchMovies()"><i class="fas fa-sync"></i> Refresh</button>
-      </div>
+    <!-- GENRES -->
+    <div class="tv-menu" id="genreMenu">
+      <div class="tv-menu-item" onclick="setGenre('')">All</div>
+      <div class="tv-menu-item" onclick="setGenre('Action')">Action</div>
+      <div class="tv-menu-item" onclick="setGenre('Horror')">Horror</div>
+      <div class="tv-menu-item" onclick="setGenre('Comedy')">Comedy</div>
+      <div class="tv-menu-item" onclick="setGenre('Drama')">Drama</div>
+      <div class="tv-menu-item" onclick="setGenre('War')">War</div>
     </div>
 
-    <div id="movie-grid" class="movie-grid"></div>
+    <!-- YEARS -->
+    <div class="tv-menu" id="yearMenu">
+      <div class="tv-menu-item" onclick="setYear('')">All</div>
+      <div class="tv-menu-item" onclick="setYear('2025')">2025</div>
+      <div class="tv-menu-item" onclick="setYear('2024')">2024</div>
+      <div class="tv-menu-item" onclick="setYear('2023')">2023</div>
+      <div class="tv-menu-item" onclick="setYear('2022')">2022</div>
+    </div>
   </div>
 
-  <footer>
-    <p>S4ITMM © 2026 | All rights reserved</p>
-    <p>Created by <a href="#" style="color:var(--primary-red); text-decoration:none;">U Maung (Forever Study)</a></p>
-  </footer>
+  <div id="movie-grid" class="movie-grid"></div>
+</div>
 
-  <script>
-    // --- STABLE DEVICE ID LOGIC ---
-    function getStableID() {
-      try {
-        let id = localStorage.getItem("s4itmm_stable_id");
-        if (id && id.length === 12) return id;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.fillText('S4ITMM-TV-2026', 2, 15);
-        const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
-        let hash = 0;
-        for (let i = 0; i < b64.length; i++) { hash = (hash << 5) - hash + b64.charCodeAt(i); hash |= 0; }
-        id = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
-        localStorage.setItem("s4itmm_stable_id", id);
-        return id;
-      } catch (e) { return "000000000000"; }
-    }
+<footer>
+  S4ITMM © 2026 | Created by U Maung
+</footer>
 
-    async function updateAccessInfo() {
-      const infoDiv = document.getElementById("device-info");
-      const id = getStableID();
-      infoDiv.innerHTML = `<i class="fas fa-tv"></i> ID: <b>${id}</b> | <i class="fas fa-check-circle"></i> Connected`;
-    }
+<script>
+/* DEVICE ID */
+function getID(){
+ let id=localStorage.getItem("tv_id");
+ if(id) return id;
+ id=Math.random().toString(36).substr(2,12);
+ localStorage.setItem("tv_id",id);
+ return id;
+}
+document.getElementById("device-info").innerHTML="ID: <b>"+getID()+"</b>";
 
-    // --- MOVIE LOADING LOGIC ---
-    let allMovies = [];
-    let currentSourceFile = 'movies.json';
+let allMovies=[];
+let selectedGenre='';
+let selectedYear='';
 
-    async function loadSource(btn, file) {
-      document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentSourceFile = file;
-      fetchMovies();
-    }
+function toggleMenu(id){
+ document.querySelectorAll('.tv-menu').forEach(m=>m.style.display='none');
+ const el=document.getElementById(id);
+ el.style.display=el.style.display==='block'?'none':'block';
+}
 
-    function switchModel(type) {
-      document.getElementById('btn-new').classList.toggle('active', type === 'new');
-      document.getElementById('btn-old').classList.toggle('active', type === 'old');
-      fetchMovies(); // Re-fetch or re-render based on model
-    }
+function setGenre(g){
+ selectedGenre=g.toLowerCase();
+ document.getElementById('genreMenu').style.display='none';
+ applyFilters();
+}
 
-    async function fetchMovies() {
-      const grid = document.getElementById('movie-grid');
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px;"><i class="fas fa-spinner fa-spin fa-2x"></i><br>Loading Content...</div>';
-      
-      try {
-        const url = `https://zetflix-peach.vercel.app/Playlist/Movies/${currentSourceFile}?_t=${Date.now()}`;
-        const res = await fetch(url, { cache: 'no-store' });
-        const data = await res.json();
-        allMovies = Array.isArray(data) ? data : [];
-        applyFilters();
-      } catch (err) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; color:#f87171; text-align:center;">❌ Failed to load source. Please try another.</div>';
-      }
-    }
+function setYear(y){
+ selectedYear=y;
+ document.getElementById('yearMenu').style.display='none';
+ applyFilters();
+}
 
-    function applyFilters() {
-      const genre = document.getElementById('genre-filter').value.toLowerCase();
-      const year = document.getElementById('year-filter').value;
-      
-      const filtered = allMovies.filter(m => {
-        const matchGenre = !genre || (m.category && m.category.toLowerCase().includes(genre));
-        const matchYear = !year || (m.year && m.year.toString() === year);
-        return matchGenre && matchYear;
-      });
+async function fetchMovies(){
+ const grid=document.getElementById('movie-grid');
+ grid.innerHTML='Loading...';
+ const res=await fetch("https://zetflix-peach.vercel.app/Playlist/Movies/movies.json");
+ allMovies=await res.json();
+ applyFilters();
+}
 
-      renderMovies(filtered);
-    }
+function applyFilters(){
+ const filtered=allMovies.filter(m=>{
+  const g=!selectedGenre || (m.category||'').toLowerCase().includes(selectedGenre);
+  const y=!selectedYear || m.year==selectedYear;
+  return g && y;
+ });
+ renderMovies(filtered);
+}
 
-    function renderMovies(movies) {
-      const grid = document.getElementById('movie-grid');
-      grid.innerHTML = '';
-      
-      if (movies.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:#9ca3af;">No movies found for this selection.</div>';
-        return;
-      }
+function renderMovies(list){
+ const grid=document.getElementById('movie-grid');
+ grid.innerHTML='';
+ if(!list.length){ grid.innerHTML='No Movies'; return; }
+ list.forEach(m=>{
+  const div=document.createElement('div');
+  div.className='movie-card';
+  div.innerHTML=`
+   <img class="movie-poster" src="${m.logo}">
+   <div class="info">
+     <h3>${m.title}</h3>
+     <p>${m.category} • ${m.year}</p>
+   </div>`;
+  grid.appendChild(div);
+ });
+}
 
-      movies.forEach(movie => {
-        const card = document.createElement('div');
-        card.className = 'movie-card';
-        const poster = movie.logo || 'https://via.placeholder.com/300x450?text=No+Poster';
-        
-        card.innerHTML = `
-          <img src="${poster}" class="movie-poster" loading="lazy">
-          <div class="info">
-            <h3>${movie.title || 'Untitled'}</h3>
-            <p>${movie.category || ''} ${movie.year ? '• '+movie.year : ''}</p>
-          </div>
-        `;
-        
-        card.onclick = () => {
-          localStorage.setItem('selectedMovie', JSON.stringify(movie));
-          window.location.href = 'movie_detail.html';
-        };
-        grid.appendChild(card);
-      });
-    }
+fetchMovies();
+</script>
 
-    document.addEventListener("DOMContentLoaded", () => {
-      updateAccessInfo();
-      fetchMovies();
-    });
-  </script>
 </body>
-</html>
+  </html>
