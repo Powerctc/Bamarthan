@@ -1,0 +1,1024 @@
+[
+   {
+    "title": "ProjectA",
+    "year": "1983",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/ProjectAPart1.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Project%20A%20(aka)%20Jackie%20Chan's%20Project%20A%20(1983).mp4"
+  },
+ {
+    "title": "Project A Part 2",
+    "year": "1987",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/ProjectAPart2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Project%20A%20Part%20II%20(aka)%20Jackie%20Chan's%20Project%20A%202%20(1987).mp4"
+  },
+  {
+    "title": "San Andreas",
+    "year": "2015",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/SanAndreas.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/San%20Andreas%20(aka)%20San%20Andreas%20%CE%95%CF%80%CE%B9%CE%BA%CE%AF%CE%BD%CE%B4%CF%85%CE%BD%CE%BF%20%CE%A1%CE%AE%CE%B3%CE%BC%CE%B1%20(2015).mp4"
+  },
+{
+    "title": "So Close",
+    "year": "2002",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/SoClose.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/So%20Close%20(aka)%20%E5%A4%95%E9%99%BD%E5%A4%A9%E4%BD%BF%20(2002).mp4"
+  },
+ {
+    "title": "Super Cop 2",
+    "year": "1992",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/SuperCop2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Supercop%20(1992).mp4"
+  },
+  {
+    "title": "Taken",
+    "year": "2008",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Taken.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Taken%20(2008).mp4"
+  },
+{
+    "title": "Taken 2",
+    "year": "2012",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Taken2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Taken%202%20(2012).mp4"
+  },
+{
+    "title": "Taken 3",
+    "year": "2014",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Taken3.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Taken%203%20(2014).mp4"
+  },
+{
+    "title": "Taxi ",
+    "year": "1998",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Taxi.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Taxi%201%20(aka)%20%E1%83%A2%E1%83%90%E1%83%A5%E1%83%A1%E1%83%98%201%20(1998).mp4"
+  },
+{
+    "title": "Taxi 2",
+    "year": "2000",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Taxi2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Taxi%202%20(aka)%20%E1%83%A2%E1%83%90%E1%83%A5%E1%83%A1%E1%83%98%202%20(2000).mp4"
+  },
+   
+   {
+    "title": "Hancock",
+    "year": "2008",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Hankook.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Hancock%20(2008).mp4"
+  },
+  {
+    "title": "Hard Target",
+    "year": "2016",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/HardTarget2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Hard%20Target%202%20(2016).mp4"
+  },
+{
+    "title": "Hard To Kill",
+    "year": "1990",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/HardToKill.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Hard%20To%20Kill%20(aka)%20%E0%B8%9F%E0%B8%AD%E0%B8%81%E0%B9%81%E0%B8%84%E0%B9%89%E0%B8%99%E0%B8%88%E0%B8%B2%E0%B8%81%E0%B8%99%E0%B8%A3%E0%B8%81%20(1990).mp4"
+  },
+ {
+    "title": "Hells Angels",
+    "year": "1930",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/HellsAngel.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/War%20(%E1%80%85%E1%80%85%E1%80%BA%E1%80%95%E1%80%BD%E1%80%B2)/Hell's%20Angels%20(aka)%20Luftens%20d%C3%A6moner%20(1930).mp4"
+  },
+  {
+    "title": "Home Front",
+    "year": "2013",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/HomeFront.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Homefront%20(2013).mp4"
+  },
+{
+    "title": "I Frankenstein",
+    "year": "2014",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/I,Frenkenstein.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/I,%20Frankenstein%20(2014).mp4"
+  },
+{
+    "title": "Operation Scorpio",
+    "year": "1992",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/OperationScorpio.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Operation%20Scorpio%20(aka)%20Scorpion%20King%20(1992).mkv"
+  },
+{
+    "title": "Police Story ",
+    "year": "1985",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/PoliceStory.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Police%20Story%201%20(aka)%20Jackie%20Chan%20-%20Police%20Story%20I%20(1985).mp4"
+  },
+{
+    "title": "Police Story 2",
+    "year": "1988",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/PoliceStory2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Police%20Story%202%20(aka)%20Jackie%20Chan%20-%20Police%20Story%20II%20(1988).mp4"
+  },
+   {
+    "title": "Cat Woman",
+    "year": "2004",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/CatWoman.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Catwoman%20(2004).mp4"
+  },
+  {
+    "title": "Cobra",
+    "year": "1986",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Cobra.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Cobra%20(1986).mp4"
+  },
+{
+    "title": "Drawn Of The Planet Of The Apes",
+    "year": "2014",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/DawnOfThePlanetOfTheApes.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Dawn%20of%20the%20Planet%20of%20the%20Apes%20(2014).mp4"
+  },
+ {
+    "title": "Dracula Untold",
+    "year": "2014",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Dracula.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Dracula%20Untold%20(2014).mp4"
+  },
+  {
+    "title": "Ataru The First Love And The Last Kill",
+    "year": "2017",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Ataru(TheFirstLoveandTheLastKill).jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/First%20Kill%20(2017).mp4"
+  },
+{
+    "title": "Get The Gringo",
+    "year": "2012",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/GetTheGringo.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Get%20The%20Gringo%20(aka)%20%E0%B8%84%E0%B8%99%E0%B8%A1%E0%B8%AB%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%AC%E0%B8%A3%E0%B8%B0%E0%B8%AD%E0%B8%B8%20(2012).mp4"
+  },
+{
+    "title": "Flushed Away",
+    "year": "2006",
+    "category": "Animation",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/FlushedAway.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Animation%20(%E1%80%80%E1%80%AC%E1%80%90%E1%80%BD%E1%80%94%E1%80%BA%E1%80%B8%20-%20%E1%80%A1%E1%80%94%E1%80%BA%E1%80%94%E1%80%AE%E1%80%99%E1%80%B1%E1%80%B8)/Flushed%20Away%20(aka)%20%E0%B8%AB%E0%B8%99%E0%B8%B9%E0%B9%84%E0%B8%AE%E0%B9%82%E0%B8%8B%20%E0%B8%82%E0%B8%AD%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%AE%E0%B8%B5%E0%B9%82%E0%B8%A3%E0%B9%88%E0%B8%AA%E0%B8%B1%E0%B8%81%E0%B8%A7%E0%B8%B1%E0%B8%99%20(2006).mp4"
+  },  
+{
+    "title": "100 Rifiles",
+    "year": "1969",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/100Rifles.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/100%20Rifles%20(1969).mp4"
+  },
+  {
+    "title": "Above The Law",
+    "year": "1988",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/AboveTheLaw.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Above%20The%20Law%20(1988).mp4"
+  },
+{
+    "title": "AgeOfUprising",
+    "year": "2013",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/AgeOfUprising.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Age%20Of%20Uprising%20The%20Legend%20Of%20Michael%20Kohlhaas%20(2013).mp4"
+  },
+ {
+    "title": "AmericanSniper",
+    "year": "2014",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/AmericanSniper.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/American%20Sniper%20(2014).mp4"
+  },
+  {
+    "title": "Anna",
+    "year": "2019",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Anna.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Anna%20(aka)%20%E0%B8%AA%E0%B8%A7%E0%B8%A2%E0%B8%AA%E0%B8%B0%E0%B8%9A%E0%B8%B1%E0%B8%94%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B8%AB%E0%B8%B2%E0%B8%A3%20(2019).mp4"
+  },
+     
+     {
+    "title": "The Salvation",
+    "year": "2014",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/TheSalvation.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Salvation%20(2014).mp4"
+  },
+  {
+    "title": "The Showdown",
+    "year": "2011",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/TheShowdown.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Showdown%20(aka)%20%ED%98%88%ED%88%AC%20(2011).mp4"
+  },
+{
+    "title": "The Spies",
+    "year": "2012",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/TheSpies.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Spies%20(aka)%20%EA%B0%84%EC%B2%A9%20(2012).mp4"
+  },
+ {
+    "title": "Trespass",
+    "year": "1992",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Trespass.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Trespass%20(1992).mp4"
+  },
+  {
+    "title": "Vanquish",
+    "year": "2021",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Vanquish.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Vanquish%20(2021).mp4"
+  },
+{
+    "title": "War",
+    "year": "2007",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/War.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/War%20(2007).mp4"
+  },
+{
+    "title": "Sicario",
+    "year": "2018",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/Sicario.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Sicario%202%20(aka)%20Sicario%20Day%20of%20the%20Soldado%20(2018).mp4"
+  },
+     {
+    "title": "The Last Legion",
+    "year": "2007",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/TheLastLegion.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Last%20Legion%20(2007).mp4"
+  },
+{
+    "title": "Millionaires Express",
+    "year": "1986",
+    "category": "Action",
+    "logo":"https://moviesplaylist-github-io.vercel.app/posters/TheMillionarAiresExpress.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Millionaires'%20Express%20(aka)%20%E5%AF%8C%E8%B2%B4%E5%88%97%E8%BB%8A%20(1986).mkv"
+},
+     {
+    "title": "The Bourne Identity",
+    "year": "2002",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheBourneIdentity.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Bourne%20Identity%20(2002).mp4"
+  },
+  {
+    "title": "The Bourne Legacy",
+    "year": "2012",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheBourneLegacy.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Bourne%20Legacy%20(2012).mp4"
+  },
+{
+    "title": "The Bourne Supremacy",
+    "year": "2004",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheSupremacy.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Bourne%20Supremacy%20(2004).mp4"
+  },
+ {
+    "title": "The Bourne Ultimatum",
+    "year": "2007",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheBrouneUltramatum.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Bourne%20Ultimatum%20(2007).mp4"
+  },
+  {
+    "title": "The Equalizer",
+    "year": "2018",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheEqualizer.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Equalizer%20(2014).mp4"
+  },
+{
+    "title": "The Equalizer 2",
+    "year": "2018",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheEqualizer2.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Equalizer%202%20(2018).mp4"
+  },
+{
+    "title": "The Equalizer 3",
+    "year": "2023",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheEqualizer3.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Equalizer%203%20(2023).mp4"
+  },
+     
+     {
+    "title": "Sicario",
+    "year": "2015",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Sicario.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Sicario%201%20(aka)%20Sicario%20the%20Mexican%20Hitman%20(2015).mp4"
+  },
+  {
+    "title": "Snake In The Egale's Shadow",
+    "year": "1978",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/SnakeInTheEgaleShadow.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Snake%20In%20The%20Eagle's%20Shadow%20(aka)%20%E3%82%B9%E3%83%8D%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%A2%E3%83%B3%E3%82%AD%E3%83%BC%20%E8%9B%87%E6%8B%B3%20(1978).mp4"
+  },
+{
+    "title": "Southpaw",
+    "year": "2015",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Southpaw.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Southpaw%20(aka)%20%E0%B9%80%E0%B8%8B%E0%B8%B2%E0%B8%97%E0%B9%8C%E0%B8%9E%E0%B8%B2%E0%B8%A7%20%E0%B8%AA%E0%B8%B1%E0%B8%87%E0%B9%80%E0%B8%A7%E0%B8%B5%E0%B8%A2%E0%B8%99%E0%B9%80%E0%B8%94%E0%B8%B7%E0%B8%AD%E0%B8%94%20(2015).mp4"
+  },
+ {
+    "title": "Special Force",
+    "year": "2011",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/SpecialForce.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Special%20Forces%20(aka)%20%E0%B9%81%E0%B8%AB%E0%B8%81%E0%B8%94%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%88%E0%B8%B9%E0%B9%88%E0%B9%82%E0%B8%88%E0%B8%A1%E0%B8%AA%E0%B8%B2%E0%B8%A2%E0%B8%9F%E0%B9%89%E0%B8%B2%E0%B9%81%E0%B8%A5%E0%B8%9A%20(2011).mp4"
+  },
+  {
+    "title": "Stockholm",
+    "year": "2018",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Stockholm.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Crime%20(%E1%80%99%E1%80%BE%E1%80%AF%E1%80%81%E1%80%84%E1%80%BA%E1%80%B8)/Stockholm%20(aka)%20%D0%9E%D0%B4%D0%BD%D0%B0%D0%B6%D0%B4%D1%8B%20%D0%B2%20%D0%A1%D1%82%D0%BE%D0%BA%D0%B3%D0%BE%D0%BB%D1%8C%D0%BC%D0%B5%20(2018).mp4"
+  },
+{
+    "title": "Abraham Lincoln: Vampire Hunter",
+    "year": "2012",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/VampierHunter.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Abraham%20Lincoln%20Vampire%20Hunter%20(aka)%20%E3%83%AA%E3%83%B3%E3%82%AB%E3%83%BC%E3%83%B3%EF%BC%8F%E7%A7%98%E5%AF%86%E3%81%AE%E6%9B%B8%20(2012).mp4"
+  },
+{
+    "title": "Suicide Squad",
+    "year": "2016",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/SuiideSquad.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Suicide%20Squad%20(2016).mp4"
+  },
+{
+    "title": "Tango & Cash",
+    "year": "1989",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TangoAndCash.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Tango%20and%20Cash%20(aka)%202%20%E0%B9%82%E0%B8%AB%E0%B8%94%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A3%E0%B8%B9%E0%B9%89%E0%B8%94%E0%B8%B1%E0%B8%9A%20(1989).mp4"
+  },
+
+    {
+    "title": "Police Story: Lockdown",
+    "year": "2013",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/PoliceStoryLockDown.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Police%20Story%20Lockdown%20(aka)%20%D0%9F%D0%BE%D0%BB%D0%B8%D1%86%D0%B5%D0%B9%D1%81%D0%BA%D0%B0%20%D0%B8%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F%20%D0%9F%D0%BE%D0%B4%20%D0%BE%D0%B1%D0%B0%D1%81%D0%B0%D0%B4%D0%B0%20(2013).mp4"
+  },
+  {
+    "title": "Pusher",
+    "year": "2012",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Pusher.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Pusher%20(aka)%20%ED%91%B8%EC%85%94%20%20%ED%8C%8C%EC%9D%B4%EB%84%90%20%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20(2012).mp4"
+  },
+    
+    {
+    "title": "Pusher",
+    "year": "1996",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/PusherNicolas.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Pusher%20(aka)%20un%20paseo%20por%20el%20abismo%20(1996).mp4"
+  },
+  {
+    "title": "Hitman",
+    "year": "2007",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/HitMan.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Hitman%20(aka)%20Hitman%20-%20Assassino%2047%20(2007).mp4 "
+  },
+{
+    "title": "Superman:Men Of Steel",
+    "year": "2013",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/MenOfSteel.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Superman%206%20(aka)%20Man%20of%20Steel%20(2013).mp4"
+  },
+ {
+    "title": "Man On Fire",
+    "year": "2004",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/MenOnFire.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Man%20on%20Fire%20(aka)%20%E0%B8%84%E0%B8%99%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87%E0%B9%80%E0%B8%9C%E0%B8%B2%E0%B9%81%E0%B8%84%E0%B9%89%E0%B8%99%20(2004).mp4"
+  },
+  {
+    "title": "The Enforcer",
+    "year": "1995",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheEnforcer.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Enforcer%20(aka)%20My%20Father%20is%20a%20Hero%20(1995).mkv"
+  },
+{
+    "title": "No Mercy",
+    "year": "2019",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/NoMercy.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/No%20Mercy%20(aka)%20%EC%96%B8%EB%8B%88%20(2019).mp4"
+  },
+{
+    "title": "Operation Condor",
+    "year": "1991",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/OperationCondor.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Operation%20Condor%20(aka)%20Armour%20of%20God%20II%20(2)%20Operation%20Condor%20(1991).mp4"
+  },
+    
+    {
+    "title": "Broken Trail: The Marking Of A Legendary western",
+    "year": "2006",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/BrokenTrail.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Broken%20Trail%20The%20Making%20of%20a%20Legendary%20Western%20(2006).mp4"
+  },
+  {
+    "title": "Chicago Overcoat",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/ChicagoOvercoat.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Chicago%20Overcoat%20(2009).mp4"
+  },
+{
+    "title": "Crank: High Voltage",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/CrankHighVoltage.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Crank%20-%20High%20Voltage%20(2009).mp4"
+  },
+ {
+    "title": "Crank",
+    "year": "2006",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Crank.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Crank%20(2006).mp4"
+  },
+  {
+    "title": "Darkland",
+    "year": "2017",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Darkland.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Darkland%20(aka)%20%EB%8B%A4%ED%81%AC%EB%9E%9C%EB%93%9C%20(2017).mp4"
+  },
+{
+    "title": "Fight Club",
+    "year": "1999",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/FightClub.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Fight%20Club%20(aka)%20%E0%B9%84%E0%B8%9F%E0%B8%97%E0%B9%8C%20%E0%B8%84%E0%B8%A5%E0%B8%B1%E0%B8%9A%20%E0%B8%94%E0%B8%B4%E0%B8%9A%E0%B8%94%E0%B8%A7%E0%B8%A5%E0%B8%94%E0%B8%B4%E0%B8%9A%20(1999).mp4"
+  },
+{
+    "title": "Friday Killer",
+    "year": "2011",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/FridayKiller.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Friday%20Killer%20(2011).mp4"
+  },
+   {
+    "title": "Wild Bill",
+    "year": "2011",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/WildBill.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Wild%20Bill%20(aka)%20%E9%87%8E%E7%94%9F%E6%9D%A1%E4%BE%8B%E8%8D%89%E6%A1%88%20(2011).mp4"
+  },
+  {
+    "title": "2 Guns",
+    "year": "2013",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/2Guns.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/2%20Guns%20(2013).mp4"
+  },
+{
+    "title": "24:Redemption",
+    "year": "2008",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/24Redemption.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/24%20-%20Redemption%20(2008).mp4"
+  },
+ {
+    "title": "3:10 to Yuma",
+    "year": "2007",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/310toYuma.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/3.10%20To%20Yuma%20(2007).mp4"
+  },
+  {
+    "title": "Apocalypto",
+    "year": "2006",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Apocalypto.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Apocalypto%20(aka)%20Mel%20Gibson's%20Apocalypto%20(2006).mp4"
+  },
+{
+    "title": "Batman V Superman: Dawn Of Justic",
+    "year": "2016",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/BatmanvSuperman(DawnOfJustice).jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Batman%20v%20Superman%20-%20Dawn%20of%20Justice%20(2016).mp4"
+  },
+{
+    "title": "Bite The Dust",
+    "year": "2013",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/BiteTheDust.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Bite%20The%20Dust%20(2013).mp4"
+  },
+   
+ {
+    "title": "The Tiger",
+    "year": "2015",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheTiger.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Tiger%20(aka)%20%EB%8C%80%ED%98%B8%20(2015).mp4"
+  },
+  {
+    "title": "The Tuxedo",
+    "year": "2002",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheTuxedo.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Tuxedo%20(2002).mp4"
+  },
+{
+    "title": "Tracker",
+    "year": "2010",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Tracker.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Tracker%20(2010).mp4"
+  },
+ {
+    "title": "Under World: Evolution",
+    "year": "2006",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/UnderWorld(Evolution).jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Underworld%20Evolution%20(2006).mp4"
+  },
+  {
+    "title": "Under World: Blood Wars",
+    "year": "2016",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/UnderWorld(BloodWars).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Underworld%20Blood%20Wars%20(2016).mp4"
+  },
+{
+    "title": "Universal Soldier",
+    "year": "1992",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/UniversalSoldier.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Universal%20Soldier%201%20(aka)%202%20%E0%B8%84%E0%B8%99%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B9%83%E0%B8%8A%E0%B9%88%E0%B8%84%E0%B8%99%20(1992).mp4"
+  },
+    {
+    "title": "The Marine 5:Battle Ground",
+    "year": "2017",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMarine5.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Marine%205%20-%20%20Battleground%20(2017).mp4"
+  },
+  {
+    "title": "The Medallion",
+    "year": "2003",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMedalLion.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Medallion%20(2003).mp4"
+  },
+{
+    "title": "27 Steps Of May",
+    "year": "2018",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/27StepOfMay.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Dramas%20(%E1%80%92%E1%80%9B%E1%80%AC%E1%80%99%E1%80%AC)/27%20Steps%20of%20May%20(aka)%20%E6%A2%85%E7%9A%84%E4%BA%8C%E5%8D%81%E4%B8%83%E6%AD%A5%E8%B5%B0%20(2018).mp4"
+  },
+   
+   {
+    "title": "The Forbidden Kingdom",
+    "year": "2008",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheForbiddenKingdom.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Forbidden%20Kingdom%20(2008).mp4"
+  },
+{
+    "title": "The Horse Man",
+    "year": "2008",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheHorseMan.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Horseman%20(aka)%20Vingan%C3%A7a%20Animal%20(2008).mp4"
+  },
+{
+    "title": "The Marine",
+    "year": "2006",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMarine.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Marine%20(2006).mp4"
+  },
+{
+    "title": "The Marine 2",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMarine2.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Marine%202%20(2009).mp4"
+  },
+{
+    "title": "The Marine 3:Home Front",
+    "year": "2013",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMarine3.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Marine%203%20-%20Homefront%20(2013).mp4"
+  },
+{
+    "title": "The Marine 4: Moving Target",
+    "year": "2015",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMarine4.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Marine%204%20-%20Moving%20Target%20(2015).mp4"
+  },
+   {
+    "title": "The Berlin File",
+    "year": "2013",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheBerlinFile.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Berlin%20File%20(aka)%20%E0%B9%80%E0%B8%9A%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%A5%E0%B8%B4%E0%B8%99%20%E0%B8%A3%E0%B8%AB%E0%B8%B1%E0%B8%AA%E0%B8%A5%E0%B8%B1%E0%B8%9A%E0%B8%A3%E0%B8%B0%E0%B8%AD%E0%B8%B8%E0%B9%80%E0%B8%94%E0%B8%B7%E0%B8%AD%E0%B8%94%20(2013).mp4"
+  },
+{
+    "title": "The Big Door House",
+    "year": "1971",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheBigDoorHouse.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Big%20Doll%20House%20(1971).mp4"
+  },
+{
+    "title": "The City Og Violence",
+    "year": "2006",
+    "category": "Action",
+    "logo": 
+   "https://moviesplaylist-github-io.vercel.app/posters/TheCityOfViolence.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20City%20of%20Violence%20(aka)%20%EC%A7%9D%ED%8C%A8%20(2006).mp4"
+  },
+   {
+    "title": "Terminator 2: Judgement Day",
+    "year": "1991",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Terminator(JudgementDay).jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Terminator%202%20Judgement%20Day%20(1991).mp4"
+  },
+{
+    "title": "Termimator3: Rise Of The Machine",
+    "year": "2003",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Terminator3(RiseOfTheMachines).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Terminator%203%20-%20Rise%20of%20the%20Machines%20(2003).mp4"
+  },
+{
+    "title": "Terminator: Salvation",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Terminator(Salvation).jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Terminator%204%20Salvation%20(2009).mp4"
+  },
+{
+    "title": "Terminator: Genisys",
+    "year": "2015",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Terminor(Genisys).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Terminator%205%20Genisys%20(2015).mp4"
+  },
+{
+    "title": "Terminator: Dark Fate",
+    "year": "2019",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Termanitor(DarkFate).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Terminator%206%20Dark%20Fate%20(2019).mp4"
+  }, 
+    {
+    "title": "Tekken-The Motion Picture(1998)",
+    "year": "1998",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Tekken-TheMotionPicture(1998).jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Tekken%20-%20The%20Motion%20Picture%20(1998).mp4"
+  },
+{
+    "title": "Taxi(2004)",
+    "year": "2004",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Taxi(2004).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Taxi%20(aka)%20%E0%B9%80%E0%B8%AB%E0%B8%A2%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B8%81%E0%B8%A3%E0%B8%B0%E0%B8%89%E0%B8%B9%E0%B8%94%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%20%E0%B8%9B%E0%B8%A5%E0%B9%89%E0%B8%99%E0%B8%AA%E0%B8%99%E0%B8%B1%E0%B9%88%E0%B8%99%E0%B8%A5%E0%B9%89%E0%B8%AD%20(2004).mp4"
+  },
+{
+    "title": "Star Wars: A New Hope",
+    "year": "1997",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/StarWars.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Star%20Wars%20-%20Episode%20IV%20-%20A%20New%20Hope%20(1977).mp4"
+  },
+{
+    "title": "StarWars-Returns Of The Jedi(1995)",
+    "year": "1995",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/StarWars-ReturnsOfTheJedi(1995).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Star%20Wars%20-%20Episode%20VI%20-%20Return%20of%20the%20Jedi%20(1983).mp4"
+  },
+{
+    "title": "Star wars-Episode1(1999)",
+    "year": "1999",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/StarWars(Episode1).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Star%20Wars%20-%20Episode%20I%20-%20The%20Phantom%20Menace%20(1999).mp4"
+  },
+{
+    "title": "Star wars-Episode3(2005)",
+    "year": "2005",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/StarWars(Episode3).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Star%20Wars%20-%20Episode%20III%20-%20Revenge%20of%20the%20Sith%20(2005).mp4"
+  },
+    {
+    "title": "Tekken2(2014)",
+    "year": "2014",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Tekken2(2014).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Tekken%20-%20Kazuya's%20Revenge%20(2014).mp4"
+  },
+  {
+    "title": "Tekken(2010)",
+    "year": "2010",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Tekken(2010).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Tekken%20(2010).mp4"
+  },
+  {
+    "title": "Shanghai Noon(2000)",
+    "year": "2000",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/ShanghaiNoon.jpg",
+    "url":"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Shanghai%20Noon%20(aka)%20%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88%20%E0%B8%9F%E0%B8%B1%E0%B8%94%E0%B8%82%E0%B9%89%E0%B8%B2%E0%B8%A1%E0%B9%82%E0%B8%A5%E0%B8%81%20(2000).mp4"
+  },
+  {
+    "title": "Snake & Crane Arts Of Shaolin(1978)",
+    "year": "1978",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Snake&Crane(ArtOfShaolin).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Snake%20And%20Crane%20Arts%20Of%20Shaolin%20(aka)%20%E8%9B%87%E9%B6%B4%E5%85%AB%E6%AD%A5%20(1978).mp4"
+  },
+{
+    "title": "Spiritual Kung Fu(1978)",
+    "year": "1978",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/SpiritualKungFu.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Spiritual%20Kung%20Fu%20(1978).mp4"
+  },
+  {
+    "title": "Star Wars: Episode1(1999)",
+    "year": "1997",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/StarWars(Episode1).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Star%20Wars%20-%20Episode%20I%20-%20The%20Phantom%20Menace%20(1999).mp4"
+  },
+  {
+    "title": "Star Wars: Episode3(2005)",
+    "year": "2005",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/StarWars(Episode3).jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Star%20Wars%20-%20Episode%20III%20-%20Revenge%20of%20the%20Sith%20(2005).mp4"
+  },
+  {
+    "title": "Rouge One:A Star Wars Story(2016)",
+    "year": "2016",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/RogueOne.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Rogue%20One%20A%20Star%20Wars%20Story%20(aka)%20%E0%B9%82%E0%B8%A3%E0%B9%89%E0%B8%84%20%E0%B8%A7%E0%B8%B1%E0%B8%99%20%E0%B8%95%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%99%E0%B8%AA%E0%B8%95%E0%B8%B2%E0%B8%A3%E0%B9%8C%20%E0%B8%A7%E0%B8%AD%E0%B8%A3%E0%B9%8C%E0%B8%AA%20(2016).mp4"
+  },
+  {
+    "title": "Rush Hour(1998)",
+    "year": "1998",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/RushHour.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Rush%20Hour%201%20(aka)%20%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88%E0%B8%9F%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%A1%E0%B8%AA%E0%B8%9B%E0%B8%B5%E0%B8%94%201%20(1998).mp4"
+  },
+{
+    "title": "Rush Hour 2(2001)",
+    "year": "2001",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/RushHour2.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Rush%20Hour%202%20(aka)%20%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88%E0%B8%9F%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%A1%E0%B8%AA%E0%B8%9B%E0%B8%B5%E0%B8%94%202%20(2001).mp4"
+  },
+  {
+    "title": "Rush Hour 3(2007)",
+    "year": "1997",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/RushHour3.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Rush%20Hour%203%20(aka)%20%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B9%83%E0%B8%AB%E0%B8%8D%E0%B9%88%E0%B8%9F%E0%B8%B1%E0%B8%94%E0%B9%80%E0%B8%95%E0%B9%87%E0%B8%A1%E0%B8%AA%E0%B8%9B%E0%B8%B5%E0%B8%94%203%20(2007).mp4"
+  },
+  {
+    "title": "Shanghai Knights(2003)",
+    "year": "2003",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/ShanhaiKnights.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Shanghai%20Knights%20(aka)%20Shanghai%20Noon%202%20Shanghai%20Knights%20(2003).mp4"
+  },
+  {
+    "title": "Pompeii(2014)",
+    "year": "2014",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Pompeii.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Pompeii%20(aka)%20%E0%B9%84%E0%B8%9F%E0%B8%99%E0%B8%A3%E0%B8%81%E0%B8%96%E0%B8%A5%E0%B9%88%E0%B8%A1%E0%B8%9B%E0%B8%AD%E0%B8%A1%E0%B9%80%E0%B8%9B%E0%B8%AD%E0%B8%B5%20(2014).mp4"
+  },
+  {
+    "title": "Once Upon A Time In China 2(1992)",
+    "year": "1992",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/OnceUponATimeInChina2.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Once%20Upon%20a%20Time%20in%20China%20II%20(aka)%20%E9%BB%84%E9%A3%9E%E9%B8%BF%E4%B9%8B%E4%BA%8C%EF%BC%9A%E7%94%B7%E5%84%BF%E5%BD%93%E8%87%AA%E5%BC%BA%20(1992).mp4"
+  },
+{
+    "title": "Once Upon A Time In China(1991)",
+    "year": "1991",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/OnceUponATimeinChina.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Once%20Upon%20a%20Time%20in%20China%20(aka)%20%E9%BB%84%E9%A3%9E%E9%B8%BF%E4%B9%8B%E4%B8%80%EF%BC%9A%E5%A3%AE%E5%BF%97%E5%87%8C%E4%BA%91%20(1991).mp4"
+  },
+{
+    "title": "Once Upon A Time In China 3(1993)",
+    "year": "1993",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/OnceUponATimeInChina3.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Once%20Upon%20a%20Time%20in%20China%20III%20(aka)%20%E9%BB%84%E9%A3%9E%E9%B8%BF%E4%B9%8B%E4%B8%89%EF%BC%9A%E7%8B%AE%E7%8E%8B%E4%BA%89%E9%9C%B8%20(1993).mp4"
+  },
+{
+    "title": "Perrior's Bounty",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Perrier'sBounty.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Perrier's%20Bounty%20(aka)%20%E7%9A%AE%E9%9B%B7%E7%9A%84%E6%85%B7%E6%85%A8%20(2009).mp4"
+  },
+{
+    "title": "Pixels(2015)",
+    "year": "2015",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Pixels.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Pixels%20(aka)%20%E5%A4%A9%E7%85%9E%EF%BC%9A%E5%83%8F%E7%B4%A0%E4%B9%8B%E6%88%98%20(2015).mp4"
+  },
+  {
+    "title": "The Meltese Flacon(1941)",
+    "year": "1941",
+    "category": "Mystery",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/TheMalteseFlacon.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Mystery%20(%E1%80%9C%E1%80%BB%E1%80%BE%E1%80%AD%E1%80%AF%E1%80%B7%E1%80%9D%E1%80%BE%E1%80%80%E1%80%BA%E1%80%86%E1%80%94%E1%80%BA%E1%80%B8%E1%80%80%E1%80%BC%E1%80%9A%E1%80%BA)/The%20Maltese%20Falcon%20(aka)%20%E6%9E%AD%E5%B7%A2%E5%96%8B%E8%A1%80%E8%AE%B0%20(1941).mp4"
+  },
+{
+    "title": "Highlander(1986)",
+    "year": "1986",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/HighLander.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Highlander%20(1986).mp4"
+  },
+{
+    "title": "Hostage(2005)",
+    "year": "2005",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Hostage.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Hostage%20(aka)%20%E0%B8%9D%E0%B9%88%E0%B8%B2%E0%B8%99%E0%B8%A3%E0%B8%81%20%E0%B8%8A%E0%B8%B4%E0%B8%87%E0%B8%95%E0%B8%B1%E0%B8%A7%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B8%81%E0%B8%B1%E0%B8%99%20(2005).mp4"
+  },
+{
+    "title": "Hunt To Kill(2010)",
+    "year": "2010",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/HuntToKill.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Hunt%20to%20Kill%20(2010).mp4"
+  },
+{
+    "title": "Knowing(2009)",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Knowing.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Knowing%20(aka)%20%E0%B8%A3%E0%B8%AB%E0%B8%B1%E0%B8%AA%E0%B8%A7%E0%B8%B4%E0%B8%99%E0%B8%B2%E0%B8%A8%E0%B9%82%E0%B8%A5%E0%B8%81%20(2009).mp4"
+  },
+  {
+    "title": "Gladiator(2000)",
+    "year": "2000",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/Gladiator.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Gladiator%20(aka)%20El%20gladiador%20(aka)%20%E0%B9%81%E0%B8%81%E0%B8%A5%E0%B8%94%E0%B8%94%E0%B8%B4%E0%B9%80%E0%B8%AD%E0%B9%80%E0%B8%95%E0%B8%AD%E0%B8%A3%E0%B9%8C%20%E0%B8%99%E0%B8%B1%E0%B8%81%E0%B8%A3%E0%B8%9A%E0%B8%9C%E0%B8%B9%E0%B9%89%E0%B8%81%E0%B8%A5%E0%B9%89%E0%B8%B2%20%E0%B8%9C%E0%B9%88%E0%B8%B2%E0%B9%81%E0%B8%9C%E0%B9%88%E0%B8%99%E0%B8%94%E0%B8%B4%E0%B8%99%E0%B8%97%E0%B8%A3%E0%B8%A3%E0%B8%B2%E0%B8%8A%20(2000).mp4"
+  },
+{
+    "title": "First Snow(2006)",
+    "year": "2006",
+    "category": "Drama",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/FirstSnow.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Dramas%20(%E1%80%92%E1%80%9B%E1%80%AC%E1%80%99%E1%80%AC)/First%20Snow%20(aka)%20Presagio%20finale%20-%20First%20Snow%20(2006).mp4"
+  },
+{
+    "title": "Dark Blue(2002)",
+    "year": "2002",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/DarkBlue.jpg",
+    "url":
+"https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Dark%20Blue%20(aka)%20%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%9B%E0%B8%A3%E0%B8%B2%E0%B8%9A%20%E0%B8%AB%E0%B9%88%E0%B8%B2%E0%B8%A1%20%E0%B8%94%E0%B8%B4%E0%B8%9A%20%E0%B9%80%E0%B8%96%E0%B8%B7%E0%B9%88%E0%B8%AD%E0%B8%99%20(2002).mp4"
+  },
+  {
+    "title": "Code 8(2019)",
+    "year": "2019",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/code8.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Code%208%20(2019).mp4"
+  },
+{
+    "title": "Code 8 Part2(2024)",
+    "year": "2024",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/code8-2.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Code%208%20-%20Part%20II%20(2024).mp4"
+  },
+{
+    "title": "Commando(1985)",
+    "year": "1985",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/commando.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Commando%20(1985).mp4"
+  },
+  {
+    "title": "Brown Away(1994)",
+    "year": "1994",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/BlownAway.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Blown%20Away%20(aka)%20%E0%B8%AB%E0%B8%A2%E0%B8%B8%E0%B8%94%E0%B9%80%E0%B8%A7%E0%B8%A5%E0%B8%B2%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%9A%E0%B8%B4%E0%B8%94%E0%B9%80%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%87%20(1994).mp4"
+  },
+{
+    "title": "The Big Brawl(1980",
+    "year": "1980",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/thebigbrawl.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/The%20Big%20Brawl%20(aka)%20Battle%20Creek%20Brawl%20(1980).mp4"
+  },
+{
+    "title": "Bullet Proof Monk(2003)",
+    "year": "2003",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/BulletProofMonk.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Bulletproof%20Monk%20(2003).mkv"
+  },
+  {
+    "title": "22 Bullets",
+    "year": "2010",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/22Bullets.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/22%20Bullets%20(2010).mp4"
+  },
+  {
+    "title": "Air Force One Down",
+    "year": "2024",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/airforceonedown.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/Air%20Force%20One%20Down%20(2024).mp4"
+  },
+  {
+    "title": "12 Rounds",
+    "year": "2009",
+    "category": "Action",
+    "logo": "https://moviesplaylist-github-io.vercel.app/posters/12round.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Action%20(%E1%80%A1%E1%80%80%E1%80%BA%E1%80%9B%E1%80%BE%E1%80%84%E1%80%BA)/12%20Rounds%20(2009).mp4"
+  },
+  {
+    "title": "Interstellar",
+    "year": "2014",
+    "category": "Sci-Fi",
+    "logo": "https://image.tmdb.org/t/p/w500/aQvJ5WPzZgYVDrxLX4R6cLJCEaQ.jpg",
+    "url": "https://example.com/movies/interstellar.mp4"
+  }
+]
