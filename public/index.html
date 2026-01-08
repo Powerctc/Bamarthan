@@ -44,8 +44,8 @@
     }
 
     .nav-item:hover:not(.active) {
-      background-color: #f3f4f6;
-      color: #1f2937;
+      background-color: #374151;
+      color: white;
     }
 
     .nav-item.active {
@@ -78,6 +78,32 @@
       border-radius: 8px;
       display: inline-block;
       border-left: 4px solid #ef4444;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 10px 16px;
+      background: #374151;
+      color: #d1d5db;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      min-width: 120px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: #ef4444;
+      color: white;
     }
 
     .movie-grid {
@@ -140,6 +166,27 @@
       margin: 0;
     }
 
+    .filter-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-item {
+      background: #374151;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      min-width: 100px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .filter-item:hover {
+      background: #ef4444;
+    }
+
     footer {
       background-color: #1f2937;
       text-align: center;
@@ -162,7 +209,7 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <i class="fas fa-film"></i>
-      <span class="logo-text">S4ITMM TV(test)</span>
+      <span class="logo-text">S4ITMM TV</span>
     </div>
     <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item">
       <i class="fas fa-search mr-3"></i>Search
@@ -178,6 +225,9 @@
     </a>
     <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item">
       <i class="fas fa-people-arrows mr-3"></i>MMA Live
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/Iptv/index.html" class="nav-item">
+      <i class="fas fa-satellite mr-3"></i>IPTV Player
     </a>
     <a href="https://www.fotmob.com/my" class="nav-item">
       <i class="fas fa-futbol mr-3"></i>Livescore
@@ -202,9 +252,17 @@
   <!-- MAIN CONTENT -->
   <div class="main-content">
     <h2 class="page-title">Movies</h2>
+    
     <!-- DEVICE INFO DISPLAY -->
     <div class="device-info" id="device-info">
        <i class="fas fa-sync fa-spin"></i> Loading access info...
+    </div>
+
+    <!-- NEW FILTER BUTTONS FOR TV -->
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">All Movies</button>
+      <button class="filter-btn" data-filter="genre">Genres</button>
+      <button class="filter-btn" data-filter="year">Years</button>
     </div>
 
     <div id="movie-grid" class="movie-grid"></div>
@@ -223,11 +281,9 @@
 
     function getStableID() {
         try {
-            // Check localStorage first
             let id = localStorage.getItem("s4itmm_stable_id");
             if (id && id.length === 12) return id;
 
-            // Generate using Canvas Fingerprint (Stable)
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const txt = 'S4ITMM-TV-DEVICE-ID-2026';
@@ -259,7 +315,6 @@
         const currentID = getStableID();
         
         try {
-            // Fetch from your Database (Hugging Face / GitHub)
             const res = await fetch(`${HF_BASE_URL}/approved_users.json?_t=${Date.now()}`, { cache: "no-store" });
             if (!res.ok) throw new Error();
             
@@ -267,11 +322,9 @@
             const user = users.find(u => u.id === currentID);
             
             if (user) {
-                // Formatting Date
                 const expDate = new Date(user.expires);
                 const options = { day: 'numeric', month: 'short', year: 'numeric' };
                 const formattedDate = expDate.toLocaleDateString('en-GB', options);
-                
                 infoDiv.innerHTML = `<i class="fas fa-tv"></i> Device ID: <b>${currentID}</b> | <i class="fas fa-calendar-alt"></i> Expires: <b>${formattedDate}</b>`;
             } else {
                 infoDiv.innerHTML = `Device ID: ${currentID} | Trial Mode`;
@@ -280,29 +333,50 @@
             infoDiv.innerHTML = `Device ID: ${currentID} | Offline Mode`;
         }
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        updateAccessInfo();
-        fetchMovies();
-    });
   </script>
 
-  <!-- MOVIES LOADER (STAYS SAME) -->
+  <!-- ENHANCED MOVIES LOADER (3 SOURCES + GENRE/YEAR FILTERING) -->
   <script>
-    async function fetchMovies() {
-      const grid = document.getElementById('movie-grid');
-      try {
-        const res = await fetch('https://zetflix-peach.vercel.app/Playlist/Movies/movies.json?_t=' + Date.now(), { cache: 'no-store' });
-        const movies = await res.json();
-        renderMovies(Array.isArray(movies) ? movies : []);
-      } catch (err) {
-        grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">❌ Failed to load movies.</div>';
-      }
+    let allMovies = [];
+    let genresSet = new Set();
+    let yearsSet = new Set();
+
+    async function fetchAllMovies() {
+      const urls = [
+        'https://zetflix-peach.vercel.app/Playlist/Movies/movies.json',
+        'https://zetflix-peach.vercel.app/Playlist/Movies/movies-2.json',
+        'https://zetflix-peach.vercel.app/Playlist/Movies/movies-3.json'
+      ];
+
+      const promises = urls.map(url =>
+        fetch(url + '?_t=' + Date.now(), { cache: 'no-store' })
+          .then(res => res.ok ? res.json() : [])
+          .catch(() => [])
+      );
+
+      const results = await Promise.all(promises);
+      allMovies = results.flat().filter(movie => movie && typeof movie.title === 'string');
+
+      // Extract unique genres and years
+      genresSet.clear();
+      yearsSet.clear();
+      allMovies.forEach(movie => {
+        if (movie.category && typeof movie.category === 'string') {
+          genresSet.add(movie.category.trim());
+        }
+        if (movie.year && !isNaN(Number(movie.year))) {
+          yearsSet.add(String(movie.year));
+        }
+      });
     }
 
     function renderMovies(movies) {
       const grid = document.getElementById('movie-grid');
       grid.innerHTML = '';
+      if (movies.length === 0) {
+        grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">No movies found.</div>';
+        return;
+      }
       movies.forEach(movie => {
         const col = document.createElement('div');
         col.className = 'movie-col';
@@ -313,7 +387,7 @@
           <img src="${poster}" class="movie-poster" alt="${movie.title}">
           <div class="info">
             <h3>${movie.title || 'Untitled'}</h3>
-            <p>${movie.category || ''} ${movie.year ? '('+movie.year+')' : ''}</p>
+            <p>${movie.category || ''} ${movie.year ? '(' + movie.year + ')' : ''}</p>
           </div>
         `;
         card.addEventListener('click', () => {
@@ -324,6 +398,72 @@
         grid.appendChild(col);
       });
     }
+
+    function renderGenreList() {
+      const genres = Array.from(genresSet).sort();
+      let html = '<div class="filter-grid">';
+      genres.forEach(genre => {
+        html += `<div class="filter-item" data-type="genre" data-value="${genre}">${genre}</div>`;
+      });
+      html += '</div>';
+      document.getElementById('movie-grid').innerHTML = html;
+      attachFilterListeners();
+    }
+
+    function renderYearList() {
+      const years = Array.from(yearsSet).sort((a, b) => b - a);
+      let html = '<div class="filter-grid">';
+      years.forEach(year => {
+        html += `<div class="filter-item" data-type="year" data-value="${year}">${year}</div>`;
+      });
+      html += '</div>';
+      document.getElementById('movie-grid').innerHTML = html;
+      attachFilterListeners();
+    }
+
+    function attachFilterListeners() {
+      document.querySelectorAll('.filter-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const type = item.dataset.type;
+          const value = item.dataset.value;
+          if (type === 'genre') {
+            const filtered = allMovies.filter(m => m.category && m.category.trim() === value);
+            renderMovies(filtered);
+          } else if (type === 'year') {
+            const filtered = allMovies.filter(m => String(m.year) === value);
+            renderMovies(filtered);
+          }
+          setActiveButton('all');
+        });
+      });
+    }
+
+    function setActiveButton(filter) {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      updateAccessInfo();
+      await fetchAllMovies();
+      renderMovies(allMovies);
+
+      // Wire filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+          setActiveButton(filter);
+          if (filter === 'all') {
+            renderMovies(allMovies);
+          } else if (filter === 'genre') {
+            renderGenreList();
+          } else if (filter === 'year') {
+            renderYearList();
+          }
+        });
+      });
+    });
   </script>
 </body>
-</html> 
+</html>
