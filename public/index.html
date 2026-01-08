@@ -3,69 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>S4MM TV - Movies</title>
+  <title>S4ITMM TV - Movies</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
     body {
       margin: 0;
       font-family: 'Roboto', 'Segoe UI', sans-serif;
-      background-color: #111827;
+      background-color: #0f172a;
       color: white;
+      overflow-x: hidden;
     }
 
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
-      width: 192px;
+      width: 200px;
       height: 100vh;
-      background-color: #1f2937;
+      background-color: #1e293b;
       overflow-y: auto;
+      border-right: 1px solid #334155;
     }
 
     .sidebar-header {
       padding: 16px;
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar-header i {
-      color: #ef4444;
-      margin-right: 8px;
+      text-align: center;
+      background: linear-gradient(90deg, #FFD700, #facc15);
+      color: black;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
       padding: 12px 16px;
-      color: #d1d5db;
+      color: #cbd5e1;
       text-decoration: none;
+      margin: 4px 8px;
+      border-radius: 10px;
     }
 
-    .nav-item:hover:not(.active) {
-      background-color: #374151;
-      color: white;
-    }
-
+    .nav-item:hover,
     .nav-item.active {
-      background-color: #ef4444;
-      color: white;
-    }
-
-    .nav-item.active:hover {
-      background-color: #dc2626;
+      background: linear-gradient(90deg, #FFD700, #facc15);
+      color: black;
+      font-weight: bold;
     }
 
     .main-content {
-      margin-left: 192px;
-      padding: 24px 16px 64px;
+      margin-left: 200px;
+      padding: 20px 16px 64px;
     }
 
     .page-title {
       font-size: 24px;
       font-weight: bold;
-      color: #ef4444;
+      color: #facc15;
       margin-bottom: 16px;
     }
 
@@ -73,11 +66,11 @@
       font-size: 13px;
       color: #60a5fa;
       margin-top: 4px;
-      background: #1f2937;
+      background: #1e293b;
       padding: 8px 12px;
       border-radius: 8px;
       display: inline-block;
-      border-left: 4px solid #ef4444;
+      border-left: 4px solid #facc15;
     }
 
     .filter-buttons {
@@ -89,65 +82,53 @@
 
     .filter-btn {
       padding: 10px 16px;
-      background: #374151;
-      color: #d1d5db;
+      background: #334155;
+      color: #cbd5e1;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
       min-width: 120px;
       text-align: center;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .filter-btn.active,
     .filter-btn:hover {
-      background: #ef4444;
-      color: white;
+      background: linear-gradient(90deg, #FFD700, #facc15);
+      color: black;
+      font-weight: bold;
     }
 
     .movie-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: flex-start;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
       margin-top: 20px;
     }
 
-    .movie-col {
-      width: calc(50% - 6px);
-    }
-
-    @media (min-width: 640px) { .movie-col { width: calc(33.333% - 8px); } }
-    @media (min-width: 768px) { .movie-col { width: calc(25% - 9px); } }
-    @media (min-width: 1024px) { .movie-col { width: calc(20% - 9.6px); } }
-    @media (min-width: 1280px) { .movie-col { width: calc(16.666% - 10px); } }
-
     .movie-card {
-      background-color: #1f2937;
-      border-radius: 8px;
+      background-color: #1e293b;
+      border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      padding: 8px;
-      box-sizing: border-box;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    
+
     .movie-card:hover {
       transform: scale(1.03);
-      background-color: #374151;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
     }
 
     .movie-poster {
       width: 100%;
       height: 220px;
       object-fit: cover;
-      background-color: #111;
-      border-radius: 4px;
+      background: #0f172a;
     }
 
     .movie-card .info {
-      padding: 10px 6px;
+      padding: 10px;
       text-align: center;
     }
 
@@ -162,44 +143,95 @@
 
     .movie-card .info p {
       font-size: 12px;
-      color: #9ca3af;
+      color: #94a8b8;
       margin: 0;
     }
 
-    .filter-grid {
+    .overlay-menu {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s;
     }
 
-    .filter-item {
-      background: #374151;
-      color: white;
-      padding: 12px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      min-width: 100px;
+    .overlay-menu.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .overlay-content {
+      background: #1e293b;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 16px;
+      border: 1px solid #334155;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .overlay-header {
+      padding: 16px;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .overlay-list {
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .overlay-item {
+      padding: 12px;
+      background: #334155;
+      border-radius: 10px;
       text-align: center;
-      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .filter-item:hover {
-      background: #ef4444;
+    .overlay-item:hover {
+      background: linear-gradient(90deg, #FFD700, #facc15);
+      color: black;
     }
 
     footer {
-      background-color: #1f2937;
+      background-color: #1e293b;
       text-align: center;
       padding: 20px;
       margin-top: 32px;
       font-size: 14px;
-      border-top: 1px solid #374151;
+      border-top: 1px solid #334155;
     }
 
     footer a {
-      color: #ef4444;
+      color: #facc15;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top: 3px solid #FFD700;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 40px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -208,44 +240,40 @@
   <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-header">
-      <i class="fas fa-film"></i>
-      <span class="logo-text">S4ITMM TV</span>
+      <span>S4ITMM TV</span>
     </div>
-    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item">
-      <i class="fas fa-search mr-3"></i>Search
+    <a href="index.html" class="nav-item active">
+      <i class="fas fa-home mr-3"></i> Home
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item active">
-      <i class="fas fa-home mr-3"></i>HOME
+    <a href="Live/index.html" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i> Futbol Live(D1)
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/Live/index.html" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>Futbol Live(D1)
+    <a href="live/index.html" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i> Futbol Live(D2)
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/live/index.html" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>Futbol Live(D2)
+    <a href="fight/index.html" class="nav-item">
+      <i class="fas fa-hand-fist mr-3"></i> MMA Live
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item">
-      <i class="fas fa-people-arrows mr-3"></i>MMA Live
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/Iptv/index.html" class="nav-item">
-      <i class="fas fa-satellite mr-3"></i>IPTV Player
+    <a href="Iptv/index.html" class="nav-item">
+      <i class="fas fa-satellite mr-3"></i> IPTV Player
     </a>
     <a href="https://www.fotmob.com/my" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>Livescore
+      <i class="fas fa-star mr-3"></i> Livescore
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item">
-      <i class="fas fa-tv mr-3"></i>Series
+    <a href="series/index.html" class="nav-item">
+      <i class="fas fa-tv mr-3"></i> Series
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item">
-      <i class="fas fa-satellite-dish mr-3"></i>Myanmar TV
+    <a href="mmtv/index.html" class="nav-item">
+      <i class="fas fa-satellite-dish mr-3"></i> Myanmar TV
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/adults/index.html" class="nav-item">
-      <i class="fas fa-ban mr-3"></i>Adults(❌)
+    <a href="Adult/index.html" class="nav-item">
+      <i class="fas fa-eye-slash mr-3"></i> Adults (18+)
     </a>
-    <a href="https://tinyurl.com/3dhv27he" class="nav-item">
-      <i class="fas fa-download mr-3"></i><span>Phone Version</span>
+    <a href="https://m-sport-download.static.hf.space" class="nav-item">
+      <i class="fas fa-download mr-3"></i> Phone Version
     </a>
-    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item">
-      <i class="fas fa-user mr-3"></i><span>About</span>
+    <a href="About.html" class="nav-item">
+      <i class="fas fa-circle-info mr-3"></i> About
     </a>
   </div>
 
@@ -253,133 +281,110 @@
   <div class="main-content">
     <h2 class="page-title">Movies</h2>
     
-    <!-- DEVICE INFO DISPLAY -->
     <div class="device-info" id="device-info">
-       <i class="fas fa-sync fa-spin"></i> Loading access info...
+      <i class="fas fa-sync fa-spin"></i> Loading access info...
     </div>
 
-    <!-- NEW FILTER BUTTONS FOR TV -->
+    <!-- FILTER BUTTONS -->
     <div class="filter-buttons">
-      <button class="filter-btn active" data-filter="all">All Movies</button>
-      <button class="filter-btn" data-filter="genre">Genres</button>
-      <button class="filter-btn" data-filter="year">Years</button>
+      <button class="filter-btn active" data-filter="source">Source</button>
+      <button class="filter-btn" data-filter="genre">Genre</button>
+      <button class="filter-btn" data-filter="year">Year</button>
     </div>
 
+    <div id="loading-indicator" class="hidden"><div class="loading-spinner"></div></div>
     <div id="movie-grid" class="movie-grid"></div>
   </div>
 
   <footer>
-    <p>S4ITMM © All rights reserved</p>
-    <p>Created by Next Js 
-      <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung (Forever Study)</a>
+    <p>S4ITMM © 2026 All rights reserved</p>
+    <p>Developed by 
+      <a href="https://www.facebook.com/share/1HGmcLDcx1/" target="_blank">U Maung Forever Study</a>
     </p>
   </footer>
 
-  <!-- STABLE DEVICE ID & DATABASE EXPIRY CHECKER -->
+  <!-- OVERLAY MODAL -->
+  <div id="overlay-menu" class="overlay-menu">
+    <div class="overlay-content">
+      <div class="overlay-header">
+        <h3 id="overlay-title" class="text-yellow-400 font-bold">Select Option</h3>
+        <button id="overlay-close" class="text-white bg-red-600 w-8 h-8 rounded-full">✕</button>
+      </div>
+      <div id="overlay-list" class="overlay-list"></div>
+    </div>
+  </div>
+
   <script>
-    const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
-
+    // === DEVICE ID ===
     function getStableID() {
-        try {
-            let id = localStorage.getItem("s4itmm_stable_id");
-            if (id && id.length === 12) return id;
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const txt = 'S4ITMM-TV-DEVICE-ID-2026';
-            ctx.textBaseline = "top";
-            ctx.font = "14px 'Arial'";
-            ctx.fillText(txt, 2, 15);
-            const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
-            let hash = 0;
-            for (let i = 0; i < b64.length; i++) {
-                hash = (hash << 5) - hash + b64.charCodeAt(i);
-                hash = hash & hash;
-            }
-            const screenInfo = window.screen.width + "x" + window.screen.height;
-            const finalRaw = Math.abs(hash).toString() + navigator.platform + screenInfo;
-            let finalHash = 0;
-            for (let j = 0; j < finalRaw.length; j++) {
-                finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
-            }
-            id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
-            localStorage.setItem("s4itmm_stable_id", id);
-            return id;
-        } catch (e) {
-            return "000000000000";
-        }
+      let id = localStorage.getItem("s4itmm_stable_id_tv");
+      if (id && id.length >= 12) return id;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.textBaseline = "top";
+      ctx.font = "14px Arial";
+      ctx.fillText('S4ITMM-TV-2026', 2, 15);
+      const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
+      let hash = 0;
+      for (let i = 0; i < b64.length; i++) {
+        hash = (hash << 5) - hash + b64.charCodeAt(i);
+        hash = hash & hash;
+      }
+      const screenInfo = window.screen.width + "x" + window.screen.height;
+      const finalRaw = Math.abs(hash).toString() + navigator.platform + screenInfo;
+      let finalHash = 0;
+      for (let j = 0; j < finalRaw.length; j++) {
+        finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
+      }
+      id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
+      localStorage.setItem("s4itmm_stable_id_tv", id);
+      return id;
     }
 
     async function updateAccessInfo() {
-        const infoDiv = document.getElementById("device-info");
-        const currentID = getStableID();
-        
-        try {
-            const res = await fetch(`${HF_BASE_URL}/approved_users.json?_t=${Date.now()}`, { cache: "no-store" });
-            if (!res.ok) throw new Error();
-            
-            const users = await res.json();
-            const user = users.find(u => u.id === currentID);
-            
-            if (user) {
-                const expDate = new Date(user.expires);
-                const options = { day: 'numeric', month: 'short', year: 'numeric' };
-                const formattedDate = expDate.toLocaleDateString('en-GB', options);
-                infoDiv.innerHTML = `<i class="fas fa-tv"></i> Device ID: <b>${currentID}</b> | <i class="fas fa-calendar-alt"></i> Expires: <b>${formattedDate}</b>`;
-            } else {
-                infoDiv.innerHTML = `Device ID: ${currentID} | Trial Mode`;
-            }
-        } catch (e) {
-            infoDiv.innerHTML = `Device ID: ${currentID} | Offline Mode`;
+      const infoDiv = document.getElementById("device-info");
+      const currentID = getStableID();
+      try {
+        const res = await fetch(`https://livesportmm-s4itmmapprover.hf.space/approved_users.json?_t=${Date.now()}`, { cache: "no-store" });
+        if (!res.ok) throw new Error();
+        const users = await res.json();
+        const user = users.find(u => u.id === currentID);
+        if (user) {
+          const expDate = new Date(user.expires);
+          const formatted = expDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+          infoDiv.innerHTML = `<i class="fas fa-tv"></i> Device ID: <b>${currentID}</b> | Expires: <b>${formatted}</b>`;
+        } else {
+          infoDiv.innerHTML = `Device ID: ${currentID} | Trial Mode`;
         }
+      } catch (e) {
+        infoDiv.innerHTML = `Device ID: ${currentID} | Offline Mode`;
+      }
     }
-  </script>
 
-  <!-- ENHANCED MOVIES LOADER (3 SOURCES + GENRE/YEAR FILTERING) -->
-  <script>
+    // === MOVIE DATA ===
     let allMovies = [];
-    let genresSet = new Set();
-    let yearsSet = new Set();
+    const sources = [
+      { label: "Main Server", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies.json" },
+      { label: "Backup 1", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies-2.json" },
+      { label: "Backup 2", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies-3.json" }
+    ];
 
-    async function fetchAllMovies() {
-      const urls = [
-        'https://zetflix-peach.vercel.app/Playlist/Movies/movies.json',
-        'https://zetflix-peach.vercel.app/Playlist/Movies/movies-2.json',
-        'https://zetflix-peach.vercel.app/Playlist/Movies/movies-3.json'
-      ];
-
-      const promises = urls.map(url =>
-        fetch(url + '?_t=' + Date.now(), { cache: 'no-store' })
-          .then(res => res.ok ? res.json() : [])
-          .catch(() => [])
-      );
-
-      const results = await Promise.all(promises);
-      allMovies = results.flat().filter(movie => movie && typeof movie.title === 'string');
-
-      // Extract unique genres and years
-      genresSet.clear();
-      yearsSet.clear();
-      allMovies.forEach(movie => {
-        if (movie.category && typeof movie.category === 'string') {
-          genresSet.add(movie.category.trim());
-        }
-        if (movie.year && !isNaN(Number(movie.year))) {
-          yearsSet.add(String(movie.year));
-        }
-      });
+    async function loadMoviesFrom(url) {
+      document.getElementById("loading-indicator").classList.remove("hidden");
+      try {
+        const res = await fetch(url + '?_t=' + Date.now(), { cache: 'no-store' });
+        allMovies = await res.json();
+        renderMovies(allMovies);
+      } catch (e) {
+        document.getElementById("movie-grid").innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">❌ Failed to load movies.</div>';
+      }
+      document.getElementById("loading-indicator").classList.add("hidden");
     }
 
     function renderMovies(movies) {
       const grid = document.getElementById('movie-grid');
       grid.innerHTML = '';
-      if (movies.length === 0) {
-        grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">No movies found.</div>';
-        return;
-      }
       movies.forEach(movie => {
-        const col = document.createElement('div');
-        col.className = 'movie-col';
         const card = document.createElement('div');
         card.className = 'movie-card';
         const poster = (movie.logo || '').trim() || 'https://via.placeholder.com/220x220?text=No+Image';
@@ -394,76 +399,63 @@
           localStorage.setItem('selectedMovie', JSON.stringify(movie));
           window.location.href = 'movie_detail.html';
         });
-        col.appendChild(card);
-        grid.appendChild(col);
+        grid.appendChild(card);
       });
     }
 
-    function renderGenreList() {
-      const genres = Array.from(genresSet).sort();
-      let html = '<div class="filter-grid">';
-      genres.forEach(genre => {
-        html += `<div class="filter-item" data-type="genre" data-value="${genre}">${genre}</div>`;
+    // === OVERLAY ===
+    function openOverlay(title, items, onSelect) {
+      document.getElementById("overlay-title").textContent = title;
+      const list = document.getElementById("overlay-list");
+      list.innerHTML = '';
+      items.forEach(item => {
+        const el = document.createElement("div");
+        el.className = "overlay-item";
+        el.textContent = item.label;
+        el.onclick = () => {
+          onSelect(item.value || item.label);
+          closeOverlay();
+        };
+        list.appendChild(el);
       });
-      html += '</div>';
-      document.getElementById('movie-grid').innerHTML = html;
-      attachFilterListeners();
+      document.getElementById("overlay-menu").classList.add("show");
     }
 
-    function renderYearList() {
-      const years = Array.from(yearsSet).sort((a, b) => b - a);
-      let html = '<div class="filter-grid">';
-      years.forEach(year => {
-        html += `<div class="filter-item" data-type="year" data-value="${year}">${year}</div>`;
-      });
-      html += '</div>';
-      document.getElementById('movie-grid').innerHTML = html;
-      attachFilterListeners();
+    function closeOverlay() {
+      document.getElementById("overlay-menu").classList.remove("show");
     }
 
-    function attachFilterListeners() {
-      document.querySelectorAll('.filter-item').forEach(item => {
-        item.addEventListener('click', () => {
-          const type = item.dataset.type;
-          const value = item.dataset.value;
-          if (type === 'genre') {
-            const filtered = allMovies.filter(m => m.category && m.category.trim() === value);
-            renderMovies(filtered);
-          } else if (type === 'year') {
-            const filtered = allMovies.filter(m => String(m.year) === value);
-            renderMovies(filtered);
-          }
-          setActiveButton('all');
-        });
-      });
-    }
+    document.getElementById("overlay-close").onclick = closeOverlay;
+    document.getElementById("overlay-menu").onclick = (e) => {
+      if (e.target.id === 'overlay-menu') closeOverlay();
+    };
 
-    function setActiveButton(filter) {
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.filter === filter);
-      });
-    }
+    // === BUTTON HANDLERS ===
+    document.querySelector('.filter-btn[data-filter="source"]').onclick = () => {
+      openOverlay("Select Source", sources, (url) => loadMoviesFrom(url));
+    };
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.querySelector('.filter-btn[data-filter="genre"]').onclick = () => {
+      const genres = [...new Set(allMovies.map(m => m.category).filter(Boolean))].sort();
+      openOverlay("Genre", [{label: "All", value: "all"}, ...genres.map(g => ({label: g}))], (val) => {
+        const filtered = val === "all" ? allMovies : allMovies.filter(m => m.category === val);
+        renderMovies(filtered);
+      });
+    };
+
+    document.querySelector('.filter-btn[data-filter="year"]').onclick = () => {
+      const years = [...new Set(allMovies.map(m => m.year).filter(y => y))].sort((a,b) => b - a);
+      openOverlay("Year", [{label: "All Time", value: "all"}, ...years.map(y => ({label: y}))], (val) => {
+        const filtered = val === "all" ? allMovies : allMovies.filter(m => m.year == val);
+        renderMovies(filtered);
+      });
+    };
+
+    // === INIT ===
+    document.addEventListener("DOMContentLoaded", () => {
       updateAccessInfo();
-      await fetchAllMovies();
-      renderMovies(allMovies);
-
-      // Wire filter buttons
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const filter = btn.dataset.filter;
-          setActiveButton(filter);
-          if (filter === 'all') {
-            renderMovies(allMovies);
-          } else if (filter === 'genre') {
-            renderGenreList();
-          } else if (filter === 'year') {
-            renderYearList();
-          }
-        });
-      });
+      loadMoviesFrom(sources[0].url);
     });
   </script>
 </body>
-</html>
+  </html>
