@@ -154,7 +154,7 @@
       font-weight: bold;
     }
 
-    /* --- FILTER BUTTONS --- */
+    /* --- BUTTONS --- */
     .source-btn,
     .filter-btn {
       padding: 6px 12px;
@@ -240,8 +240,15 @@
       <button class="source-btn" data-source="2">Source-3</button>
     </div>
 
-    <!-- GENRE & YEAR FILTERS -->
-    <div id="filters" style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;"></div>
+    <!-- TOGGLE BUTTONS FOR GENRES & YEARS -->
+    <div style="display:flex; gap:8px; margin:16px 0;">
+      <button id="toggle-genres" class="source-btn">Genres</button>
+      <button id="toggle-years" class="source-btn">Years</button>
+    </div>
+
+    <!-- DYNAMIC PANELS (HIDDEN BY DEFAULT) -->
+    <div id="genre-panel" style="display:none; display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;"></div>
+    <div id="year-panel" style="display:none; display:flex; flex-wrap:wrap; gap:6px; margin:8px 0;"></div>
 
     <!-- MOVIE GRID -->
     <div id="movie-grid" class="movie-grid"></div>
@@ -269,7 +276,7 @@
             ctx.textBaseline = "top";
             ctx.font = "14px 'Arial'";
             ctx.fillText(txt, 2, 15);
-            const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
+            const b64 = canvas.toDataURL().replace("image/png;base64,", "");
             let hash = 0;
             for (let i = 0; i < b64.length; i++) {
                 hash = (hash << 5) - hash + b64.charCodeAt(i);
@@ -312,7 +319,7 @@
 
     // --- MOVIE SYSTEM ---
     let allMovies = [];
-    let currentSource = "main"; // main = movies.json, 1 = movies-1.json, 2 = movies-2.json
+    let currentSource = "main";
     let selectedGenre = null;
     let selectedYear = null;
 
@@ -339,119 +346,163 @@
             }
         }
 
-        renderFilters();
+        applyFilters(); // Initial render
+    }
+
+    // Toggle Genres Panel
+    document.getElementById('toggle-genres').addEventListener('click', () => {
+      const gPanel = document.getElementById('genre-panel');
+      const yPanel = document.getElementById('year-panel');
+      if (gPanel.style.display === 'flex') {
+        gPanel.style.display = 'none';
+      } else {
+        renderGenrePanel();
+        gPanel.style.display = 'flex';
+        yPanel.style.display = 'none';
+      }
+    });
+
+    // Toggle Years Panel
+    document.getElementById('toggle-years').addEventListener('click', () => {
+      const yPanel = document.getElementById('year-panel');
+      const gPanel = document.getElementById('genre-panel');
+      if (yPanel.style.display === 'flex') {
+        yPanel.style.display = 'none';
+      } else {
+        renderYearPanel();
+        yPanel.style.display = 'flex';
+        gPanel.style.display = 'none';
+      }
+    });
+
+    function renderGenrePanel() {
+      const panel = document.getElementById('genre-panel');
+      panel.innerHTML = '';
+
+      const genres = [...new Set(allMovies.map(m => m.category).filter(Boolean))];
+      if (genres.length === 0) {
+        panel.innerHTML = '<span>No genres available</span>';
+        return;
+      }
+
+      // All button
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-btn';
+      allBtn.textContent = 'All';
+      allBtn.onclick = () => {
+        selectedGenre = null;
+        panel.style.display = 'none';
         applyFilters();
+      };
+      panel.appendChild(allBtn);
+
+      // Genre buttons
+      genres.forEach(genre => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = genre;
+        btn.onclick = () => {
+          selectedGenre = genre;
+          selectedYear = null;
+          panel.style.display = 'none';
+          applyFilters();
+        };
+        panel.appendChild(btn);
+      });
     }
 
-    function renderFilters() {
-        const filtersDiv = document.getElementById('filters');
-        filtersDiv.innerHTML = '';
+    function renderYearPanel() {
+      const panel = document.getElementById('year-panel');
+      panel.innerHTML = '';
 
-        // Genres
-        const genres = [...new Set(allMovies.map(m => m.category).filter(Boolean))];
-        if (genres.length > 0) {
-            const genreContainer = document.createElement('div');
-            genreContainer.innerHTML = '<b>Genres:</b> ';
-            genres.forEach(genre => {
-                const btn = document.createElement('button');
-                btn.className = 'filter-btn';
-                btn.textContent = genre;
-                btn.onclick = () => {
-                    selectedGenre = selectedGenre === genre ? null : genre;
-                    selectedYear = null;
-                    updateFilterButtons();
-                    applyFilters();
-                };
-                genreContainer.appendChild(btn);
-            });
-            filtersDiv.appendChild(genreContainer);
-        }
+      const years = [...new Set(allMovies.map(m => m.year).filter(y => y && !isNaN(y)))].sort((a, b) => b - a);
+      if (years.length === 0) {
+        panel.innerHTML = '<span>No years available</span>';
+        return;
+      }
 
-        // Years
-        const years = [...new Set(allMovies.map(m => m.year).filter(y => y && !isNaN(y)))].sort((a, b) => b - a);
-        if (years.length > 0) {
-            const yearContainer = document.createElement('div');
-            yearContainer.innerHTML = '<b>Years:</b> ';
-            years.forEach(year => {
-                const btn = document.createElement('button');
-                btn.className = 'filter-btn';
-                btn.textContent = year;
-                btn.onclick = () => {
-                    selectedYear = selectedYear === year ? null : year;
-                    selectedGenre = null;
-                    updateFilterButtons();
-                    applyFilters();
-                };
-                yearContainer.appendChild(btn);
-            });
-            filtersDiv.appendChild(yearContainer);
-        }
-    }
+      // All button
+      const allBtn = document.createElement('button');
+      allBtn.className = 'filter-btn';
+      allBtn.textContent = 'All';
+      allBtn.onclick = () => {
+        selectedYear = null;
+        panel.style.display = 'none';
+        applyFilters();
+      };
+      panel.appendChild(allBtn);
 
-    function updateFilterButtons() {
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if ((selectedGenre && btn.textContent === selectedGenre) ||
-                (selectedYear && btn.textContent === String(selectedYear))) {
-                btn.classList.add('active');
-            }
-        });
+      // Year buttons
+      years.forEach(year => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.textContent = year;
+        btn.onclick = () => {
+          selectedYear = year;
+          selectedGenre = null;
+          panel.style.display = 'none';
+          applyFilters();
+        };
+        panel.appendChild(btn);
+      });
     }
 
     function applyFilters() {
-        let filtered = allMovies.filter(movie => {
-            if (currentSource !== movie._source) return false;
-            if (selectedGenre && movie.category !== selectedGenre) return false;
-            if (selectedYear && movie.year !== selectedYear) return false;
-            return true;
-        });
-        renderMovies(filtered);
+      let filtered = allMovies.filter(movie => {
+        if (currentSource !== movie._source) return false;
+        if (selectedGenre && movie.category !== selectedGenre) return false;
+        if (selectedYear && movie.year !== selectedYear) return false;
+        return true;
+      });
+      renderMovies(filtered);
     }
 
     function renderMovies(movies) {
-        const grid = document.getElementById('movie-grid');
-        grid.innerHTML = '';
-        if (movies.length === 0) {
-            grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">No movies found.</div>';
-            return;
-        }
-        movies.forEach(movie => {
-            const col = document.createElement('div');
-            col.className = 'movie-col';
-            const card = document.createElement('div');
-            card.className = 'movie-card';
-            const poster = (movie.logo || '').trim() || 'https://via.placeholder.com/220x220?text=No+Image';
-            card.innerHTML = `
-              <img src="${poster}" class="movie-poster" alt="${movie.title}">
-              <div class="info">
-                <h3>${movie.title || 'Untitled'}</h3>
-                <p>${movie.category || ''} ${movie.year ? '('+movie.year+')' : ''}</p>
-              </div>
-            `;
-            card.addEventListener('click', () => {
-                localStorage.setItem('selectedMovie', JSON.stringify(movie));
-                window.location.href = 'movie_detail.html';
-            });
-            col.appendChild(card);
-            grid.appendChild(col);
+      const grid = document.getElementById('movie-grid');
+      grid.innerHTML = '';
+      if (movies.length === 0) {
+        grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">No movies found.</div>';
+        return;
+      }
+      movies.forEach(movie => {
+        const col = document.createElement('div');
+        col.className = 'movie-col';
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        const poster = (movie.logo || '').trim() || 'https://via.placeholder.com/220x220?text=No+Image';
+        card.innerHTML = `
+          <img src="${poster}" class="movie-poster" alt="${movie.title}">
+          <div class="info">
+            <h3>${movie.title || 'Untitled'}</h3>
+            <p>${movie.category || ''} ${movie.year ? '('+movie.year+')' : ''}</p>
+          </div>
+        `;
+        card.addEventListener('click', () => {
+          localStorage.setItem('selectedMovie', JSON.stringify(movie));
+          window.location.href = 'movie_detail.html';
         });
+        col.appendChild(card);
+        grid.appendChild(col);
+      });
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // Source button handlers
-        document.querySelectorAll('.source-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentSource = btn.dataset.source;
-                applyFilters();
-            });
-        });
+    // Source button handlers
+    document.querySelectorAll('.source-btn[data-source]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.source-btn[data-source]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSource = btn.dataset.source;
+        selectedGenre = null;
+        selectedYear = null;
+        applyFilters();
+      });
+    });
 
-        // Load
-        updateAccessInfo();
-        fetchAllSources();
+    // Load on start
+    document.addEventListener("DOMContentLoaded", () => {
+      updateAccessInfo();
+      fetchAllSources();
     });
   </script>
 </body>
-      </html>
+        </html>
