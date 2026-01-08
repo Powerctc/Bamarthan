@@ -1,264 +1,457 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-<title>S4MM TV - Movies</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>S4MM TV - Movies</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Segoe UI', sans-serif;
+      background-color: #111827;
+      color: white;
+    }
 
-<style>
-body {
-  margin:0;
-  font-family:'Roboto','Segoe UI',sans-serif;
-  background:#111827;
-  color:#fff;
-}
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 192px;
+      height: 100vh;
+      background-color: #1f2937;
+      overflow-y: auto;
+    }
 
-/* SIDEBAR */
-.sidebar{
-  position:fixed;
-  top:0;left:0;
-  width:192px;
-  height:100vh;
-  background:#1f2937;
-  overflow-y:auto;
-}
-.sidebar-header{
-  padding:16px;
-  display:flex;
-  align-items:center;
-}
-.sidebar-header i{color:#ef4444;margin-right:8px;}
-.nav-item{
-  display:flex;
-  align-items:center;
-  padding:12px 16px;
-  color:#d1d5db;
-  text-decoration:none;
-  cursor:pointer;
-}
-.nav-item:hover{background:#374151;}
-.nav-item.active{background:#ef4444;color:#fff;}
+    .sidebar-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+    }
 
-/* MAIN */
-.main-content{
-  margin-left:192px;
-  padding:24px 16px 64px;
-}
-.page-title{
-  font-size:24px;
-  color:#ef4444;
-}
-.device-info{
-  font-size:13px;
-  color:#60a5fa;
-  background:#1f2937;
-  padding:8px 12px;
-  border-radius:8px;
-  margin-top:6px;
-  border-left:4px solid #ef4444;
-}
+    .sidebar-header i {
+      color: #ef4444;
+      margin-right: 8px;
+    }
 
-/* FILTER BAR */
-.filter-bar{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:16px;
-}
-.filter-btn{
-  background:#1f2937;
-  color:#fff;
-  border:none;
-  padding:8px 14px;
-  border-radius:6px;
-  cursor:pointer;
-}
-.filter-btn.active,
-.filter-btn:hover{
-  background:#ef4444;
-}
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      color: #d1d5db;
+      text-decoration: none;
+    }
 
-/* POPUP MENUS */
-.popup{
-  display:none;
-  margin-top:10px;
-}
-.popup button{
-  display:block;
-  width:100%;
-  margin-bottom:6px;
-  background:#1f2937;
-  color:#fff;
-  border:none;
-  padding:10px;
-  border-radius:6px;
-  text-align:left;
-}
-.popup button:hover{
-  background:#ef4444;
-}
+    .nav-item:hover:not(.active) {
+      background-color: #f3f4f6;
+      color: #1f2937;
+    }
 
-/* MOVIES */
-.movie-grid{
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-top:20px;
-}
-.movie-col{width:calc(20% - 10px);}
-@media(max-width:1024px){.movie-col{width:25%;}}
-@media(max-width:768px){.movie-col{width:33.33%;}}
-@media(max-width:480px){.movie-col{width:50%;}}
+    .nav-item.active {
+      background-color: #ef4444;
+      color: white;
+    }
 
-.movie-card{
-  background:#1f2937;
-  padding:8px;
-  border-radius:8px;
-  cursor:pointer;
-}
-.movie-card:hover{background:#374151;}
-.movie-poster{
-  width:100%;
-  height:220px;
-  object-fit:cover;
-  border-radius:4px;
-}
-.movie-card .info{text-align:center;padding-top:6px;}
-.movie-card h3{
-  font-size:14px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.movie-card p{
-  font-size:12px;
-  color:#9ca3af;
-}
-</style>
+    .nav-item.active:hover {
+      background-color: #dc2626;
+    }
+
+    .main-content {
+      margin-left: 192px;
+      padding: 24px 16px 64px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #ef4444;
+      margin-bottom: 16px;
+    }
+
+    .device-info {
+      font-size: 13px;
+      color: #60a5fa;
+      margin-top: 4px;
+      background: #1f2937;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: inline-block;
+      border-left: 4px solid #ef4444;
+    }
+
+    .movie-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: flex-start;
+      margin-top: 20px;
+    }
+
+    .movie-col {
+      width: calc(50% - 6px);
+    }
+
+    @media (min-width: 640px) { .movie-col { width: calc(33.333% - 8px); } }
+    @media (min-width: 768px) { .movie-col { width: calc(25% - 9px); } }
+    @media (min-width: 1024px) { .movie-col { width: calc(20% - 9.6px); } }
+    @media (min-width: 1280px) { .movie-col { width: calc(16.666% - 10px); } }
+
+    .movie-card {
+      background-color: #1f2937;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      padding: 8px;
+      box-sizing: border-box;
+      transition: transform 0.2s;
+    }
+
+    .movie-card:hover {
+      transform: scale(1.03);
+      background-color: #374151;
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background-color: #111;
+      border-radius: 4px;
+    }
+
+    .movie-card .info {
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .movie-card .info h3 {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 0 0 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .movie-card .info p {
+      font-size: 12px;
+      color: #9ca3af;
+      margin: 0;
+    }
+
+    footer {
+      background-color: #1f2937;
+      text-align: center;
+      padding: 20px;
+      margin-top: 32px;
+      font-size: 14px;
+      border-top: 1px solid #374151;
+    }
+
+    footer a {
+      color: #ef4444;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* --- FILTER BUTTONS --- */
+    .source-btn,
+    .filter-btn {
+      padding: 6px 12px;
+      background-color: #374151;
+      color: #d1d5db;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .source-btn.active,
+    .filter-btn.active {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .source-btn:hover:not(.active),
+    .filter-btn:hover:not(.active) {
+      background-color: #4b5563;
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="sidebar">
-  <div class="sidebar-header">
-    <i class="fas fa-film"></i><span>S4ITMM TV</span>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-film"></i>
+      <span class="logo-text">S4ITMM TV</span>
+    </div>
+    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item">
+      <i class="fas fa-search mr-3"></i>Search
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item active">
+      <i class="fas fa-home mr-3"></i>HOME
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/Live/index.html" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i>Futbol Live(D1)
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/live/index.html" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i>Futbol Live(D2)
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item">
+      <i class="fas fa-people-arrows mr-3"></i>MMA Live
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/Iptv/index.html" class="nav-item">
+      <i class="fas fa-satellite mr-3"></i>IPTV Player
+    </a>
+    <a href="https://www.fotmob.com/my" class="nav-item">
+      <i class="fas fa-futbol mr-3"></i>Livescore
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item">
+      <i class="fas fa-tv mr-3"></i>Series
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item">
+      <i class="fas fa-satellite-dish mr-3"></i>Myanmar TV
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/adults/index.html" class="nav-item">
+      <i class="fas fa-ban mr-3"></i>Adults(❌)
+    </a>
+    <a href="https://tinyurl.com/3dhv27he" class="nav-item">
+      <i class="fas fa-download mr-3"></i><span>Phone Version</span>
+    </a>
+    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item">
+      <i class="fas fa-user mr-3"></i><span>About</span>
+    </a>
   </div>
-  <a class="nav-item active">HOME</a>
-</div>
 
-<div class="main-content">
-  <h2 class="page-title">Movies</h2>
-  <div class="device-info" id="device-info">Loading ID...</div>
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <h2 class="page-title">Movies</h2>
 
-  <!-- FILTER BAR -->
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="loadSource('movies.json',this)">Source 1</button>
-    <button class="filter-btn" onclick="loadSource('movies-1.json',this)">Source 2</button>
-    <button class="filter-btn" onclick="loadSource('movies-2.json',this)">Source 3</button>
-    <button class="filter-btn" onclick="loadSource('movies-3.json',this)">Source 4</button>
+    <!-- DEVICE INFO -->
+    <div class="device-info" id="device-info">
+      <i class="fas fa-sync fa-spin"></i> Loading access info...
+    </div>
 
-    <button class="filter-btn" onclick="togglePopup('genrePopup')">Genres</button>
-    <button class="filter-btn" onclick="togglePopup('yearPopup')">Years</button>
+    <!-- SOURCE BUTTONS -->
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;">
+      <button class="source-btn active" data-source="main">Source-1</button>
+      <button class="source-btn" data-source="1">Source-2</button>
+      <button class="source-btn" data-source="2">Source-3</button>
+    </div>
+
+    <!-- GENRE & YEAR FILTERS -->
+    <div id="filters" style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;"></div>
+
+    <!-- MOVIE GRID -->
+    <div id="movie-grid" class="movie-grid"></div>
   </div>
 
-  <div id="genrePopup" class="popup"></div>
-  <div id="yearPopup" class="popup"></div>
+  <footer>
+    <p>S4ITMM © All rights reserved</p>
+    <p>Created by Next Js
+      <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung (Forever Study)</a>
+    </p>
+  </footer>
 
-  <div id="movie-grid" class="movie-grid"></div>
-</div>
+  <!-- SCRIPTS -->
+  <script>
+    const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
 
-<script>
-// --- STABLE DEVICE ID LOGIC ---
     function getStableID() {
-      try {
-        let id = localStorage.getItem("s4itmm_stable_id");
-        if (id && id.length === 12) return id;
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.fillText('S4ITMM-TV-2026', 2, 15);
-        const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
-        let hash = 0;
-        for (let i = 0; i < b64.length; i++) { hash = (hash << 5) - hash + b64.charCodeAt(i); hash |= 0; }
-        id = Math.abs(hash).toString().padStart(12, "0").slice(0, 12);
-        localStorage.setItem("s4itmm_stable_id", id);
-        return id;
-      } catch (e) { return "000000000000"; }
+        try {
+            let id = localStorage.getItem("s4itmm_stable_id");
+            if (id && id.length === 12) return id;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const txt = 'S4ITMM-TV-DEVICE-ID-2026';
+            ctx.textBaseline = "top";
+            ctx.font = "14px 'Arial'";
+            ctx.fillText(txt, 2, 15);
+            const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
+            let hash = 0;
+            for (let i = 0; i < b64.length; i++) {
+                hash = (hash << 5) - hash + b64.charCodeAt(i);
+                hash = hash & hash;
+            }
+            const screenInfo = window.screen.width + "x" + window.screen.height;
+            const finalRaw = Math.abs(hash).toString() + navigator.platform + screenInfo;
+            let finalHash = 0;
+            for (let j = 0; j < finalRaw.length; j++) {
+                finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
+            }
+            id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
+            localStorage.setItem("s4itmm_stable_id", id);
+            return id;
+        } catch (e) {
+            return "000000000000";
+        }
     }
 
     async function updateAccessInfo() {
-      const infoDiv = document.getElementById("device-info");
-      const id = getStableID();
-      infoDiv.innerHTML = `<i class="fas fa-tv"></i> ID: <b>${id}</b> | <i class="fas fa-check-circle"></i> Connected`;
+        const infoDiv = document.getElementById("device-info");
+        const currentID = getStableID();
+        try {
+            const res = await fetch(`${HF_BASE_URL}/approved_users.json?_t=${Date.now()}`, { cache: "no-store" });
+            if (!res.ok) throw new Error();
+            const users = await res.json();
+            const user = users.find(u => u.id === currentID);
+            if (user) {
+                const expDate = new Date(user.expires);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                const formattedDate = expDate.toLocaleDateString('en-GB', options);
+                infoDiv.innerHTML = `<i class="fas fa-tv"></i> Device ID: <b>${currentID}</b> | <i class="fas fa-calendar-alt"></i> Expires: <b>${formattedDate}</b>`;
+            } else {
+                infoDiv.innerHTML = `Device ID: ${currentID} | Trial Mode`;
+            }
+        } catch (e) {
+            infoDiv.innerHTML = `Device ID: ${currentID} | Offline Mode`;
+        }
     }
-/* MOVIE LOGIC */
-let allMovies=[];
-let source="movies.json";
-let genre="",year="";
 
-function togglePopup(id){
- const el=document.getElementById(id);
- el.style.display=el.style.display==="block"?"none":"block";
-}
+    // --- MOVIE SYSTEM ---
+    let allMovies = [];
+    let currentSource = "main"; // main = movies.json, 1 = movies-1.json, 2 = movies-2.json
+    let selectedGenre = null;
+    let selectedYear = null;
 
-function loadSource(s,btn){
- source=s;
- document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
- btn.classList.add('active');
- fetchMovies();
-}
+    async function fetchAllSources() {
+        allMovies = [];
 
-async function fetchMovies(){
- const grid=document.getElementById("movie-grid");
- grid.innerHTML="Loading...";
- const res=await fetch(`https://zetflix-peach.vercel.app/Playlist/Movies/${source}?_t=${Date.now()}`);
- allMovies=await res.json();
- buildFilters();
- applyFilters();
-}
+        const sources = [
+            { key: "main", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies.json" },
+            { key: "1", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies-1.json" },
+            { key: "2", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies-2.json" }
+        ];
 
-function buildFilters(){
- const genres=[...new Set(allMovies.map(m=>m.category).filter(Boolean))];
- const years=[...new Set(allMovies.map(m=>m.year).filter(Boolean))].sort((a,b)=>b-a);
+        for (const src of sources) {
+            try {
+                const res = await fetch(`${src.url}?_t=${Date.now()}`, { cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    const movies = Array.isArray(data) ? data : [];
+                    movies.forEach(m => m._source = src.key);
+                    allMovies.push(...movies);
+                }
+            } catch (err) {
+                console.warn(`Failed to load: ${src.url}`);
+            }
+        }
 
- document.getElementById("genrePopup").innerHTML =
-  `<button onclick="setGenre('')">All</button>`+
-  genres.map(g=>`<button onclick="setGenre('${g}')">${g}</button>`).join("");
+        renderFilters();
+        applyFilters();
+    }
 
- document.getElementById("yearPopup").innerHTML =
-  `<button onclick="setYear('')">All</button>`+
-  years.map(y=>`<button onclick="setYear('${y}')">${y}</button>`).join("");
-}
+    function renderFilters() {
+        const filtersDiv = document.getElementById('filters');
+        filtersDiv.innerHTML = '';
 
-function setGenre(g){genre=g;applyFilters();}
-function setYear(y){year=y;applyFilters();}
+        // Genres
+        const genres = [...new Set(allMovies.map(m => m.category).filter(Boolean))];
+        if (genres.length > 0) {
+            const genreContainer = document.createElement('div');
+            genreContainer.innerHTML = '<b>Genres:</b> ';
+            genres.forEach(genre => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = genre;
+                btn.onclick = () => {
+                    selectedGenre = selectedGenre === genre ? null : genre;
+                    selectedYear = null;
+                    updateFilterButtons();
+                    applyFilters();
+                };
+                genreContainer.appendChild(btn);
+            });
+            filtersDiv.appendChild(genreContainer);
+        }
 
-function applyFilters(){
- renderMovies(allMovies.filter(m=>{
-  return (!genre||m.category===genre)&&(!year||m.year==year);
- }));
-}
+        // Years
+        const years = [...new Set(allMovies.map(m => m.year).filter(y => y && !isNaN(y)))].sort((a, b) => b - a);
+        if (years.length > 0) {
+            const yearContainer = document.createElement('div');
+            yearContainer.innerHTML = '<b>Years:</b> ';
+            years.forEach(year => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = year;
+                btn.onclick = () => {
+                    selectedYear = selectedYear === year ? null : year;
+                    selectedGenre = null;
+                    updateFilterButtons();
+                    applyFilters();
+                };
+                yearContainer.appendChild(btn);
+            });
+            filtersDiv.appendChild(yearContainer);
+        }
+    }
 
-function renderMovies(list){
- const grid=document.getElementById("movie-grid");
- grid.innerHTML="";
- list.forEach(m=>{
-  const col=document.createElement("div");
-  col.className="movie-col";
-  col.innerHTML=`
-   <div class="movie-card">
-    <img class="movie-poster" src="${m.logo||''}">
-    <div class="info">
-     <h3>${m.title}</h3>
-     <p>${m.category||''} ${m.year||''}</p>
-    </div>
-   </div>`;
-  grid.appendChild(col);
- });
-}
+    function updateFilterButtons() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if ((selectedGenre && btn.textContent === selectedGenre) ||
+                (selectedYear && btn.textContent === String(selectedYear))) {
+                btn.classList.add('active');
+            }
+        });
+    }
 
-fetchMovies();
-</script>
+    function applyFilters() {
+        let filtered = allMovies.filter(movie => {
+            if (currentSource !== movie._source) return false;
+            if (selectedGenre && movie.category !== selectedGenre) return false;
+            if (selectedYear && movie.year !== selectedYear) return false;
+            return true;
+        });
+        renderMovies(filtered);
+    }
 
+    function renderMovies(movies) {
+        const grid = document.getElementById('movie-grid');
+        grid.innerHTML = '';
+        if (movies.length === 0) {
+            grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">No movies found.</div>';
+            return;
+        }
+        movies.forEach(movie => {
+            const col = document.createElement('div');
+            col.className = 'movie-col';
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            const poster = (movie.logo || '').trim() || 'https://via.placeholder.com/220x220?text=No+Image';
+            card.innerHTML = `
+              <img src="${poster}" class="movie-poster" alt="${movie.title}">
+              <div class="info">
+                <h3>${movie.title || 'Untitled'}</h3>
+                <p>${movie.category || ''} ${movie.year ? '('+movie.year+')' : ''}</p>
+              </div>
+            `;
+            card.addEventListener('click', () => {
+                localStorage.setItem('selectedMovie', JSON.stringify(movie));
+                window.location.href = 'movie_detail.html';
+            });
+            col.appendChild(card);
+            grid.appendChild(col);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Source button handlers
+        document.querySelectorAll('.source-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentSource = btn.dataset.source;
+                applyFilters();
+            });
+        });
+
+        // Load
+        updateAccessInfo();
+        fetchAllSources();
+    });
+  </script>
 </body>
-</html>
+      </html>
