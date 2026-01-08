@@ -235,7 +235,7 @@
 
     <!-- SOURCE BUTTONS -->
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;">
-      <button class="source-btn active" data-source="main">Source-1</button>
+      <button class="source-btn" data-source="main">Source-1</button>
       <button class="source-btn" data-source="1">Source-2</button>
       <button class="source-btn" data-source="2">Source-3</button>
     </div>
@@ -319,7 +319,7 @@
 
     // --- MOVIE SYSTEM ---
     let allMovies = [];
-    let currentSource = "main";
+    let currentSource = "main"; // default
     let selectedGenre = null;
     let selectedYear = null;
 
@@ -346,7 +346,7 @@
             }
         }
 
-        applyFilters(); // Initial render
+        applyFilters();
     }
 
     // Toggle Genres Panel
@@ -385,7 +385,6 @@
         return;
       }
 
-      // All button
       const allBtn = document.createElement('button');
       allBtn.className = 'filter-btn';
       allBtn.textContent = 'All';
@@ -396,7 +395,6 @@
       };
       panel.appendChild(allBtn);
 
-      // Genre buttons
       genres.forEach(genre => {
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
@@ -421,7 +419,6 @@
         return;
       }
 
-      // All button
       const allBtn = document.createElement('button');
       allBtn.className = 'filter-btn';
       allBtn.textContent = 'All';
@@ -432,7 +429,6 @@
       };
       panel.appendChild(allBtn);
 
-      // Year buttons
       years.forEach(year => {
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
@@ -486,23 +482,40 @@
       });
     }
 
-    // Source button handlers
+    // Source button handlers with localStorage persistence
     document.querySelectorAll('.source-btn[data-source]').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.source-btn[data-source]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentSource = btn.dataset.source;
+        localStorage.setItem('s4itmm_current_source', currentSource); // 👈 Save
         selectedGenre = null;
         selectedYear = null;
         applyFilters();
       });
     });
 
-    // Load on start
+    // Load on start — restore last source
     document.addEventListener("DOMContentLoaded", () => {
       updateAccessInfo();
+
+      // Restore saved source
+      const savedSource = localStorage.getItem('s4itmm_current_source');
+      if (savedSource && ['main', '1', '2'].includes(savedSource)) {
+        currentSource = savedSource;
+      }
+
+      // Update UI buttons
+      document.querySelectorAll('.source-btn[data-source]').forEach(btn => {
+        if (btn.dataset.source === currentSource) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
       fetchAllSources();
     });
   </script>
 </body>
-        </html>
+  </html>
