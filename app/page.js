@@ -9,21 +9,20 @@ export default function HomePage() {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  // API URL နှင့် သက်တမ်းကုန်ရက် သတ်မှတ်ချက်
   const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space"; 
   const DEFAULT_SEASON_PASS = "2026-05-31T23:59:59Z";
 
-  // ၁။ Stable Device ID Generator (Clear Data လုပ်လည်း မပြောင်းစေရန်)
+  // ၁။ Stable Device ID Generator
   const generateStableID = () => {
     try {
       if (typeof window === 'undefined') return null;
       
-      // ပထမဆုံး localStorage မှာ စစ်ပါ (ရှိရင် ယူသုံးမည်)
-      let storedId = localStorage.getItem("s4itmm_stable_id");
+      let storedId = localStorage.getItem("fotlive_stable_id");
       
-      // Canvas Fingerprint ထုတ်ယူခြင်း (Device တစ်ခုချင်းစီအတွက် unique ဖြစ်စေရန်)
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const txt = 'S4ITMM-TV-DEVICE-ID-2026';
+      const txt = 'FOTLIVE-MOVIES-ID-2026'; // Unique String ပြောင်းလိုက်သည်
       ctx.textBaseline = "top";
       ctx.font = "14px 'Arial'";
       ctx.textBaseline = "alphabetic";
@@ -41,21 +40,18 @@ export default function HomePage() {
         hash = hash & hash;
       }
       
-      // Browser ရဲ့ အခြား အချက်အလက်များကို ပေါင်းစပ်မည်
       const screenInfo = window.screen.width + "x" + window.screen.height;
       const platform = navigator.platform || "unknown";
       const finalRaw = Math.abs(hash).toString() + platform + screenInfo;
       
-      // ၁၂ လုံး ဂဏန်းအဖြစ် ပြောင်းလဲခြင်း
       let finalHash = 0;
       for (let j = 0; j < finalRaw.length; j++) {
         finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
       }
       const finalID = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
 
-      // ပထမဆုံးအကြိမ်ဆိုလျှင် သိမ်းထားမည်
       if (!storedId) {
-        localStorage.setItem("s4itmm_stable_id", finalID);
+        localStorage.setItem("fotlive_stable_id", finalID);
       }
       
       setDeviceID(finalID);
@@ -86,7 +82,7 @@ export default function HomePage() {
           body: JSON.stringify({
             id: id,
             expires: DEFAULT_SEASON_PASS,
-            name: "New_User"
+            name: "Fotlive_User"
           })
         });
         user = { id: id, expires: DEFAULT_SEASON_PASS };
@@ -100,6 +96,7 @@ export default function HomePage() {
       if (expiry > today) {
         setUserInfo({ id: user.id, expires: user.expires, daysRemaining: daysRemaining });
         setStatus('✅ ဝင်ရောက်ခွင့် အတည်ပြုပြီးပါပြီ!');
+        // ၂.၅ စက္ကန့်အကြာတွင် ပင်မစာမျက်နှာသို့ သွားမည်
         setTimeout(() => { window.location.href = '/index.html'; }, 2500);
       } else {
         setError({ title: "Access Expired", message: "သင်၏ သက်တမ်းကုန်ဆုံးသွားပါပြီ။" });
@@ -123,11 +120,12 @@ export default function HomePage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '20px', background: '#0f172a', color: 'white', textAlign: 'center' }}>
-      <h1 style={{ color: '#ef4444', fontSize: '2.5rem', fontWeight: 'bold' }}>S4ITMM TV</h1>
+      {/* နာမည်အသစ်သို့ ပြောင်းလဲခြင်း */}
+      <h1 style={{ color: '#ef4444', fontSize: '2.5rem', fontWeight: 'bold' }}>Fotlivemovies</h1>
       
       {isLoading && (
         <div style={{ margin: '30px 0' }}>
-          <div className="loader"></div>
+          <div className="loader" style={{ border: '4px solid #1e293b', borderTop: '4px solid #ef4444', borderRadius: '50%', width: '40px', height: '40px', animation: 'spin 1s linear infinite', margin: '0 auto' }}></div>
           <p style={{ marginTop: '20px', color: '#94a3b8' }}>{status}</p>
         </div>
       )}
@@ -155,9 +153,10 @@ export default function HomePage() {
         border: '1px solid #f59e0b',
         borderRadius: '8px',
         maxWidth: '500px',
-        width: '100%'
+        width: '100%',
+        marginTop: '20px'
       }}>
-        <h4 style={{ color: '#f59e0b', marginBottom: '10px' }}>ဒီစာမျက်နှာမှာ id မပေါ်ပါကအောက်ပါ Button ကိုနှိပ်ပါ</h4>
+        <h4 style={{ color: '#f59e0b', marginBottom: '10px' }}>ဒီစာမျက်နှာမှာ id မပေါ်ပါက အောက်ပါ Button ကိုနှိပ်ပါ</h4>
         <p style={{ color: '#cbd5e1', fontSize: '0.9rem', marginBottom: '15px' }}>
           If you're seeing the loading screen for too long or experiencing issues,<br />
           <strong>Click the button below to use Static Html</strong>
@@ -182,45 +181,29 @@ export default function HomePage() {
             textDecoration: 'none',
             transition: 'all 0.3s'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)';
-            e.currentTarget.style.boxShadow = '0 4px 12px rgba(245, 158, 11, 0.4)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = 'none';
-          }}
         >
           <i className="fas fa-tv"></i>
           Go to HTML Version (Old Devices)
         </a>
-        <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
-          This will load a simpler version that works better on older TVs
-        </p>
       </div>
 
-      {/* Contact info */}
-      <div className="contact mt-8" style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
+      {/* Contact info Updated */}
+      <div className="contact mt-8" style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '20px' }}>
         <p>Need access? Contact us:</p>
         <p>📱 Telegram: <a 
-          href="tg://resolve?domain=S4MMTV" 
+          href="tg://resolve?domain=Fotlivemovies" 
           style={{ color: '#60a5fa', textDecoration: 'none' }}
-          onClick={(e) => {
-            e.preventDefault();
-            window.location.href = 'tg://resolve?domain=S4MMTV';
-          }}
         >
-          @S4ITMM
+          @Fotlivemovies
         </a></p>
         <p>📧 Email: <a 
-          href="mailto:support@s4itmm.com" 
+          href="mailto:support@fotlivemovies.com" 
           style={{ color: '#60a5fa', textDecoration: 'none' }}
         >
-          support@s4itmm.com
+          support@fotlivemovies.com
         </a></p>
       </div>
 
-      {/* Add CSS for spinner animation */}
       <style jsx>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
@@ -229,4 +212,5 @@ export default function HomePage() {
       `}</style>
     </div>
   )
-            }
+        }
+        
