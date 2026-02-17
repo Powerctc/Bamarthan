@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
-      --bg-dark: #0f172a;
+      --bg-dark: #020617;
       --card-bg: #1e293b;
       --primary-red: #ef4444;
       --accent-blue: #3b82f6;
@@ -38,12 +38,12 @@
       z-index: 100;
     }
 
-    /* --- Built-in Player Section --- */
+    /* --- Player Section --- */
     .player-wrapper {
       width: 100%;
       background: #000;
       aspect-ratio: 16/9;
-      display: none; /* စဖွင့်ချင်း ဖျောက်ထားမည် */
+      display: none;
       position: relative;
     }
     
@@ -78,75 +78,62 @@
       font-size: clamp(24px, 5vw, 40px);
       margin: 0;
       font-weight: 900;
-    }
-
-    .movie-meta {
-      color: #94a3b8;
-      font-size: 18px;
+      color: #facc15; /* Yellow Title */
     }
 
     .description-box {
-      background: var(--card-bg);
+      background: rgba(30, 41, 59, 0.5);
       padding: 20px;
       border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
       line-height: 1.6;
-      font-size: 15px;
+      font-size: 14px;
       color: #cbd5e1;
     }
 
-    /* --- Action Buttons --- */
     .btn-group {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 12px;
-      flex-wrap: wrap;
       margin-top: 10px;
     }
 
     .btn {
-      padding: 14px 24px;
+      padding: 16px;
       border: none;
       border-radius: 12px;
-      font-size: 15px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       text-decoration: none;
       transition: 0.3s;
       color: white;
+      text-transform: uppercase;
     }
 
-    .play-now { background: var(--accent-blue); }
-    .mx-play { background: var(--primary-red); }
+    .play-now { background: #2563eb; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); }
+    .mx-play { background: #dc2626; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3); }
     
     .btn:active { transform: scale(0.95); }
 
-    .instruction {
-      margin-top: 20px;
-      padding: 15px;
-      background: rgba(59, 130, 246, 0.1);
-      border-left: 4px solid var(--accent-blue);
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
     @media (max-width: 768px) {
-      .container { grid-template-columns: 1fr; text-align: center; margin-top: 20px; }
-      .poster-side img { max-width: 220px; }
-      .btn-group { justify-content: center; }
-      .info-side { align-items: center; }
+      .container { grid-template-columns: 1fr; text-align: center; }
+      .poster-side img { max-width: 200px; margin: 0 auto; }
+      .btn-group { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+  <a href="javascript:history.back()" class="back-btn"><i class="fas fa-arrow-left"></i></a>
 
   <div id="playerSection" class="player-wrapper">
-    <video id="mainVideoPlayer" controls playsinline poster="">
+    <video id="mainVideoPlayer" controls playsinline>
       <source src="" type="video/mp4">
-      Your browser does not support the video tag.
     </video>
   </div>
 
@@ -155,75 +142,78 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const stored = localStorage.getItem('selectedMovie');
+      const movieData = localStorage.getItem('selectedMovie');
       const container = document.getElementById('detail-view');
       const playerSection = document.getElementById('playerSection');
       const videoPlayer = document.getElementById('mainVideoPlayer');
 
-      if (!stored) {
-        container.innerHTML = `<p style="text-align:center; width:100%;">No movie selected.</p>`;
+      if (!movieData) {
+        container.innerHTML = `<p style="text-align:center; padding:50px;">ဇာတ်ကား ရွေးချယ်ထားခြင်း မရှိပါ။</p>`;
         return;
       }
 
-      const movie = JSON.parse(stored);
-      const desc = movie.description || "ဒီဇာတ်ကားကို Fotlivemovies မှာ အခုပဲ ကြည့်ရှုလိုက်ပါ။ အရည်အသွေးအကြည်ဖြင့် အခမဲ့ တင်ဆက်ထားပါသည်။";
+      const movie = JSON.parse(decodeURIComponent(movieData));
+      
+      // JSON ထဲမှာ link ဒါမှမဟုတ် url ဆိုပြီး ပါလာနိုင်လို့ နှစ်ခုလုံးကို စစ်ပါမယ်
+      const streamUrl = movie.link || movie.url || movie.file || "";
 
       container.innerHTML = `
         <div class="poster-side">
-          <img src="${movie.logo || 'https://via.placeholder.com/300x450'}" alt="Poster">
+          <img src="${movie.logo || movie.image || 'https://via.placeholder.com/300x450?text=No+Image'}" alt="Poster">
         </div>
         <div class="info-side">
           <h1 class="movie-title">${movie.title}</h1>
-          <div class="movie-meta">${movie.year || '2026'} | ${movie.category || 'Movie'}</div>
+          <div class="text-slate-400 font-bold uppercase tracking-widest text-xs">
+             ${movie.year || '2026'} • PREMIUM QUALITY
+          </div>
           
           <div class="description-box">
             <strong>ဇာတ်လမ်းအညွှန်း</strong><br><br>
-            ${desc}
+            ${movie.description || "ဒီဇာတ်ကားကို Fotlivemovies မှာ အခုပဲ ကြည့်ရှုလိုက်ပါ။ အရည်အသွေးအကြည်ဖြင့် အခမဲ့ တင်ဆက်ထားပါသည်။"}
           </div>
 
           <div class="btn-group">
             <button id="inAppBtn" class="btn play-now">
-              <i class="fas fa-play-circle"></i> In-App Player
+              <i class="fas fa-play"></i> Watch Here
             </button>
             <button id="mxPlayBtn" class="btn mx-play">
-              <i class="fas fa-external-link-alt"></i> MX Player
+              <i class="fas fa-play"></i> MX Player
             </button>
-          </div>
-
-          <div class="instruction">
-            <i class="fas fa-info-circle"></i> 
-            <b>လမ်းညွှန်:</b> Browser ထဲမှာတင် တိုက်ရိုက်ကြည့်ရန် <b>In-App Player</b> ကိုနှိပ်ပါ။ ပိုမိုမြန်ဆန်သွက်လက်စေရန် Android ဖုန်းများတွင် <b>MX Player</b> ဖြင့် ကြည့်ရှုနိုင်ပါသည်။
           </div>
         </div>
       `;
 
-      // --- ၁။ Built-in Player ဖြင့် ကြည့်ရန် ---
+      // 1. In-App Player Function
       document.getElementById('inAppBtn').onclick = () => {
-        videoPlayer.src = movie.url;
+        if (!streamUrl) return alert("Video Link မတွေ့ပါ");
+        
         playerSection.style.display = 'block';
-        videoPlayer.play();
-        // Player ဆီသို့ Scroll ဆွဲသွားမည်
+        videoPlayer.src = streamUrl;
+        videoPlayer.load();
+        videoPlayer.play().catch(e => {
+            console.error("Auto-play failed:", e);
+            alert("ဒီ Video အမျိုးအစားကို Browser က Support မလုပ်ပါ။ MX Player ကို သုံးပေးပါ။");
+        });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
-      // --- ၂။ External MX Player ဖြင့် ကြည့်ရန် ---
+      // 2. MX Player Function (Fixed Intent)
       document.getElementById('mxPlayBtn').onclick = () => {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        const videoUrl = movie.url;
+        if (!streamUrl) return alert("Video Link မတွေ့ပါ");
 
-        if (/android/i.test(userAgent)) {
-          const mxIntent = `intent:${videoUrl}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(movie.title)};end`;
-          window.location.href = mxIntent;
-          
-          setTimeout(() => {
-             if (!document.hidden) {
-                window.location.href = "https://play.google.com/store/apps/details?id=com.mxtech.videoplayer.ad";
-             }
-          }, 1500);
-        } else {
-          // PC သို့မဟုတ် iOS ဆိုလျှင် tab အသစ်မှာ တိုက်ရိုက်ဖွင့်ပေးမည်
-          window.open(videoUrl, '_blank');
-        }
+        const mxIntent = `intent:${streamUrl}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(movie.title)};end`;
+        
+        // Android အတွက် Intent ခေါ်ခြင်း
+        window.location.href = mxIntent;
+
+        // ၁ စက္ကန့်အတွင်း MX Player မပွင့်လာရင် Store ကို ပို့ပေးမယ်
+        setTimeout(() => {
+          if (!document.hidden) {
+            if (confirm("MX Player မရှိသေးပါက Play Store မှာ ဒေါင်းလုဒ် ဆွဲမလား?")) {
+              window.location.href = "https://play.google.com/store/apps/details?id=com.mxtech.videoplayer.ad";
+            }
+          }
+        }, 1200);
       };
     });
   </script>
