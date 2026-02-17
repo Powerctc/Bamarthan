@@ -2,328 +2,268 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>S4MM TV - Movies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>S4ITMM Adults - Premium</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
   <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto', 'Segoe UI', sans-serif;
-      background-color: #111827;
-      color: white;
+    :root {
+      --bg-dark: #020617;
+      --accent-red: #ef4444;
+      --accent-yellow: #facc15;
+      --card-bg: rgba(30, 41, 59, 0.5);
     }
 
+    body {
+      background-color: var(--bg-dark);
+      color: #f8fafc;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    /* --- Sidebar --- */
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
-      width: 192px;
+      width: 280px;
       height: 100vh;
-      background-color: #1f2937;
-      overflow-y: auto;
+      background: #0f172a;
+      z-index: 2000;
+      transform: translateX(-100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-right: 1px solid rgba(255,255,255,0.05);
     }
-
-    .sidebar-header {
-      padding: 16px;
-      display: flex;
-      align-items: center;
-    }
-
-    .sidebar-header i {
-      color: #ef4444;
-      margin-right: 8px;
-    }
+    .sidebar.open { transform: translateX(0); }
 
     .nav-item {
       display: flex;
       align-items: center;
-      padding: 12px 16px;
-      color: #d1d5db;
-      text-decoration: none;
+      padding: 12px 20px;
+      margin: 5px 15px;
+      border-radius: 12px;
+      color: #94a3b8;
+      transition: 0.2s;
     }
-
-    .nav-item:hover:not(.active) {
-      background-color: #f3f4f6;
-      color: #1f2937;
-    }
-
     .nav-item.active {
-      background-color: #ef4444;
-      color: white;
-    }
-
-    .nav-item.active:hover {
-      background-color: #dc2626;
-    }
-
-    .main-content {
-      margin-left: 192px;
-      padding: 24px 16px 64px;
-    }
-
-    .page-title {
-      font-size: 24px;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--accent-red);
       font-weight: bold;
-      color: #ef4444;
-      margin-bottom: 16px;
     }
 
-    .device-info {
-      font-size: 13px;
-      color: #60a5fa;
-      margin-top: 4px;
-      background: #1f2937;
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: inline-block;
-      border-left: 4px solid #ef4444;
+    /* --- Glassmorphism --- */
+    .glass-box {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .movie-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: flex-start;
-      margin-top: 20px;
-    }
-
-    .movie-col {
-      width: calc(50% - 6px);
-    }
-
-    @media (min-width: 640px) { .movie-col { width: calc(33.333% - 8px); } }
-    @media (min-width: 768px) { .movie-col { width: calc(25% - 9px); } }
-    @media (min-width: 1024px) { .movie-col { width: calc(20% - 9.6px); } }
-    @media (min-width: 1280px) { .movie-col { width: calc(16.666% - 10px); } }
-
+    /* --- Movie Card Styling --- */
     .movie-card {
-      background-color: #1f2937;
-      border-radius: 8px;
+      background: var(--card-bg);
+      border-radius: 16px;
       overflow: hidden;
-      cursor: pointer;
-      padding: 8px;
-      box-sizing: border-box;
-      transition: transform 0.2s;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
-    
     .movie-card:hover {
-      transform: scale(1.03);
-      background-color: #374151;
+      transform: translateY(-5px);
+      border-color: var(--accent-red);
     }
-
-    .movie-poster {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      background-color: #111;
-      border-radius: 4px;
-    }
-
-    .movie-card .info {
-      padding: 10px 6px;
-      text-align: center;
-    }
-
-    .movie-card .info h3 {
-      font-size: 14px;
-      font-weight: bold;
-      margin: 0 0 4px;
-      white-space: nowrap;
+    .img-container {
+      position: relative;
+      aspect-ratio: 16/9;
+      background: #000;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .movie-card .info p {
-      font-size: 12px;
-      color: #9ca3af;
-      margin: 0;
-    }
-
-    footer {
-      background-color: #1f2937;
+    /* --- VPN Buttons --- */
+    .btn-vpn {
+      background: linear-gradient(135deg, #ec4899, #be185d);
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
       text-align: center;
-      padding: 20px;
-      margin-top: 32px;
-      font-size: 14px;
-      border-top: 1px solid #374151;
+      transition: 0.2s;
+    }
+    .btn-vpn:active { transform: scale(0.95); }
+
+    /* --- Overlay --- */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
     }
 
-    footer a {
-      color: #ef4444;
-      text-decoration: none;
-      font-weight: bold;
+    @media (min-width: 1024px) {
+      .sidebar { transform: translateX(0); width: 260px; }
+      main { margin-left: 260px; }
+      .mobile-header { display: none; }
     }
   </style>
 </head>
-<body>
+<body class="select-none">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <i class="fas fa-film"></i>
-      <span class="logo-text">S4ITMM TV</span>
+  <header class="mobile-header fixed top-0 left-0 right-0 h-16 glass-box z-50 flex items-center justify-between px-5">
+    <div class="flex items-center gap-4">
+      <button id="menu-btn" class="text-yellow-400 text-2xl active:scale-90 transition-transform">
+        <i class="fas fa-bars-staggered"></i>
+      </button>
+      <h1 class="text-xl font-black text-yellow-400">S4ITMM <span class="text-white text-xs opacity-50 font-light tracking-widest">ADULTS</span></h1>
     </div>
-    <a href="https://nextjs-tv-one.vercel.app/search.html" class="nav-item">
-      <i class="fas fa-search mr-3"></i>Search
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/index.html" class="nav-item active">
-      <i class="fas fa-home mr-3"></i>HOME
-    </a>
-    <a href="Live/index.html" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>Futbol Live(D1)
-    </a>
-    <a href="live/index.html" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>Futbol Live(D2)
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/fight/index.html" class="nav-item">
-      <i class="fas fa-people-arrows mr-3"></i>MMA Live
-    </a>
-    <a href="https://www.fotmob.com/my" class="nav-item">
-      <i class="fas fa-futbol mr-3"></i>Livescore
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/series/index.html" class="nav-item">
-      <i class="fas fa-tv mr-3"></i>Series
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/mmtv/index.html" class="nav-item">
-      <i class="fas fa-satellite-dish mr-3"></i>Myanmar TV
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/adults/index.html" class="nav-item">
-      <i class="fas fa-ban mr-3"></i>Adults(❌)
-    </a>
-    <a href="https://tinyurl.com/3dhv27he" class="nav-item">
-      <i class="fas fa-download mr-3"></i><span>Phone Version</span>
-    </a>
-    <a href="https://nextjs-tv-one.vercel.app/About.html" class="nav-item">
-      <i class="fas fa-user mr-3"></i><span>About</span>
-    </a>
-  </div>
+    <div class="text-white/20"><i class="fas fa-shield-halved"></i></div>
+  </header>
 
-  <!-- MAIN CONTENT -->
-  <div class="main-content">
-    <h2 class="page-title">Movies</h2>
-    <!-- DEVICE INFO DISPLAY -->
-    <div class="device-info" id="device-info">
-       <i class="fas fa-sync fa-spin"></i> Loading access info...
+  <aside id="sidebar" class="sidebar">
+    <div class="p-8 text-center border-b border-white/5">
+        <h1 class="text-3xl font-black text-yellow-400">S4ITMM</h1>
+        <p class="text-[10px] text-white/40 tracking-widest uppercase mt-1">Premium Streaming</p>
+    </div>
+    <nav class="mt-6">
+      <a href="https://fotlivemovies.vercel.app/index.html" class="nav-item"><i class="fas fa-house"></i>ရုပ်ရှင်ကြည့်မယ်</a>
+      <a href="https://fotlivemovies.vercel.app/series/index.html" class="nav-item"><i class="fas fa-tv"></i>ဇာတ်လမ်းတွဲ</a>
+      <a href="https://fotlivemovies.vercel.app/adults/index.html" class="nav-item active" style="color:#f87171;"><i class="fas fa-eye-slash"></i><span>&nbsp;လူကြီးကြိုက်</span></a>
+      <a href="https://m-sport-download.static.hf.space" class="nav-item"><i class="fas fa-download"></i><span>&nbsp;App ဒေါင်းရန်</span></a>
+      <a href="https://fotlivemovies.vercel.app/About.html" class="nav-item"><i class="fas fa-circle-info"></i>Appအကြောင်း</a>
+    </nav>
+  </aside>
+
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/80 z-[1500] hidden lg:hidden backdrop-blur-sm"></div>
+
+  <main class="pt-24 lg:pt-8 p-4 max-w-7xl mx-auto">
+    
+    <div class="grid grid-cols-3 gap-3 mb-8">
+      <a href="https://www.xnxx.com/" class="btn-vpn"><i class="fas fa-globe mr-1"></i> XNXX</a>
+      <a href="https://www.pornhub.org/" class="btn-vpn"><i class="fas fa-globe mr-1"></i> HUB</a>
+      <a href="https://blue.lawka-ahla.com/" class="btn-vpn"><i class="fas fa-book mr-1"></i> စာအုပ်</a>
+      <a href="https://yotepya.com/" class="btn-vpn"><i class="fas fa-mask mr-1"></i> ရုပ်ပြ</a>
+      <a href="https://nyakabyar.com/" class="btn-vpn"><i class="fas fa-feather mr-1"></i> ကဗျာ</a>
+      <button id="source-trigger" class="btn-vpn" style="background: var(--accent-yellow); color: black;">
+        <i class="fas fa-layer-group mr-1"></i> SOURCE
+      </button>
     </div>
 
-    <div id="movie-grid" class="movie-grid"></div>
+    <div id="loading" class="flex flex-col items-center py-20 hidden">
+        <div class="border-3 border-white/10 border-t-red-500 rounded-full w-10 h-10 animate-spin"></div>
+    </div>
+    <div id="movie-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      </div>
+  </main>
+
+  <div id="overlay" class="overlay">
+    <div class="overlay-content glass-box p-6 w-[90%] max-w-sm rounded-3xl border border-white/10">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-bold text-yellow-400 uppercase text-sm tracking-widest">Select Source</h3>
+        <button id="overlay-close" class="text-white/50 text-xl"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="source-list" class="flex flex-col gap-2"></div>
+    </div>
   </div>
 
-  <footer>
-    <p>S4ITMM © All rights reserved</p>
-    <p>Created by Next Js 
-      <a href="https://www.facebook.com/share/16eJkjQPHU/" target="_blank">U Maung (Forever Study)</a>
-    </p>
-  </footer>
-
-  <!-- STABLE DEVICE ID & DATABASE EXPIRY CHECKER -->
   <script>
-    const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
+    const CONFIG = {
+      sources: [
+        { label: "Adults Server 1", value: "movies.json" },
+        { label: "Adults Server 2", value: "adults.m3u" },
+        { label: "Global Server 3", value: "https://raw.githubusercontent.com/atsushi444/iptv/7e4e06c7155021964ee749cfae37512f389adb40/0108.m3u" }
+      ]
+    };
 
-    function getStableID() {
-        try {
-            // Check localStorage first
-            let id = localStorage.getItem("s4itmm_stable_id");
-            if (id && id.length === 12) return id;
-
-            // Generate using Canvas Fingerprint (Stable)
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const txt = 'S4ITMM-TV-DEVICE-ID-2026';
-            ctx.textBaseline = "top";
-            ctx.font = "14px 'Arial'";
-            ctx.fillText(txt, 2, 15);
-            const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
-            let hash = 0;
-            for (let i = 0; i < b64.length; i++) {
-                hash = (hash << 5) - hash + b64.charCodeAt(i);
-                hash = hash & hash;
-            }
-            const screenInfo = window.screen.width + "x" + window.screen.height;
-            const finalRaw = Math.abs(hash).toString() + navigator.platform + screenInfo;
-            let finalHash = 0;
-            for (let j = 0; j < finalRaw.length; j++) {
-                finalHash = (finalHash << 5) - finalHash + finalRaw.charCodeAt(j);
-            }
-            id = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12);
-            localStorage.setItem("s4itmm_stable_id", id);
-            return id;
-        } catch (e) {
-            return "000000000000";
-        }
-    }
-
-    async function updateAccessInfo() {
-        const infoDiv = document.getElementById("device-info");
-        const currentID = getStableID();
-        
-        try {
-            // Fetch from your Database (Hugging Face / GitHub)
-            const res = await fetch(`${HF_BASE_URL}/approved_users.json?_t=${Date.now()}`, { cache: "no-store" });
-            if (!res.ok) throw new Error();
-            
-            const users = await res.json();
-            const user = users.find(u => u.id === currentID);
-            
-            if (user) {
-                // Formatting Date
-                const expDate = new Date(user.expires);
-                const options = { day: 'numeric', month: 'short', year: 'numeric' };
-                const formattedDate = expDate.toLocaleDateString('en-GB', options);
-                
-                infoDiv.innerHTML = `<i class="fas fa-tv"></i> Device ID: <b>${currentID}</b> | <i class="fas fa-calendar-alt"></i> Expires: <b>${formattedDate}</b>`;
-            } else {
-                infoDiv.innerHTML = `Device ID: ${currentID} | Trial Mode`;
-            }
-        } catch (e) {
-            infoDiv.innerHTML = `Device ID: ${currentID} | Offline Mode`;
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        updateAccessInfo();
-        fetchMovies();
-    });
-  </script>
-
-  <!-- MOVIES LOADER (STAYS SAME) -->
-  <script>
-    async function fetchMovies() {
-      const grid = document.getElementById('movie-grid');
+    // Data Parsing & Fetching
+    async function fetchData(url) {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('movie-grid').innerHTML = '';
       try {
-        const res = await fetch('./movies.json?_t=' + Date.now(), { cache: 'no-store' });
-        const movies = await res.json();
-        renderMovies(Array.isArray(movies) ? movies : []);
-      } catch (err) {
-        grid.innerHTML = '<div style="color:#f87171; text-align:center; width:100%; padding:30px;">❌ Failed to load movies.</div>';
-      }
+        const res = await fetch(url);
+        const text = await res.text();
+        let list = [];
+        if (text.trim().startsWith('{') || text.trim().startsWith('[')) {
+          const json = JSON.parse(text);
+          const items = json.items || (Array.isArray(json) ? json : []);
+          list = items.map(i => ({ title: i.title || i.name, logo: i.logo || i.image, link: i.link || i.url }));
+        } else {
+          const lines = text.split('\n');
+          let current = {};
+          lines.forEach(line => {
+            line = line.trim();
+            if (line.startsWith('#EXTINF:')) {
+              const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+              current.logo = logoMatch ? logoMatch[1] : '';
+              current.title = line.split(',').pop().trim();
+            } else if (line.startsWith('http')) {
+              current.link = line;
+              list.push(current);
+              current = {};
+            }
+          });
+        }
+        renderMovies(list);
+      } catch (e) { console.error("Error fetching data"); }
+      document.getElementById('loading').classList.add('hidden');
     }
 
-    function renderMovies(movies) {
+    function renderMovies(list) {
       const grid = document.getElementById('movie-grid');
-      grid.innerHTML = '';
-      movies.forEach(movie => {
-        const col = document.createElement('div');
-        col.className = 'movie-col';
-        const card = document.createElement('div');
-        card.className = 'movie-card';
-        const poster = (movie.logo || '').trim() || 'https://via.placeholder.com/220x220?text=No+Image';
-        card.innerHTML = `
-          <img src="${poster}" class="movie-poster" alt="${movie.title}">
-          <div class="info">
-            <h3>${movie.title || 'Untitled'}</h3>
-            <p>${movie.category || ''} ${movie.year ? '('+movie.year+')' : ''}</p>
+      grid.innerHTML = list.map(m => `
+        <div class="movie-card" onclick="goDetail('${encodeURIComponent(JSON.stringify(m))}')">
+          <div class="img-container">
+            <img src="${m.logo}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/400x225/1e293b/white?text=18+'">
+            <div class="absolute top-2 right-2 bg-red-600 text-[8px] font-bold px-2 py-1 rounded-full animate-pulse">LIVE</div>
           </div>
-        `;
-        card.addEventListener('click', () => {
-          localStorage.setItem('selectedMovie', JSON.stringify(movie));
-          window.location.href = 'movie_detail.html';
-        });
-        col.appendChild(card);
-        grid.appendChild(col);
-      });
+          <div class="p-3">
+            <h3 class="text-[10px] font-bold truncate text-slate-200 uppercase tracking-tight">${m.title}</h3>
+          </div>
+        </div>
+      `).join('');
     }
+
+    window.goDetail = (data) => {
+      localStorage.setItem("selectedMovie", decodeURIComponent(data));
+      window.location.href = "movie_detail.html";
+    };
+
+    // UI Events
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    document.getElementById('menu-btn').onclick = () => {
+      sidebar.classList.add('open');
+      backdrop.classList.remove('hidden');
+    };
+
+    backdrop.onclick = () => {
+      sidebar.classList.remove('open');
+      backdrop.classList.add('hidden');
+    };
+
+    document.getElementById('source-trigger').onclick = () => {
+      const listDiv = document.getElementById('source-list');
+      listDiv.innerHTML = CONFIG.sources.map(s => `
+        <button onclick="changeSrc('${s.value}')" class="w-full text-left p-4 rounded-xl bg-white/5 hover:bg-red-500/20 hover:text-red-500 transition font-bold text-xs uppercase">
+          ${s.label}
+        </button>
+      `).join('');
+      document.getElementById('overlay').style.display = 'flex';
+    };
+
+    window.changeSrc = (val) => {
+      document.getElementById('overlay').style.display = 'none';
+      fetchData(val);
+    };
+
+    document.getElementById('overlay-close').onclick = () => { document.getElementById('overlay').style.display = 'none'; };
+
+    window.onload = () => {
+      fetchData(CONFIG.sources[0].value);
+    };
   </script>
 </body>
-</html> 
+</html>
