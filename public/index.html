@@ -75,19 +75,41 @@
       transition: margin-left 0.3s;
     }
 
-    /* --- Banner Style --- */
+    /* ============ COLOR RUNNING BANNER (UPDATED) ============ */
     .banner-container {
-      margin-bottom: 25px;
-      width: 100%;
+      position: relative;
+      margin-bottom: 30px;
+      padding: 3px; /* ဘောင်အရောင်ပေါ်ဖို့ padding ထည့်ထားသည် */
+      border-radius: 15px;
+      background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+      background-size: 400%;
+      animation: colorRun 20s linear infinite;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes colorRun {
+      0% { background-position: 0 0; }
+      50% { background-position: 400% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    .banner-inner {
+      background: var(--bg-dark);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
+
     .banner-container img {
       width: 100%;
       display: block;
       object-fit: cover;
       max-height: 200px;
+      transition: transform 0.3s;
+    }
+    
+    .banner-container:hover img {
+      transform: scale(1.02);
     }
 
     /* --- Mobile Header --- */
@@ -201,9 +223,11 @@
   <div class="main-content">
     
     <div class="banner-container">
-      <a href="https://m-sport-download.static.hf.space" target="_blank">
-        <img src="sports.gif" alt="Banner">
-      </a>
+      <div class="banner-inner">
+        <a href="https://m-sport-download.static.hf.space" target="_blank">
+          <img src="sports.gif" alt="Banner">
+        </a>
+      </div>
     </div>
 
     <div class="search-container">
@@ -304,5 +328,5 @@
     window.onload = initApp;
   </script>
 </body>
-        </html>
-        
+  </html>
+  
