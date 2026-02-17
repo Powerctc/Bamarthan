@@ -35,7 +35,7 @@
       width: var(--sidebar-width);
       height: 100vh;
       background-color: #020617;
-      z-index: 2000; /* Sidebar ကို အပေါ်ဆုံးပို့ထားမယ် */
+      z-index: 2000;
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border-right: 1px solid #1e293b;
     }
@@ -73,6 +73,21 @@
       margin-left: var(--sidebar-width);
       padding: 24px;
       transition: margin-left 0.3s;
+    }
+
+    /* --- Banner Style --- */
+    .banner-container {
+      margin-bottom: 25px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .banner-container img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      max-height: 200px;
     }
 
     /* --- Mobile Header --- */
@@ -148,6 +163,7 @@
       font-weight: 600;
       margin-right: 10px;
       transition: 0.3s;
+      white-space: nowrap;
     }
     .src-btn.active { background: var(--primary-red); color: white; }
 
@@ -176,46 +192,51 @@
     <div class="nav-content">
       <a href="index.html" class="nav-item active"><i class="fas fa-house"></i> Home</a>
       <a href="series/index.html" class="nav-item"><i class="fas fa-tv"></i> Series</a>
-      <a href="Adult/index.html" class="nav-item" style="color:red;"><i class="fas fa-eye-slash"></i><span>&nbsp;Adults (18+)</span></a>
-            <a href="https://m-sport-download.static.hf.space" class="nav-item"><i class="fas fa-download"></i><span>&nbsp;TV Version</span></a>
+      <a href="Adult/index.html" class="nav-item" style="color:#f87171;"><i class="fas fa-eye-slash"></i><span>&nbsp;Adults (18+)</span></a>
+      <a href="https://m-sport-download.static.hf.space" class="nav-item"><i class="fas fa-download"></i><span>&nbsp;TV Version</span></a>
       <a href="About.html" class="nav-item"><i class="fas fa-circle-info"></i> About</a>
     </div>
   </div>
 
   <div class="main-content">
+    
+    <div class="banner-container">
+      <a href="intent://www.youtube.com/@mostpeacefulreligion#Intent;package=com.google.android.youtube;scheme=https;end" target="_blank">
+        <img src="dhamma.gif" alt="Banner">
+      </a>
+    </div>
+
     <div class="search-container">
       <i class="fas fa-search"></i>
       <input type="text" id="movieSearch" placeholder="Search by name...">
     </div>
 
-    <div style="display: flex; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none;">
+    <div style="display: flex; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none; gap: 5px;">
       <button class="src-btn" data-src="main">Source 1</button>
       <button class="src-btn" data-src="1">Source 2</button>
+      <button class="src-btn" data-src="2">Source 3</button>
     </div>
 
     <div id="movieGrid" class="movie-grid"></div>
   </div>
 
   <script>
-    // --- Configuration & State ---
     const CONFIG = {
       sources: [
-         { key: "main", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies.json" },
-            { key: "1", url: "movies.json" },
-            { key: "2", url: "movies-1.json" }      
+        { key: "main", url: "https://zetflix-peach.vercel.app/Playlist/Movies/movies.json" },
+        { key: "1", url: "movies.json" },
+        { key: "2", url: "movies-1.json" }      
       ]
     };
 
     let allMovies = [];
     let currentSrc = localStorage.getItem('fotlive_pref_src') || "main";
 
-    // --- DOM Elements ---
     const sidebar = document.getElementById('sidebarMenu');
     const overlay = document.getElementById('sidebarOverlay');
     const movieGrid = document.getElementById('movieGrid');
     const searchInput = document.getElementById('movieSearch');
 
-    // --- 1. Sidebar Logic (Fixed) ---
     document.getElementById('openMenu').onclick = () => {
       sidebar.classList.add('open');
       overlay.classList.add('active');
@@ -226,7 +247,6 @@
       overlay.classList.remove('active');
     };
 
-    // --- 2. Data Fetching ---
     async function initApp() {
       for (const s of CONFIG.sources) {
         try {
@@ -240,7 +260,6 @@
       render();
     }
 
-    // --- 3. Render Function ---
     function render() {
       const query = searchInput.value.toLowerCase();
       const filtered = allMovies.filter(m => 
@@ -257,20 +276,18 @@
               </div>
             </div>
           `).join('')
-        : `<p style="text-align:center; grid-column:1/-1; color:#64748b;">No movies found.</p>`;
+        : `<p style="text-align:center; grid-column:1/-1; color:#64748b; padding: 40px;">ဇာတ်ကားရှာမတွေ့ပါ...</p>`;
     }
 
-    // --- 4. Tabs & Save Function (Fixed) ---
     function setupTabs() {
       document.querySelectorAll('.src-btn').forEach(btn => {
-        // အရင်သိမ်းထားတဲ့ source ကို active ပြမယ်
         if(btn.dataset.src === currentSrc) btn.classList.add('active');
 
         btn.onclick = () => {
           document.querySelectorAll('.src-btn').forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           currentSrc = btn.dataset.src;
-          localStorage.setItem('fotlive_pref_src', currentSrc); // ရွေးချယ်မှုသိမ်းမယ်
+          localStorage.setItem('fotlive_pref_src', currentSrc);
           render();
         };
       });
@@ -281,13 +298,11 @@
       window.location.href = 'movie_detail.html';
     }
 
-    // Search Input Event
     searchInput.oninput = render;
-
-    // Mobile Search Focus
     document.getElementById('mobileSearchTrigger').onclick = () => searchInput.focus();
 
     window.onload = initApp;
   </script>
 </body>
-</html>
+        </html>
+        
