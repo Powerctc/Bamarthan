@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <title>S4ITMM TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <meta name="theme-color" content="#111827" />
+  <style>
+    body { scroll-behavior: smooth; }
+    .card:hover { transform: translateY(-2px); }
+    .kbd { border: 1px solid rgba(255,255,255,.2); padding:.15rem .4rem; border-radius:.375rem; }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-gray-800/90 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="fas fa-tv text-yellow-400 text-2xl"></i>
+        <h1 class="text-yellow-400 font-extrabold tracking-wide">S4ITMM TV</h1>
+      </div>
+      <nav class="hidden sm:flex items-center gap-4 text-sm">
+        <a href="/" class="hover:text-yellow-400 flex items-center gap-2">
+          <i class="fas fa-home"></i> Home
+        </a>
+        <a href="https://s4-itmm-mobile.vercel.app/About.html" class="text-yellow-400 flex items-center gap-2">
+          <i class="fas fa-info-circle"></i> About
+        </a>
+        <a href="https://www.facebook.com/share/1DpsAwNLGx/" class="hover:text-yellow-400 flex items-center gap-2">
+          <i class="fas fa-envelope"></i> Contact
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="max-w-6xl mx-auto px-4 pt-10 pb-8">
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-white">
+          Everything you watch & use — in one place.
+        </h2>
+        <p class="mt-4 text-gray-300 leading-relaxed">
+          <span class="font-semibold text-yellow-400">S4ITMM TV</span> သည်
+          Live Sports, MMA, Movies (MMSub), Myanmar TV ချန်နယ်များနှင့်
+          AI Tools Collection တို့ကို တစ်နေရာတည်းမှာ အလွယ်တကူ ရှာဖွေလို့ရတဲ့
+          lightweight, fast web app တစ်ခုပဲ ဖြစ်ပါတယ်။
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="https://tinyurl.com/3dhv27he" class="px-4 py-2 rounded-lg bg-yellow-500 text-black font-bold flex items-center gap-2">
+            <i class="fas fa-download"></i>TV/BOX version 
+          </a>
+          <a href="https://tinyurl.com/3dhv27he" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 font-bold flex items-center gap-2">
+            <i class="fas fa-download"></i>Phone Version 
+          </a>
+          <a href="https://www.tiktok.com/@tiktokshopthailand7?_r=1&_t=ZS-92AEHFlycSt" class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 font-bold flex items-center gap-2">
+            <i class="fa-solid fa-shop"></i>TikTok Shop 
+          </a>
+        </div>
+
+        <p class="mt-4 text-xs text-gray-400">
+          TV remote hint — Use <span class="kbd">↑</span><span class="kbd">↓</span>
+          to move focus, <span class="kbd">OK</span> to open.
+        </p>
+      </div>
+
+      <div class="border border-gray-700 rounded-2xl p-4">
+        <div class="bg-gray-800 rounded-xl p-6 grid grid-cols-3 gap-4 text-center">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-bolt text-2xl text-yellow-400"></i>
+            <span class="mt-2 text-sm">Fast</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <i class="fas fa-lock text-2xl text-yellow-400"></i>
+            <span class="mt-2 text-sm">Safe</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <i class="fas fa-mobile-screen-button text-2xl text-yellow-400"></i>
+            <span class="mt-2 text-sm">Mobile/TV</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="max-w-6xl mx-auto px-4 pb-12">
+    <h3 class="text-2xl font-bold text-white mb-4">What’s inside</h3>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- AI Tools Collection -->
+      <a href="tools.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-robot text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">AI Tools Collection</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          Prompt generators, image/video AI, transcription, translator, code helpers … link hub တစ်ခုတည်းမှာ စုစည်းထားပါတယ်။
+        </p>
+      </a>
+
+      <!-- Football Live -->
+      <a href="football-live.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-futbol text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">Football Live</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          EPL, UCL, LaLiga စတဲ့ live streams & live scores ကို
+          တစ်နေရာထဲမှာ စီစဉ်တင်ပြထားပါတယ်။
+        </p>
+      </a>
+
+      <!-- MMA Live -->
+      <a href="mma-live.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-hand-fist text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">MMA Live</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          UFC/ONE Championship fight nights, fight cards, post-fight highlights အစုံ।
+        </p>
+      </a>
+
+      <!-- All Sport TV -->
+      <a href="allsport.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-person-running text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">All Sport TV</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          Football, Basketball, F1, Tennis … multi-channel guide နဲ့ Live access.
+        </p>
+      </a>
+
+      <!-- MMSub Movies -->
+      <a href="movies.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-film text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">MMSUB Movies</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          Myanmar subtitles ဖြင့် Movies/Series စုစည်းမှု—search, category, year filter အပြည့်ပါဝင်။
+        </p>
+      </a>
+
+      <!-- Myanmar TV -->
+      <a href="myanmar-tv.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-tv text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">Myanmar TV</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          မြန်မာ TV Channels Live/Replay — simple player UI နဲ့ smooth playback.
+        </p>
+      </a>
+
+      <!-- Blog Reader -->
+      <a href="blog.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-blog text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">Blog Reader</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          Tech & Sports news များကို clutter မရှိအောင် ဖတ်ရှုနိုင်သော reader mode။
+        </p>
+      </a>
+
+      <!-- Etc / More -->
+      <a href="more.html" class="card border border-gray-700 rounded-2xl p-5 bg-gray-800/60 hover:bg-gray-800 transition flex flex-col gap-3">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-ellipsis-h text-2xl text-yellow-400"></i>
+          <h4 class="text-lg font-semibold text-white">More…</h4>
+        </div>
+        <p class="text-gray-300 text-sm">
+          Radio, Karaoke, Kids, Learning channels… မကြာမီ ထပ်တိုးသွားပါမည်။
+        </p>
+      </a>
+    </div>
+  </section>
+
+  <!-- FAQ / Notes -->
+  <section class="max-w-6xl mx-auto px-4 pb-12">
+    <h3 class="text-2xl font-bold text-white mb-4">Notes</h3>
+    <div class="space-y-3 text-sm text-gray-300">
+      <p class="flex items-start gap-2">
+        <i class="fas fa-check mt-1 text-yellow-400"></i>
+        App size များမထွားစေရန် CDN assets သာ အသုံးပြုထားပြီး caching ကို အသုံးချထားသည်။
+      </p>
+      <p class="flex items-start gap-2">
+        <i class="fas fa-check mt-1 text-yellow-400"></i>
+        TV remote friendly focus order + Enter key support.
+      </p>
+      <p class="flex items-start gap-2">
+        <i class="fas fa-check mt-1 text-yellow-400"></i>
+        Copyright ကိုလေးစားပါ—official links / fair-use guides ကိုသာ အသုံးပြုပါ။
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800">
+    <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-gray-400">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p>© <span id="y"></span> Aitoolstv— All rights reserved.</p>
+        <p>
+          Built by
+          <a href="https://t.me/S4MMTV" target="_blank" class="text-yellow-400 hover:text-yellow-300 underline">
+           S4ITMM TV 
+          </a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+  </html>
