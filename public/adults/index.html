@@ -67,11 +67,19 @@
       overflow: hidden;
       transition: all 0.3s ease;
       border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
     }
     .movie-card:hover {
       transform: translateY(-5px);
       border-color: var(--accent-red);
     }
+    
+    /* Last Watched Style */
+    .movie-card.watched {
+      border: 1.5px solid var(--accent-yellow);
+      background: rgba(250, 204, 21, 0.05);
+    }
+
     .img-container {
       position: relative;
       aspect-ratio: 16/9;
@@ -169,146 +177,121 @@
   </div>
 
   <script>
-    const movieSources = [
-      { label: "Adults-1", value: "movies.json" },
-      { label: "Adults-2", value: "adults.m3u" },
-      { label: "Adults-3", value: "https://raw.githubusercontent.com/atsushi444/iptv/7e4e06c7155021964ee749cfae37512f389adb40/0108.m3u" }
-    ];
-
-    // LocalStorage Keys
-    const KEY_LAST_SRC = "s4itmm_last_source_v2";
-    const KEY_LAST_WATCHED = "s4itmm_last_watched_link";
-
-    function getStableDeviceId() {
-      let id = localStorage.getItem('zetflix_device_id_mob');
-      if (id) return id;
-      const finalID = "MOB-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-      localStorage.setItem('zetflix_device_id_mob', finalID);
-      return finalID;
-    }
-
-    async function initUserInfo() {
-      const id = getStableDeviceId();
-      document.getElementById('main-id').textContent = id;
-      try {
-        const res = await fetch(`https://livesportmm-s4itmmapprover.hf.space/Phone/approved_users.json?t=${Date.now()}`);
-        const users = await res.json();
-        const user = users.find(u => u.id === id);
-        const expEl = document.getElementById('main-expiry');
-        if(user) {
-          expEl.textContent = user.expires.split('T')[0];
-          expEl.className = "status-badge bg-green-dim";
-        } else {
-          expEl.textContent = "Trial Version";
-          expEl.className = "status-badge bg-yellow-dim";
-        }
-      } catch (e) { document.getElementById('main-expiry').textContent = "Server Error"; }
-    }
-
-    const parseM3U = (data) => {
-      const lines = data.split('\n');
-      const items = [];
-      let currentItem = {};
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line.startsWith('#EXTINF:')) {
-          const logoMatch = line.match(/tvg-logo="([^"]+)"/);
-          currentItem.logo = logoMatch ? logoMatch[1] : '';
-          currentItem.title = line.split(',').pop().trim();
-        } else if (line.startsWith('http')) {
-          currentItem.link = line;
-          items.push(currentItem);
-          currentItem = {};
-        }
-      }
-      return items;
+    const CONFIG = {
+      sources: [
+        { label: "Adults Server 1", value: "movies.json" },
+        { label: "Adults Server 2", value: "adults.m3u" },
+        { label: "Global Server 3", value: "https://raw.githubusercontent.com/atsushi444/iptv/7e4e06c7155021964ee749cfae37512f389adb40/0108.m3u" }
+      ],
+      // Storage keys
+      keySource: "s4itmm_saved_source",
+      keyWatched: "s4itmm_last_watched"
     };
 
-    const parseJSON = (data) => {
-      try {
-        const json = JSON.parse(data);
-        const list = json.items || (Array.isArray(json) ? json : []);
-        return list.map(item => ({ title: item.title || item.name, logo: item.logo || item.image, link: item.link || item.url }));
-      } catch (e) { return []; }
-    };
-
-    async function loadMovies(url) {
-      document.getElementById("loading-indicator").classList.remove("hidden");
+    // Data Parsing & Fetching
+    async function fetchData(url) {
+      document.getElementById('loading').classList.remove('hidden');
+      document.getElementById('movie-grid').innerHTML = '';
       try {
         const res = await fetch(url);
-        const textData = await res.text();
-        let data = (textData.trim().startsWith('{') || textData.trim().startsWith('[')) ? parseJSON(textData) : parseM3U(textData);
-        displayMovies(data);
-      } catch (e) { console.error(e); }
-      document.getElementById("loading-indicator").classList.add("hidden");
+        const text = await res.text();
+        let list = [];
+        if (text.trim().startsWith('{') || text.trim().startsWith('[')) {
+          const json = JSON.parse(text);
+          const items = json.items || (Array.isArray(json) ? json : []);
+          list = items.map(i => ({ title: i.title || i.name, logo: i.logo || i.image, link: i.link || i.url }));
+        } else {
+          const lines = text.split('\n');
+          let current = {};
+          lines.forEach(line => {
+            line = line.trim();
+            if (line.startsWith('#EXTINF:')) {
+              const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+              current.logo = logoMatch ? logoMatch[1] : '';
+              current.title = line.split(',').pop().trim();
+            } else if (line.startsWith('http')) {
+              current.link = line;
+              list.push(current);
+              current = {};
+            }
+          });
+        }
+        renderMovies(list);
+      } catch (e) { console.error("Error fetching data"); }
+      document.getElementById('loading').classList.add('hidden');
     }
 
-    function displayMovies(movies) {
-      const grid = document.getElementById("movie-grid");
-      const lastWatchedLink = localStorage.getItem(KEY_LAST_WATCHED);
-      
-      grid.innerHTML = movies.map(m => {
+    function renderMovies(list) {
+      const grid = document.getElementById('movie-grid');
+      const lastWatchedLink = localStorage.getItem(CONFIG.keyWatched);
+
+      grid.innerHTML = list.map(m => {
         const isWatched = m.link === lastWatchedLink;
         return `
-          <div class="movie-card ${isWatched ? 'last-watched' : ''}" onclick="playMovie('${encodeURIComponent(JSON.stringify(m))}')">
-            ${isWatched ? '<div class="last-watched-badge">RECENT</div>' : ''}
+          <div class="movie-card ${isWatched ? 'watched' : ''}" onclick="goDetail('${encodeURIComponent(JSON.stringify(m))}')">
             <div class="img-container">
-              <img src="${m.logo}" onerror="this.src='https://placehold.co/400x225/1e293b/fbbf24?text=TV';">
+              <img src="${m.logo}" class="w-full h-full object-cover" loading="lazy" onerror="this.src='https://placehold.co/400x225/1e293b/white?text=18+'">
+              ${isWatched ? '<div class="absolute top-2 left-2 bg-yellow-400 text-black text-[8px] font-bold px-2 py-0.5 rounded shadow-lg">WATCHED</div>' : ''}
+              <div class="absolute top-2 right-2 bg-red-600 text-[8px] font-bold px-2 py-1 rounded-full animate-pulse">LIVE</div>
             </div>
-            <div class="movie-title">${m.title}</div>
+            <div class="p-3">
+              <h3 class="text-[10px] font-bold truncate ${isWatched ? 'text-yellow-400' : 'text-slate-200'} uppercase tracking-tight">${m.title}</h3>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    window.playMovie = (encoded) => {
-      const movie = JSON.parse(decodeURIComponent(encoded));
-      // ကြည့်လိုက်တဲ့ Movie Link ကို သိမ်းထားမယ်
-      localStorage.setItem(KEY_LAST_WATCHED, movie.link);
+    window.goDetail = (data) => {
+      const movie = JSON.parse(decodeURIComponent(data));
+      // ကြည့်ထားတဲ့ movie ကို link နဲ့ မှတ်ထားမယ်
+      localStorage.setItem(CONFIG.keyWatched, movie.link);
       localStorage.setItem("selectedMovie", JSON.stringify(movie));
       window.location.href = "movie_detail.html";
     };
 
-    // Sidebar & UI Logic
-    const sidebar = document.getElementById("sidebar");
-    const backdrop = document.getElementById("sidebar-backdrop");
-    document.getElementById("menu-toggle").onclick = () => { sidebar.classList.toggle("open"); backdrop.classList.toggle("active"); };
-    backdrop.onclick = () => { sidebar.classList.remove("open"); backdrop.classList.remove("active"); };
-
-    document.getElementById("movies-selector-btn").onclick = () => {
-      const savedSrc = JSON.parse(localStorage.getItem(KEY_LAST_SRC)) || movieSources[0];
-      const list = document.getElementById("overlay-list");
-      list.innerHTML = movieSources.map(s => `
-        <li class="overlay-item ${s.value === savedSrc.value ? 'active-src' : ''}" 
-            onclick="selectSrc('${s.value}','${s.label}')">
-          ${s.label}
-        </li>
-      `).join('');
-      document.getElementById("overlay-menu").classList.add("active");
+    // UI Events
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    
+    document.getElementById('menu-btn').onclick = () => {
+      sidebar.classList.add('open');
+      backdrop.classList.remove('hidden');
     };
 
-    window.selectSrc = (val, label) => {
-      // ရွေးချယ်လိုက်တဲ့ Source ကို သိမ်းထားမယ်
-      localStorage.setItem(KEY_LAST_SRC, JSON.stringify({ value: val, label: label }));
-      document.getElementById("movies-selector-btn").textContent = label;
-      document.getElementById("overlay-menu").classList.remove("active");
-      loadMovies(val);
+    backdrop.onclick = () => {
+      sidebar.classList.remove('open');
+      backdrop.classList.add('hidden');
     };
 
-    document.getElementById("overlay-close").onclick = () => document.getElementById("overlay-menu").classList.remove("active");
-
-    window.addEventListener('load', () => { 
-      initUserInfo(); 
+    document.getElementById('source-trigger').onclick = () => {
+      const listDiv = document.getElementById('source-list');
+      const savedSrc = localStorage.getItem(CONFIG.keySource);
       
-      // သိမ်းထားတဲ့ Source ရှိမရှိ စစ်မယ်
-      const savedSrc = JSON.parse(localStorage.getItem(KEY_LAST_SRC));
-      if (savedSrc) {
-        document.getElementById("movies-selector-btn").textContent = savedSrc.label;
-        loadMovies(savedSrc.value);
-      } else {
-        loadMovies(movieSources[0].value);
-      }
-    });
+      listDiv.innerHTML = CONFIG.sources.map(s => `
+        <button onclick="changeSrc('${s.value}')" class="w-full text-left p-4 rounded-xl ${s.value === savedSrc ? 'bg-red-500/20 text-red-500' : 'bg-white/5'} hover:bg-red-500/20 hover:text-red-500 transition font-bold text-xs uppercase flex justify-between items-center">
+          ${s.label}
+          ${s.value === savedSrc ? '<i class="fas fa-check-circle"></i>' : ''}
+        </button>
+      `).join('');
+      document.getElementById('overlay').style.display = 'flex';
+    };
+
+    window.changeSrc = (val) => {
+      // ရွေးချယ်ထားတဲ့ source ကို မှတ်ထားမယ်
+      localStorage.setItem(CONFIG.keySource, val);
+      document.getElementById('overlay').style.display = 'none';
+      fetchData(val);
+    };
+
+    document.getElementById('overlay-close').onclick = () => { document.getElementById('overlay').style.display = 'none'; };
+
+    window.onload = () => {
+      // မှတ်ထားတဲ့ source ရှိရင် အဲ့ဒါကိုဖွင့်မယ်၊ မရှိရင် server 1 ကိုဖွင့်မယ်
+      const savedSrc = localStorage.getItem(CONFIG.keySource);
+      const initialUrl = savedSrc ? savedSrc : CONFIG.sources[0].value;
+      fetchData(initialUrl);
+    };
   </script>
 </body>
-                                                           </html>
+</html>
