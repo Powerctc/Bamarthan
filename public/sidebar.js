@@ -16,10 +16,8 @@ document.addEventListener("DOMContentLoaded", function() {
             <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-futbol text-blue-500 w-5 text-center"></i>Today Live
             </a>
-            <a href="https://fotlivemovies.vercel.app/VPN/outline.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
-                <i class="fas fa-futbol text-blue-500 w-5 text-center"></i>Outline VPN key
-            </a>
-            <a href="https://fotlivemovies.vercel.app/VPN/hiddify.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+            
+            <a href="https://m-sport-download.static.hf.space/Vpnkey.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-hand-fist text-blue-500 w-5 text-center"></i>Hiddifykey 
             </a>
             <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
