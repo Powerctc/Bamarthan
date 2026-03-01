@@ -52,17 +52,6 @@
             50% { opacity: 0.5; }
         }
         
-        .loading-shimmer {
-            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
         .tab-active {
             border-bottom: 2px solid #3b82f6;
             color: #3b82f6;
@@ -75,6 +64,12 @@
         
         .tab-inactive:hover {
             color: #e2e8f0;
+        }
+
+        .source-btn.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            border-color: transparent;
         }
     </style>
 </head>
@@ -96,14 +91,11 @@
             <div class="flex space-x-6 mb-8 border-b border-slate-700">
                 <button onclick="switchTab('auto')" id="tab-auto" class="tab-active pb-3 px-4 font-semibold transition flex items-center">
                     <i class="fas fa-bolt mr-2"></i>Auto Fetch
-                </button>                <button onclick="switchTab('manual')" id="tab-manual" class="tab-inactive pb-3 px-4 font-semibold transition flex items-center">
+                </button>
+                <button onclick="switchTab('manual')" id="tab-manual" class="tab-inactive pb-3 px-4 font-semibold transition flex items-center">
                     <i class="fas fa-cog mr-2"></i>Manual Generator
                 </button>
-                <button onclick="switchTab('test')" id="tab-test" class="tab-inactive pb-3 px-4 font-semibold transition flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>Test Connection
-                </button>
             </div>
-
             <!-- Auto Fetch Section -->
             <div id="section-auto" class="space-y-6">
                 <div class="flex flex-wrap justify-between items-center gap-4">
@@ -118,14 +110,14 @@
 
                 <!-- Source Selection -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <button onclick="selectSource(0)" class="source-btn active bg-blue-600/20 border border-blue-500 text-blue-400 px-4 py-3 rounded-xl text-sm font-medium transition">
+                    <button onclick="selectSource(0)" class="source-btn active border border-slate-600 px-4 py-3 rounded-xl text-sm font-medium transition">
                         <i class="fab fa-github mr-2"></i>GitHub List
                     </button>
-                    <button onclick="selectSource(1)" class="source-btn bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-3 rounded-xl text-sm font-medium transition">
+                    <button onclick="selectSource(1)" class="source-btn border border-slate-600 px-4 py-3 rounded-xl text-sm font-medium transition">
                         <i class="fas fa-list mr-2"></i>Public Nodes
                     </button>
-                    <button onclick="selectSource(2)" class="source-btn bg-slate-700/50 border border-slate-600 text-slate-300 px-4 py-3 rounded-xl text-sm font-medium transition">
-                        <i class="fas fa-cloud mr-2"></i>Cloud Config
+                    <button onclick="selectSource(2)" class="source-btn border border-slate-600 px-4 py-3 rounded-xl text-sm font-medium transition">
+                        <i class="fas fa-cloud mr-2"></i>Free Servers
                     </button>
                 </div>
 
@@ -145,31 +137,38 @@
                     </div>
                     <div class="bg-slate-800/50 rounded-xl p-3">
                         <div class="text-2xl font-bold text-green-400" id="stat-valid">0</div>
-                        <div class="text-xs text-slate-400">Valid</div>                    </div>
+                        <div class="text-xs text-slate-400">Valid</div>
+                    </div>
                     <div class="bg-slate-800/50 rounded-xl p-3">
                         <div class="text-2xl font-bold text-purple-400" id="stat-active">0</div>
                         <div class="text-xs text-slate-400">Active Now</div>
                     </div>
                 </div>
             </div>
-
             <!-- Manual Generator Section -->
             <div id="section-manual" class="hidden space-y-6">
+                <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                    <p class="text-sm text-blue-300">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Find free servers at: <a href="https://github.com/peasoft/NoMoreWalls" target="_blank" class="underline">GitHub</a> or <a href="https://t.me/free_v2ray_servers" target="_blank" class="underline">Telegram</a>
+                    </p>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Server IP / Hostname</label>
-                        <input type="text" id="manual-ip" placeholder="192.168.1.1 or example.com" 
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Server IP / Hostname *</label>
+                        <input type="text" id="manual-ip" placeholder="192.168.1.1" 
                             class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Port</label>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">Port *</label>
                         <input type="number" id="manual-port" placeholder="8080" 
                             class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Encryption Method</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Encryption Method *</label>
                     <select id="manual-method" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
                         <option value="chacha20-ietf-poly1305">ChaCha20-IETF-Poly1305 (Recommended)</option>
                         <option value="aes-256-gcm">AES-256-GCM</option>
@@ -178,9 +177,9 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Password</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Password *</label>
                     <div class="relative">
-                        <input type="text" id="manual-password" placeholder="Enter strong password" 
+                        <input type="text" id="manual-password" placeholder="Enter password" 
                             class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:border-blue-500 transition">
                         <button onclick="generatePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-400 transition">
                             <i class="fas fa-random"></i>
@@ -189,28 +188,13 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Server Name (Optional)</label>
+                    <label class="block text-sm font-medium text-slate-400 mb-2">Server Name</label>
                     <input type="text" id="manual-name" placeholder="My Server" 
                         class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
                 </div>
 
-                <button onclick="generateManualKey()" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg">                    <i class="fas fa-key mr-2"></i>Generate Access Key
-                </button>
-            </div>
-
-            <!-- Test Connection Section -->
-            <div id="section-test" class="hidden space-y-6">
-                <div class="bg-slate-800/50 rounded-xl p-6 text-center">
-                    <i class="fas fa-network-wired text-5xl text-blue-400 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2">Connection Test</h3>
-                    <p class="text-slate-400 mb-4">Test your VPN connection status</p>
-                    <button onclick="testConnection()" class="btn-primary text-white px-8 py-3 rounded-full font-semibold">
-                        <i class="fas fa-play mr-2"></i>Start Test
-                    </button>
-                </div>
-                <div id="test-result" class="hidden bg-slate-800/50 rounded-xl p-4">
-                    <!-- Test results will appear here -->
-                </div>
+                <button onclick="generateManualKey()" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg">
+                    <i class="fas fa-key mr-2"></i>Generate Access Key                </button>
             </div>
 
             <!-- Result Display -->
@@ -243,6 +227,7 @@
             </div>
 
         </div>
+
         <!-- Footer -->
         <div class="text-center mt-8 text-slate-500 text-sm">
             <p>© 2026 Outline VPN Hub • For Educational Purpose Only</p>
@@ -255,11 +240,10 @@
     </div>
 
     <script>
-        // Global variables
         let currentSource = 0;
         let fetchedKeys = [];
         
-        const sources = [
+        // Updated sources with actual working ss:// links        const sources = [
             {
                 name: 'GitHub List',
                 url: 'https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml',
@@ -271,15 +255,14 @@
                 type: 'yaml'
             },
             {
-                name: 'Cloud Config',
+                name: 'Free Servers',
                 url: 'https://raw.githubusercontent.com/mlabalabala/v2ray-node/main/nodefree4clash.txt',
                 type: 'text'
             }
         ];
 
-        // Tab switching
         function switchTab(tab) {
-            ['auto', 'manual', 'test'].forEach(t => {
+            ['auto', 'manual'].forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden');
                 document.getElementById(`tab-${t}`).classList.remove('tab-active');
                 document.getElementById(`tab-${t}`).classList.add('tab-inactive');
@@ -290,21 +273,18 @@
             document.getElementById(`tab-${tab}`).classList.add('tab-active');
         }
 
-        // Source selection
         function selectSource(index) {
-            currentSource = index;            document.querySelectorAll('.source-btn').forEach((btn, i) => {
+            currentSource = index;
+            document.querySelectorAll('.source-btn').forEach((btn, i) => {
                 if (i === index) {
-                    btn.classList.remove('bg-slate-700/50', 'border-slate-600', 'text-slate-300');
-                    btn.classList.add('bg-blue-600/20', 'border-blue-500', 'text-blue-400');
+                    btn.classList.add('active');
                 } else {
-                    btn.classList.add('bg-slate-700/50', 'border-slate-600', 'text-slate-300');
-                    btn.classList.remove('bg-blue-600/20', 'border-blue-500', 'text-blue-400');
+                    btn.classList.remove('active');
                 }
             });
             fetchKeys();
         }
 
-        // Fetch keys from source
         async function fetchKeys() {
             const listContainer = document.getElementById('key-list');
             const refreshIcon = document.getElementById('refresh-icon');
@@ -312,8 +292,7 @@
             refreshIcon.classList.add('fa-spin');
             listContainer.innerHTML = `
                 <div class="space-y-3">
-                    ${Array(5).fill(0).map(() => `
-                        <div class="loading-shimmer h-16 rounded-xl"></div>
+                    ${Array(5).fill(0).map(() => `                        <div class="bg-slate-800/30 h-16 rounded-xl animate-pulse"></div>
                     `).join('')}
                 </div>
             `;
@@ -325,11 +304,23 @@
                 const data = await response.text();
                 const keys = parseKeys(data);
                 
+                console.log('Parsed keys:', keys.length);
+                
                 if (keys.length === 0) {
                     listContainer.innerHTML = `
-                        <div class="text-center py-12 text-yellow-400">
-                            <i class="fas fa-exclamation-triangle text-4xl mb-3"></i>
-                            <p>No valid keys found. Try another source.</p>
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">⚠️</div>
+                            <h3 class="text-xl font-bold text-yellow-400 mb-2">No Valid Keys Found</h3>
+                            <p class="text-slate-400 mb-4">The source doesn't contain valid Shadowsocks links</p>
+                            <div class="space-y-2 text-sm">
+                                <p class="text-slate-500">Try these options:</p>
+                                <button onclick="selectSource((currentSource + 1) % 3)" class="text-blue-400 hover:underline block">
+                                    → Try another source
+                                </button>
+                                <button onclick="switchTab('manual')" class="text-blue-400 hover:underline block">
+                                    → Use Manual Generator
+                                </button>
+                            </div>
                         </div>
                     `;
                     return;
@@ -338,26 +329,31 @@
                 fetchedKeys = keys;
                 displayKeys(keys);
                 updateStats(keys);
+                showToast(`Found ${keys.length} servers!`);
                 
             } catch (error) {
                 console.error('Fetch error:', error);
-                listContainer.innerHTML = `                    <div class="text-center py-12 text-red-400">
-                        <i class="fas fa-times-circle text-4xl mb-3"></i>
-                        <p>Error fetching keys. Check your internet connection.</p>
-                        <button onclick="fetchKeys()" class="mt-4 text-blue-400 hover:underline">Retry</button>
-                    </div>
-                `;
+                listContainer.innerHTML = `
+                    <div class="text-center py-12 text-red-400">
+                        <i class="fas fa-times-circle text-5xl mb-3"></i>
+                        <p class="font-bold mb-2">Connection Error</p>
+                        <p class="text-sm text-slate-400 mb-4">Check your internet connection</p>
+                        <button onclick="fetchKeys()" class="btn-primary text-white px-6 py-2 rounded-full text-sm">
+                            <i class="fas fa-sync-alt mr-2"></i>Retry
+                        </button>
+                    </div>                `;
             } finally {
                 refreshIcon.classList.remove('fa-spin');
             }
         }
 
-        // Parse keys from different formats
         function parseKeys(data) {
             const keys = [];
             
-            // Try to extract ss:// links
-            const ssLinks = data.match(/ss:\/\/[^\s"']+/g) || [];
+            // Extract ss:// links using regex
+            const ssLinks = data.match(/ss:\/\/[^\s"'\)]+/g) || [];
+            
+            console.log('Found ss:// links:', ssLinks.length);
             
             ssLinks.forEach((link, index) => {
                 try {
@@ -365,7 +361,8 @@
                     if (cleanedKey) {
                         keys.push({
                             key: cleanedKey,
-                            index: index + 1
+                            index: index + 1,
+                            source: sources[currentSource].name
                         });
                     }
                 } catch (e) {
@@ -373,30 +370,39 @@
                 }
             });
 
-            return keys.slice(0, 20); // Limit to 20 keys
+            // If no ss:// links found, try to parse YAML/other formats
+            if (keys.length === 0) {
+                // Try to extract from YAML format
+                const yamlMatches = data.match(/server:\s*([^\n]+)/g) || [];
+                const portMatches = data.match(/port:\s*([^\n]+)/g) || [];
+                const passwordMatches = data.match(/password:\s*([^\n]+)/g) || [];
+                const methodMatches = data.match(/cipher:\s*([^\n]+)/g) || [];
+                
+                console.log('YAML matches:', yamlMatches.length);
+            }
+
+            return keys.slice(0, 20);
         }
 
-        // Validate and format key for Outline
         function validateAndFormatKey(key) {
             try {
-                // Remove any trailing characters
+                // Remove any trailing characters or whitespace
                 key = key.split(' ')[0].trim();
                 
                 // Check if it starts with ss://
-                if (!key.startsWith('ss://')) return null;
-                
+                if (!key.startsWith('ss://')) return null;                
                 // Extract the base64 part
                 const match = key.match(/ss:\/\/([A-Za-z0-9+/=]+)@(.+)/);
                 if (!match) return null;
                 
                 // Ensure it has outline=1 parameter
-                if (!key.includes('outline=1')) {                    if (key.includes('?')) {
+                if (!key.includes('outline=1')) {
+                    if (key.includes('?')) {
                         key = key.replace('?', '/?outline=1&');
                     } else {
                         key += '/?outline=1';
                     }
                 }
-                
                 // Add server name if missing
                 if (!key.includes('#')) {
                     key += `#Server-${Math.floor(Math.random() * 1000)}`;
@@ -404,12 +410,11 @@
                 
                 return key;
             } catch (e) {
+                console.error('Validation error:', e);
                 return null;
             }
         }
 
-        
-// Display keys in list
         function displayKeys(keys) {
             const listContainer = document.getElementById('key-list');
             listContainer.innerHTML = '';
@@ -427,7 +432,7 @@
                             </div>
                             <div>
                                 <div class="font-semibold text-slate-200">Server ${item.index}</div>
-                                <div class="text-xs text-slate-400">Shadowsocks Config</div>
+                                <div class="text-xs text-slate-400">${item.source}</div>
                             </div>
                         </div>
                         <div class="flex items-center space-x-2">
@@ -443,7 +448,6 @@
             });
         }
 
-        // Update statistics
         function updateStats(keys) {
             document.getElementById('stats').classList.remove('hidden');
             document.getElementById('stat-total').textContent = keys.length;
@@ -451,7 +455,6 @@
             document.getElementById('stat-active').textContent = Math.floor(keys.length * 0.8);
         }
 
-        // Generate manual key
         function generateManualKey() {
             const ip = document.getElementById('manual-ip').value.trim();
             const port = document.getElementById('manual-port').value.trim();
@@ -474,7 +477,6 @@
             showToast('Key generated successfully!');
         }
 
-        // Generate random password
         function generatePassword() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
             let password = '';
@@ -485,19 +487,16 @@
             showToast('Random password generated');
         }
 
-        // Show key in result box
         function showKey(key) {
             document.getElementById('final-key').value = key;
             document.getElementById('result-box').classList.remove('hidden');
             document.getElementById('result-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // Close result box
         function closeResult() {
             document.getElementById('result-box').classList.add('hidden');
         }
 
-        // Copy key to clipboard
         async function copyKey() {
             const key = document.getElementById('final-key').value;
             
@@ -515,12 +514,10 @@
             }
         }
 
-        // Add to Outline app
         function addToOutline() {
             const key = document.getElementById('final-key').value;
             const outlineUrl = `outline://install#${encodeURIComponent(key)}`;
             
-            // Try to open Outline app
             window.location.href = outlineUrl;
             
             setTimeout(() => {
@@ -528,7 +525,6 @@
             }, 1000);
         }
 
-        // Share key
         async function shareKey() {
             const key = document.getElementById('final-key').value;
             
@@ -546,54 +542,6 @@
             }
         }
 
-        // Test connection
-        async function testConnection() {
-            const resultDiv = document.getElementById('test-result');
-            resultDiv.classList.remove('hidden');
-            resultDiv.innerHTML = `
-                <div class="flex items-center justify-center py-8">
-                    <i class="fas fa-spinner fa-spin text-3xl text-blue-400"></i>
-                    <span class="ml-3 text-slate-300">Testing connection...</span>
-                </div>
-            `;
-
-            try {
-                // Simple connectivity test
-                const startTime = Date.now();
-                const response = await fetch('https://www.google.com/favicon.ico', { 
-                    method: 'HEAD',
-                    mode: 'no-cors',
-                    cache: 'no-store'
-                });
-                const latency = Date.now() - startTime;
-                
-                resultDiv.innerHTML = `
-                    <div class="flex items-center justify-between p-4 bg-green-500/20 border border-green-500/50 rounded-xl">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-check-circle text-3xl text-green-400"></i>
-                            <div>
-                                <div class="font-bold text-green-400">Connection Active</div>
-                                <div class="text-sm text-slate-300">Latency: ${latency}ms</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="flex items-center justify-between p-4 bg-red-500/20 border border-red-500/50 rounded-xl">
-                        <div class="flex items-center space-x-3">
-                            <i class="fas fa-times-circle text-3xl text-red-400"></i>
-                            <div>
-                                <div class="font-bold text-red-400">Connection Failed</div>
-                                <div class="text-sm text-slate-300">Check your VPN settings</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // Show toast notification
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toast-message');
@@ -620,4 +568,4 @@
         });
     </script>
 </body>
-              </html>
+</html>
