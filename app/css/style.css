@@ -1,59 +1,52 @@
-/* app/css/style.css */
-body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background: #111827;
-  color: white;
-}
-.page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-}
-.page {
-  background: #1f2937;
-  padding: 30px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-.page h2 {
-  color: #ef4444;
-  margin-bottom: 16px;
-}
-.page p {
-  margin: 6px 0;
-  color: #d1d5db;
-  font-size: 14px;
-}
-.hint {
-  color: #9ca3af;
-  font-size: 12px;
-}
-.device-id {
-  background: #374151;
-  color: #fbbf24;
-  padding: 8px;
-  border-radius: 6px;
-  margin: 12px 0;
-  font-weight: bold;
-  word-break: break-all;
-}
-.btn {
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px;
-  width: 100%;
-  margin-top: 16px;
-  cursor: pointer;
-  font-weight: bold;
-}
-a {
-  color: #60a5fa;
-  text-decoration: underline;
+/* ၁။ Tailwind Directives - ဒါတွေက အပေါ်ဆုံးမှာ ရှိရပါမယ် */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ၂။ Custom Animations (Tailwind class တွေနဲ့ တွဲသုံးဖို့) */
+@layer components {
+  .spinner {
+    @apply w-[60px] h-[60px] mx-auto border-4 border-blue-200 border-t-blue-600 rounded-full;
+    animation: spin 1s linear infinite;
   }
+
+  .progress-fill {
+    @apply h-full w-[40%] bg-gradient-to-r from-blue-500 to-purple-600 rounded-full;
+    animation: loadingProgress 2s ease-in-out infinite;
+  }
+  
+  .countdown-progress {
+    fill: none;
+    stroke: #2ed573;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+}
+
+/* ၃။ Keyframes - Tailwind က ဒါတွေကို တိုက်ရိုက်မသိလို့ ဒီမှာ ထားရပါမယ် */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes loadingProgress {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(200%); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { background: rgba(255, 71, 87, 0.1); }
+  50% { background: rgba(255, 71, 87, 0.2); }
+}
+
+/* ၄။ Global Styles */
+body {
+  @apply min-h-screen flex items-center justify-center p-5 bg-gradient-to-br from-[#667eea] to-[#764ba2];
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
