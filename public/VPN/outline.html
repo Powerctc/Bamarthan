@@ -1,497 +1,366 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outline VPN Key Generator Pro</title>
+    <title>Outline VPN Hub Pro</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
-        body { 
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-            color: #e2e8f0; 
-            font-family: 'Inter', sans-serif; 
-            min-height: 100vh;
-        }
-        
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
-        }
-        
-        .key-item {
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-        
-        .key-item:hover {
-            border-left-color: #3b82f6;
-            transform: translateX(5px);
-            background: rgba(59, 130, 246, 0.1);
-        }
-        
-        .status-dot {
-            animation: pulse 2s infinite;
-        }
-                @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .tab-active {
-            border-bottom: 2px solid #3b82f6;
-            color: #3b82f6;
-        }
-        
-        .tab-inactive {
-            color: #94a3b8;
-            border-bottom: 2px solid transparent;
-        }
-        
-        .tab-inactive:hover {
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
             color: #e2e8f0;
         }
 
-        .source-btn.active {
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            color: white;
-            border-color: transparent;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; 
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .btn-glow {
+            transition: all 0.3s ease;
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transform: translateY(-2px);
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-black">
 
-    <div class="max-w-4xl mx-auto">
+    <!-- Main Container -->
+    <div class="w-full max-w-2xl glass-panel rounded-3xl shadow-2xl overflow-hidden fade-in relative">
+        
         <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                <i class="fas fa-shield-alt mr-3 text-blue-400"></i>Outline VPN Hub
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+            <h1 class="text-3xl font-bold text-white tracking-wide relative z-10">
+                <i class="fas fa-shield-alt mr-2"></i>OUTLINE HUB
             </h1>
-            <p class="text-slate-400">Auto & Manual Access Key Generator</p>
+            <p class="text-blue-100 text-sm mt-1 relative z-10">Free Access Key Generator</p>
         </div>
 
-        <!-- Main Card -->
-        <div class="glass-card rounded-3xl p-6 md:p-8">
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-700 bg-slate-900/50">
+            <button onclick="switchTab('auto')" id="tab-auto" class="flex-1 py-4 text-sm font-semibold text-blue-400 border-b-2 border-blue-500 hover:bg-slate-800 transition">
+                <i class="fas fa-bolt mr-2"></i>Auto Fetch
+            </button>
+            <button onclick="switchTab('manual')" id="tab-manual" class="flex-1 py-4 text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                <i class="fas fa-cog mr-2"></i>Manual Gen
+            </button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="p-6 min-h-[400px]">
             
-            <!-- Tabs -->
-            <div class="flex space-x-6 mb-8 border-b border-slate-700">
-                <button onclick="switchTab('auto')" id="tab-auto" class="tab-active pb-3 px-4 font-semibold transition flex items-center">
-                    <i class="fas fa-bolt mr-2"></i>Auto Fetch
-                </button>
-                <button onclick="switchTab('manual')" id="tab-manual" class="tab-inactive pb-3 px-4 font-semibold transition flex items-center">
-                    <i class="fas fa-cog mr-2"></i>Manual Generator
-                </button>
-            </div>
-            <!-- Auto Fetch Section -->
-            <div id="section-auto" class="space-y-6">
-                <div class="flex flex-wrap justify-between items-center gap-4">
-                    <div class="flex items-center space-x-2 text-sm text-slate-400">
-                        <div class="w-2 h-2 rounded-full bg-green-500 status-dot"></div>
-                        <span>Live Server List</span>
+            <!-- AUTO FETCH SECTION -->
+            <div id="section-auto" class="space-y-4">
+                <div class="flex justify-between items-center bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                    <div class="flex items-center space-x-2">
+                        <span class="relative flex h-3 w-3">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                        </span>
+                        <span class="text-sm text-slate-300">Live Server List</span>
                     </div>
-                    <button onclick="fetchKeys()" class="btn-primary text-white px-6 py-2 rounded-full font-semibold text-sm">
-                        <i class="fas fa-sync-alt mr-2" id="refresh-icon"></i>Refresh Keys
-                    </button>
+                    <button onclick="fetchKeys()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-bold btn-glow flex items-center">
+                        <i class="fas fa-sync-alt mr-2" id="refresh-icon"></i> REFRESH
+                    </button>                </div>
+
+                <!-- Source Selector -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setSource(0)" id="src-0" class="source-btn bg-blue-600 text-white py-2 rounded-lg text-xs font-medium transition">GitHub</button>
+                    <button onclick="setSource(1)" id="src-1" class="source-btn bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium hover:bg-slate-600 transition">Public</button>
+                    <button onclick="setSource(2)" id="src-2" class="source-btn bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium hover:bg-slate-600 transition">Cloud</button>
                 </div>
 
-                <!-- Source Selection -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <button onclick="selectSource(0)" class="source-btn active border border-slate-600 px-4 py-3 rounded-xl text-sm font-medium transition">
-                        <i class="fab fa-github mr-2"></i>GitHub List
-                    </button>
-                    <button onclick="selectSource(1)" class="source-btn border border-slate-600 px-4 py-3 rounded-xl text-sm font-medium transition">
-                        <i class="fas fa-list mr-2"></i>Public Nodes
-                    </button>
-                    <button onclick="selectSource(2)" class="source-btn border border-slate-600 px-4 py-3 rounded-xl text-sm font-medium transition">
-                        <i class="fas fa-cloud mr-2"></i>Free Servers
-                    </button>
-                </div>
-
-                <!-- Key List -->
-                <div id="key-list" class="space-y-3 max-h-96 overflow-y-auto pr-2">
-                    <div class="text-center py-12 text-slate-500">
-                        <i class="fas fa-arrow-down text-4xl mb-3 opacity-50"></i>
-                        <p>Click "Refresh Keys" to load servers</p>
-                    </div>
-                </div>
-
-                <!-- Stats -->
-                <div id="stats" class="hidden grid grid-cols-3 gap-4 text-center">
-                    <div class="bg-slate-800/50 rounded-xl p-3">
-                        <div class="text-2xl font-bold text-blue-400" id="stat-total">0</div>
-                        <div class="text-xs text-slate-400">Total Keys</div>
-                    </div>
-                    <div class="bg-slate-800/50 rounded-xl p-3">
-                        <div class="text-2xl font-bold text-green-400" id="stat-valid">0</div>
-                        <div class="text-xs text-slate-400">Valid</div>
-                    </div>
-                    <div class="bg-slate-800/50 rounded-xl p-3">
-                        <div class="text-2xl font-bold text-purple-400" id="stat-active">0</div>
-                        <div class="text-xs text-slate-400">Active Now</div>
+                <!-- Key List Container -->
+                <div id="key-list" class="space-y-3 max-h-64 overflow-y-auto pr-2">
+                    <div class="text-center py-10 text-slate-500">
+                        <i class="fas fa-arrow-down text-3xl mb-3 opacity-50"></i>
+                        <p class="text-sm">Click Refresh to load keys</p>
                     </div>
                 </div>
             </div>
-            <!-- Manual Generator Section -->
-            <div id="section-manual" class="hidden space-y-6">
-                <div class="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-                    <p class="text-sm text-blue-300">
-                        <i class="fas fa-info-circle mr-2"></i>
-                        Find free servers at: <a href="https://github.com/peasoft/NoMoreWalls" target="_blank" class="underline">GitHub</a> or <a href="https://t.me/free_v2ray_servers" target="_blank" class="underline">Telegram</a>
-                    </p>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- MANUAL GENERATOR SECTION -->
+            <div id="section-manual" class="hidden space-y-4 fade-in">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Server IP / Hostname *</label>
-                        <input type="text" id="manual-ip" placeholder="192.168.1.1" 
-                            class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
+                        <label class="block text-xs text-slate-400 mb-1">Server IP / Host</label>
+                        <input type="text" id="m-ip" placeholder="192.168.1.1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">Port *</label>
-                        <input type="number" id="manual-port" placeholder="8080" 
-                            class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
+                        <label class="block text-xs text-slate-400 mb-1">Port</label>
+                        <input type="number" id="m-port" placeholder="8080" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Encryption Method *</label>
-                    <select id="manual-method" class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
-                        <option value="chacha20-ietf-poly1305">ChaCha20-IETF-Poly1305 (Recommended)</option>
+                    <label class="block text-xs text-slate-400 mb-1">Method</label>
+                    <select id="m-method" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
+                        <option value="chacha20-ietf-poly1305">ChaCha20-IETF-Poly1305</option>
                         <option value="aes-256-gcm">AES-256-GCM</option>
                         <option value="aes-128-gcm">AES-128-GCM</option>
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Password *</label>
-                    <div class="relative">
-                        <input type="text" id="manual-password" placeholder="Enter password" 
-                            class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:border-blue-500 transition">
-                        <button onclick="generatePassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-400 transition">
-                            <i class="fas fa-random"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-slate-400 mb-2">Server Name</label>
-                    <input type="text" id="manual-name" placeholder="My Server" 
-                        class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition">
-                </div>
-
-                <button onclick="generateManualKey()" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg">
-                    <i class="fas fa-key mr-2"></i>Generate Access Key                </button>
-            </div>
-
-            <!-- Result Display -->
-            <div id="result-box" class="hidden mt-8 bg-gradient-to-br from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-2xl p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-blue-400">
-                        <i class="fas fa-check-circle mr-2"></i>Access Key Generated
-                    </h3>
-                    <button onclick="closeResult()" class="text-slate-400 hover:text-white">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="bg-slate-900/80 rounded-xl p-4 mb-4 relative">
-                    <textarea id="final-key" readonly 
-                        class="w-full bg-transparent text-sm text-slate-300 h-32 resize-none focus:outline-none font-mono break-all"></textarea>
-                    <button onclick="copyKey()" class="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs font-semibold transition">
-                        <i class="fas fa-copy mr-1"></i>Copy
+                <div class="relative">
+                    <label class="block text-xs text-slate-400 mb-1">Password</label>
+                    <input type="text" id="m-pass" placeholder="Enter password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
+                    <button onclick="randomPass()" class="absolute right-3 top-9 text-slate-500 hover:text-blue-400">
+                        <i class="fas fa-dice"></i>
                     </button>
                 </div>
 
-                <div class="flex space-x-3">
-                    <button onclick="addToOutline()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition">
-                        <i class="fas fa-plus mr-2"></i>Add to Outline
-                    </button>
-                    <button onclick="shareKey()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl font-semibold transition">
-                        <i class="fas fa-share-alt mr-2"></i>Share
-                    </button>
-                </div>
+                <button onclick="generateManual()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl btn-glow shadow-lg">
+                    GENERATE KEY                </button>
             </div>
 
         </div>
 
+        <!-- Result Box (Hidden by default) -->
+        <div id="result-box" class="hidden bg-slate-900 border-t border-slate-700 p-6 fade-in">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-green-400 font-bold text-sm"><i class="fas fa-check-circle mr-1"></i> SUCCESS</h3>
+                <button onclick="closeResult()" class="text-slate-500 hover:text-white"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="relative">
+                <textarea id="final-key" readonly class="w-full bg-black/50 border border-slate-700 rounded-xl p-3 text-xs text-slate-300 h-24 resize-none focus:outline-none font-mono break-all"></textarea>
+                <button onclick="copyKey()" class="absolute bottom-3 right-3 bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition shadow-lg">
+                    <i class="far fa-copy"></i>
+                </button>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-3">
+                <button onclick="openOutline()" class="bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold text-sm btn-glow">
+                    <i class="fas fa-plus mr-2"></i>Add to App
+                </button>
+                <button onclick="shareKey()" class="bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl font-bold text-sm btn-glow">
+                    <i class="fas fa-share-alt mr-2"></i>Share
+                </button>
+            </div>
+        </div>
+
         <!-- Footer -->
-        <div class="text-center mt-8 text-slate-500 text-sm">
-            <p>© 2026 Outline VPN Hub • For Educational Purpose Only</p>
+        <div class="bg-slate-900/80 p-3 text-center text-xs text-slate-500 border-t border-slate-800">
+            v2.0 • For Educational Purposes Only
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-green-600 text-white px-6 py-3 rounded-xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-        <i class="fas fa-check-circle mr-2"></i><span id="toast-message">Success</span>
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-700 flex items-center space-x-2 transition-all duration-300 translate-y-20 opacity-0 z-50">
+        <i class="fas fa-info-circle text-blue-400"></i>
+        <span id="toast-msg" class="text-sm font-medium">Notification</span>
     </div>
 
     <script>
-        let currentSource = 0;
-        let fetchedKeys = [];
-        
-        // Updated sources with actual working ss:// links        const sources = [
-            {
-                name: 'GitHub List',
-                url: 'https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml',
-                type: 'yaml'
-            },
-            {
-                name: 'Public Nodes',
-                url: 'https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml',
-                type: 'yaml'
-            },
-            {
-                name: 'Free Servers',
-                url: 'https://raw.githubusercontent.com/mlabalabala/v2ray-node/main/nodefree4clash.txt',
-                type: 'text'
-            }
+        // --- Configuration & State ---
+        const sources = [
+            'https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml',
+            'https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml',
+            'https://raw.githubusercontent.com/mlabalabala/v2ray-node/main/nodefree4clash.txt'
         ];
+        let currentSourceIndex = 0;
+        // --- Core Functions ---
 
-        function switchTab(tab) {
-            ['auto', 'manual'].forEach(t => {
-                document.getElementById(`section-${t}`).classList.add('hidden');
-                document.getElementById(`tab-${t}`).classList.remove('tab-active');
-                document.getElementById(`tab-${t}`).classList.add('tab-inactive');
-            });
+        function switchTab(tabName) {
+            // Hide all sections
+            document.getElementById('section-auto').classList.add('hidden');
+            document.getElementById('section-manual').classList.add('hidden');
             
-            document.getElementById(`section-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-${tab}`).classList.remove('tab-inactive');
-            document.getElementById(`tab-${tab}`).classList.add('tab-active');
+            // Reset Tab Styles
+            const autoTab = document.getElementById('tab-auto');
+            const manTab = document.getElementById('tab-manual');
+            
+            autoTab.className = "flex-1 py-4 text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition";
+            manTab.className = "flex-1 py-4 text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition";
+
+            // Show selected section
+            document.getElementById(`section-${tabName}`).classList.remove('hidden');
+            
+            // Highlight active tab
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            activeTab.className = "flex-1 py-4 text-sm font-semibold text-blue-400 border-b-2 border-blue-500 hover:bg-slate-800 transition";
         }
 
-        function selectSource(index) {
-            currentSource = index;
-            document.querySelectorAll('.source-btn').forEach((btn, i) => {
-                if (i === index) {
-                    btn.classList.add('active');
+        function setSource(index) {
+            currentSourceIndex = index;
+            // Update UI buttons
+            for(let i=0; i<3; i++) {
+                const btn = document.getElementById(`src-${i}`);
+                if(i === index) {
+                    btn.className = "source-btn bg-blue-600 text-white py-2 rounded-lg text-xs font-medium transition shadow-lg shadow-blue-900/50";
                 } else {
-                    btn.classList.remove('active');
+                    btn.className = "source-btn bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium hover:bg-slate-600 transition";
                 }
-            });
+            }
             fetchKeys();
         }
 
         async function fetchKeys() {
             const listContainer = document.getElementById('key-list');
-            const refreshIcon = document.getElementById('refresh-icon');
+            const icon = document.getElementById('refresh-icon');
             
-            refreshIcon.classList.add('fa-spin');
+            // Loading State
+            icon.classList.add('fa-spin');
             listContainer.innerHTML = `
                 <div class="space-y-3">
-                    ${Array(5).fill(0).map(() => `                        <div class="bg-slate-800/30 h-16 rounded-xl animate-pulse"></div>
+                    ${Array(4).fill(0).map(() => `
+                        <div class="h-16 bg-slate-800/50 rounded-xl animate-pulse"></div>
                     `).join('')}
                 </div>
             `;
-
             try {
-                const response = await fetch(sources[currentSource].url);
-                if (!response.ok) throw new Error('Failed to fetch');
+                const response = await fetch(sources[currentSourceIndex]);
+                if (!response.ok) throw new Error('Network error');
                 
-                const data = await response.text();
-                const keys = parseKeys(data);
-                
-                console.log('Parsed keys:', keys.length);
-                
+                const text = await response.text();
+                const keys = parseShadowsocksLinks(text);
+
                 if (keys.length === 0) {
                     listContainer.innerHTML = `
-                        <div class="text-center py-12">
-                            <div class="text-6xl mb-4">⚠️</div>
-                            <h3 class="text-xl font-bold text-yellow-400 mb-2">No Valid Keys Found</h3>
-                            <p class="text-slate-400 mb-4">The source doesn't contain valid Shadowsocks links</p>
-                            <div class="space-y-2 text-sm">
-                                <p class="text-slate-500">Try these options:</p>
-                                <button onclick="selectSource((currentSource + 1) % 3)" class="text-blue-400 hover:underline block">
-                                    → Try another source
-                                </button>
-                                <button onclick="switchTab('manual')" class="text-blue-400 hover:underline block">
-                                    → Use Manual Generator
-                                </button>
-                            </div>
+                        <div class="text-center py-8 text-yellow-500">
+                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+                            <p class="text-sm">No valid keys found in this source.</p>
+                            <button onclick="setSource((currentSourceIndex + 1) % 3)" class="mt-2 text-blue-400 underline text-xs">Try another source</button>
                         </div>
                     `;
-                    return;
+                } else {
+                    renderKeys(keys);
+                    showToast(`Found ${keys.length} servers!`, 'success');
                 }
 
-                fetchedKeys = keys;
-                displayKeys(keys);
-                updateStats(keys);
-                showToast(`Found ${keys.length} servers!`);
-                
             } catch (error) {
-                console.error('Fetch error:', error);
+                console.error(error);
                 listContainer.innerHTML = `
-                    <div class="text-center py-12 text-red-400">
-                        <i class="fas fa-times-circle text-5xl mb-3"></i>
-                        <p class="font-bold mb-2">Connection Error</p>
-                        <p class="text-sm text-slate-400 mb-4">Check your internet connection</p>
-                        <button onclick="fetchKeys()" class="btn-primary text-white px-6 py-2 rounded-full text-sm">
-                            <i class="fas fa-sync-alt mr-2"></i>Retry
-                        </button>
-                    </div>                `;
-            } finally {
-                refreshIcon.classList.remove('fa-spin');
-            }
-        }
-
-        function parseKeys(data) {
-            const keys = [];
-            
-            // Extract ss:// links using regex
-            const ssLinks = data.match(/ss:\/\/[^\s"'\)]+/g) || [];
-            
-            console.log('Found ss:// links:', ssLinks.length);
-            
-            ssLinks.forEach((link, index) => {
-                try {
-                    const cleanedKey = validateAndFormatKey(link.trim());
-                    if (cleanedKey) {
-                        keys.push({
-                            key: cleanedKey,
-                            index: index + 1,
-                            source: sources[currentSource].name
-                        });
-                    }
-                } catch (e) {
-                    console.error('Invalid key:', e);
-                }
-            });
-
-            // If no ss:// links found, try to parse YAML/other formats
-            if (keys.length === 0) {
-                // Try to extract from YAML format
-                const yamlMatches = data.match(/server:\s*([^\n]+)/g) || [];
-                const portMatches = data.match(/port:\s*([^\n]+)/g) || [];
-                const passwordMatches = data.match(/password:\s*([^\n]+)/g) || [];
-                const methodMatches = data.match(/cipher:\s*([^\n]+)/g) || [];
-                
-                console.log('YAML matches:', yamlMatches.length);
-            }
-
-            return keys.slice(0, 20);
-        }
-
-        function validateAndFormatKey(key) {
-            try {
-                // Remove any trailing characters or whitespace
-                key = key.split(' ')[0].trim();
-                
-                // Check if it starts with ss://
-                if (!key.startsWith('ss://')) return null;                
-                // Extract the base64 part
-                const match = key.match(/ss:\/\/([A-Za-z0-9+/=]+)@(.+)/);
-                if (!match) return null;
-                
-                // Ensure it has outline=1 parameter
-                if (!key.includes('outline=1')) {
-                    if (key.includes('?')) {
-                        key = key.replace('?', '/?outline=1&');
-                    } else {
-                        key += '/?outline=1';
-                    }
-                }
-                
-                // Add server name if missing
-                if (!key.includes('#')) {
-                    key += `#Server-${Math.floor(Math.random() * 1000)}`;
-                }
-                
-                return key;
-            } catch (e) {
-                console.error('Validation error:', e);
-                return null;
-            }
-        }
-
-        function displayKeys(keys) {
-            const listContainer = document.getElementById('key-list');
-            listContainer.innerHTML = '';
-
-            keys.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'key-item bg-slate-800/30 border border-slate-700 rounded-xl p-4 cursor-pointer';
-                div.onclick = () => showKey(item.key);
-                
-                div.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-bold text-white">
-                                ${index + 1}
-                            </div>
-                            <div>
-                                <div class="font-semibold text-slate-200">Server ${item.index}</div>
-                                <div class="text-xs text-slate-400">${item.source}</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-semibold">
-                                <i class="fas fa-check mr-1"></i>Valid
-                            </span>
-                            <i class="fas fa-chevron-right text-slate-500"></i>
-                        </div>
+                    <div class="text-center py-8 text-red-400">
+                        <i class="fas fa-wifi text-2xl mb-2"></i>
+                        <p class="text-sm">Failed to connect. Check internet.</p>
+                        <button onclick="fetchKeys()" class="mt-2 text-blue-400 underline text-xs">Retry</button>
                     </div>
                 `;
+            } finally {
+                icon.classList.remove('fa-spin');
+            }
+        }
+
+        function parseShadowsocksLinks(text) {
+            // Regex to find ss:// links
+            const regex = /ss:\/\/[A-Za-z0-9+\/%=:@._-]+/g;
+            const matches = text.match(regex) || [];
+            
+            const validKeys = [];
+            matches.forEach(link => {
+                try {
+                    // Basic validation: must contain @ and :
+                    if (link.includes('@') && link.includes(':')) {
+                        // Ensure outline parameter exists
+                        let cleanLink = link;
+                        if (!cleanLink.includes('outline=1')) {
+                            if (cleanLink.includes('?')) cleanLink += '&outline=1';
+                            else cleanLink += '/?outline=1';
+                        }                        if (!cleanLink.includes('#')) cleanLink += '#AutoGen';
+                        
+                        validKeys.push(cleanLink);
+                    }
+                } catch (e) {
+                    // Skip invalid links
+                }
+            });
+            return validKeys.slice(0, 20); // Limit to 20
+        }
+
+        function renderKeys(keys) {
+            const container = document.getElementById('key-list');
+            container.innerHTML = '';
+
+            keys.forEach((key, idx) => {
+                const div = document.createElement('div');
+                div.className = "bg-slate-800/40 border border-slate-700 hover:border-blue-500 rounded-xl p-3 flex justify-between items-center cursor-pointer transition group";
+                div.onclick = () => showResult(key);
                 
-                listContainer.appendChild(div);
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center text-blue-400 font-bold text-xs group-hover:bg-blue-600 group-hover:text-white transition">
+                            ${idx + 1}
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-slate-200">Shadowsocks Server</div>
+                            <div class="text-xs text-slate-500">Encrypted Connection</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-slate-600 group-hover:text-blue-400 transition"></i>
+                `;
+                container.appendChild(div);
             });
         }
 
-        function updateStats(keys) {
-            document.getElementById('stats').classList.remove('hidden');
-            document.getElementById('stat-total').textContent = keys.length;
-            document.getElementById('stat-valid').textContent = keys.filter(k => k.key.includes('outline=1')).length;
-            document.getElementById('stat-active').textContent = Math.floor(keys.length * 0.8);
-        }
+        function generateManual() {
+            const ip = document.getElementById('m-ip').value.trim();
+            const port = document.getElementById('m-port').value.trim();
+            const method = document.getElementById('m-method').value;
+            const pass = document.getElementById('m-pass').value.trim();
 
-        function generateManualKey() {
-            const ip = document.getElementById('manual-ip').value.trim();
-            const port = document.getElementById('manual-port').value.trim();
-            const method = document.getElementById('manual-method').value;
-            const password = document.getElementById('manual-password').value;
-            const name = document.getElementById('manual-name').value.trim() || 'ManualServer';
-
-            if (!ip || !port || !password) {
-                showToast('Please fill all required fields', 'error');
+            if (!ip || !port || !pass) {
+                showToast('Please fill all fields', 'error');
                 return;
             }
 
-            // Create base64 encoded auth
-            const auth = `${method}:${password}`;
-            const base64Auth = btoa(unescape(encodeURIComponent(auth)));
-            
-            const key = `ss://${base64Auth}@${ip}:${port}/?outline=1#${encodeURIComponent(name)}`;
-            
-            showKey(key);
-            showToast('Key generated successfully!');
+            // Encode Method:Password to Base64
+            const authStr = `${method}:${pass}`;
+            const base64Auth = btoa(authStr); // Standard base64
+            const finalKey = `ss://${base64Auth}@${ip}:${port}/?outline=1#ManualServer`;
+            showResult(finalKey);
+            showToast('Key Generated!', 'success');
         }
 
-        function generatePassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-            let password = '';
-            for (let i = 0; i < 16; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
+        function randomPass() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$";
+            let pass = "";
+            for (let i = 0; i < 12; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
             }
-            document.getElementById('manual-password').value = password;
-            showToast('Random password generated');
+            document.getElementById('m-pass').value = pass;
         }
 
-        function showKey(key) {
+        function showResult(key) {
             document.getElementById('final-key').value = key;
             document.getElementById('result-box').classList.remove('hidden');
-            document.getElementById('result-box').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Smooth scroll to result
+            document.getElementById('result-box').scrollIntoView({ behavior: 'smooth' });
         }
 
         function closeResult() {
@@ -500,73 +369,69 @@
 
         async function copyKey() {
             const key = document.getElementById('final-key').value;
-            
             try {
-                if (navigator.clipboard && window.isSecureContext) {
-                    await navigator.clipboard.writeText(key);
-                } else {
-                    const textArea = document.getElementById('final-key');
-                    textArea.select();
-                    document.execCommand('copy');
-                }
-                showToast('Key copied to clipboard!');
+                await navigator.clipboard.writeText(key);
+                showToast('Copied to clipboard!', 'success');
             } catch (err) {
-                showToast('Failed to copy', 'error');
+                  // Fallback
+                const textarea = document.getElementById('final-key');
+                textarea.select();
+                document.execCommand('copy');
+                showToast('Copied!', 'success');
             }
         }
 
-        function addToOutline() {
+        function openOutline() {
             const key = document.getElementById('final-key').value;
-            const outlineUrl = `outline://install#${encodeURIComponent(key)}`;
-            
-            window.location.href = outlineUrl;
-            
+            const url = `outline://install#${encodeURIComponent(key)}`;
+            window.location.href = url;
             setTimeout(() => {
-                showToast('If Outline didn\'t open, paste the key manually');
+                showToast('If app didn\'t open, paste manually', 'info');
             }, 1000);
         }
 
         async function shareKey() {
             const key = document.getElementById('final-key').value;
-            
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: 'Outline VPN Access Key',
+                        title: 'VPN Access Key',
                         text: key
                     });
-                } catch (err) {
-                    console.log('Share cancelled');
-                }
+                } catch (err) {}
             } else {
                 copyKey();
             }
         }
 
-        function showToast(message, type = 'success') {
+        function showToast(msg, type = 'info') {
             const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
+            const span = document.getElementById('toast-msg');
+            const icon = toast.querySelector('i');
+
+            span.innerText = msg;
             
-            toastMessage.textContent = message;
-            toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-xl shadow-2xl transform transition-all duration-300 z-50 ${
-                type === 'success' ? 'bg-green-600' : 'bg-red-600'
-            } text-white`;
-            
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle text-green-400';
+                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-green-500/50 flex items-center space-x-2 transition-all duration-300 z-50 translate-y-0 opacity-100";
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle text-red-400';
+                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-red-500/50 flex items-center space-x-2 transition-all duration-300 z-50 translate-y-0 opacity-100";
+            } else {
+                icon.className = 'fas fa-info-circle text-blue-400';
+                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-600 flex items-center space-x-2 transition-all duration-300 z-50 translate-y-0 opacity-100";
+            }
+
             setTimeout(() => {
-                toast.classList.remove('translate-y-20', 'opacity-0');
-            }, 100);
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-700 flex items-center space-x-2 transition-all duration-300 translate-y-20 opacity-0 z-50";
             }, 3000);
         }
 
-        // Auto-fetch on load
+        // Initialize
         window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                fetchKeys();
-            }, 500);
+            fetchKeys();
         });
+
     </script>
 </body>
 </html>
