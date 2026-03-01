@@ -1,437 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outline VPN Hub Pro</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #e2e8f0;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #475569; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b; 
-        }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .btn-glow {
-            transition: all 0.3s ease;
-        }
-        .btn-glow:hover {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-            transform: translateY(-2px);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outline Key Hub Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-black">
 
-    <!-- Main Container -->
-    <div class="w-full max-w-2xl glass-panel rounded-3xl shadow-2xl overflow-hidden fade-in relative">
-        
-        <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-            <h1 class="text-3xl font-bold text-white tracking-wide relative z-10">
-                <i class="fas fa-shield-alt mr-2"></i>OUTLINE HUB
-            </h1>
-            <p class="text-blue-100 text-sm mt-1 relative z-10">Free Access Key Generator</p>
-        </div>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-black min-h-screen flex items-center justify-center p-4 text-white">
 
-        <!-- Navigation Tabs -->
-        <div class="flex border-b border-slate-700 bg-slate-900/50">
-            <button onclick="switchTab('auto')" id="tab-auto" class="flex-1 py-4 text-sm font-semibold text-blue-400 border-b-2 border-blue-500 hover:bg-slate-800 transition">
-                <i class="fas fa-bolt mr-2"></i>Auto Fetch
-            </button>
-            <button onclick="switchTab('manual')" id="tab-manual" class="flex-1 py-4 text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition">
-                <i class="fas fa-cog mr-2"></i>Manual Gen
-            </button>
-        </div>
+<div class="w-full max-w-xl bg-slate-900/70 backdrop-blur-xl border border-slate-700 rounded-3xl shadow-2xl overflow-hidden">
 
-        <!-- Content Area -->
-        <div class="p-6 min-h-[400px]">
-            
-            <!-- AUTO FETCH SECTION -->
-            <div id="section-auto" class="space-y-4">
-                <div class="flex justify-between items-center bg-slate-800/50 p-3 rounded-xl border border-slate-700">
-                    <div class="flex items-center space-x-2">
-                        <span class="relative flex h-3 w-3">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                        </span>
-                        <span class="text-sm text-slate-300">Live Server List</span>
-                    </div>
-                    <button onclick="fetchKeys()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-bold btn-glow flex items-center">
-                        <i class="fas fa-sync-alt mr-2" id="refresh-icon"></i> REFRESH
-                    </button>                </div>
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-center">
+    <h1 class="text-2xl font-bold">🔐 Outline Key Hub</h1>
+    <p class="text-sm text-blue-100 mt-1">Auto & Manual Generator</p>
+</div>
 
-                <!-- Source Selector -->
-                <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setSource(0)" id="src-0" class="source-btn bg-blue-600 text-white py-2 rounded-lg text-xs font-medium transition">GitHub</button>
-                    <button onclick="setSource(1)" id="src-1" class="source-btn bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium hover:bg-slate-600 transition">Public</button>
-                    <button onclick="setSource(2)" id="src-2" class="source-btn bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium hover:bg-slate-600 transition">Cloud</button>
-                </div>
+<!-- TABS -->
+<div class="flex border-b border-slate-700 text-sm font-semibold">
+    <button onclick="showAuto()" id="autoBtn" class="flex-1 py-3 bg-blue-600">Auto Fetch</button>
+    <button onclick="showManual()" id="manualBtn" class="flex-1 py-3 bg-slate-800">Manual Gen</button>
+</div>
 
-                <!-- Key List Container -->
-                <div id="key-list" class="space-y-3 max-h-64 overflow-y-auto pr-2">
-                    <div class="text-center py-10 text-slate-500">
-                        <i class="fas fa-arrow-down text-3xl mb-3 opacity-50"></i>
-                        <p class="text-sm">Click Refresh to load keys</p>
-                    </div>
-                </div>
-            </div>
+<div class="p-6 space-y-4">
 
-            <!-- MANUAL GENERATOR SECTION -->
-            <div id="section-manual" class="hidden space-y-4 fade-in">
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Server IP / Host</label>
-                        <input type="text" id="m-ip" placeholder="192.168.1.1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Port</label>
-                        <input type="number" id="m-port" placeholder="8080" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
-                    </div>
-                </div>
+<!-- AUTO SECTION -->
+<div id="autoSection">
+    <button onclick="fetchKeys()" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold transition">
+        Load Servers
+    </button>
 
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Method</label>
-                    <select id="m-method" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
-                        <option value="chacha20-ietf-poly1305">ChaCha20-IETF-Poly1305</option>
-                        <option value="aes-256-gcm">AES-256-GCM</option>
-                        <option value="aes-128-gcm">AES-128-GCM</option>
-                    </select>
-                </div>
+    <div id="serverList" class="mt-4 space-y-2 max-h-48 overflow-y-auto"></div>
+</div>
 
-                <div class="relative">
-                    <label class="block text-xs text-slate-400 mb-1">Password</label>
-                    <input type="text" id="m-pass" placeholder="Enter password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition">
-                    <button onclick="randomPass()" class="absolute right-3 top-9 text-slate-500 hover:text-blue-400">
-                        <i class="fas fa-dice"></i>
-                    </button>
-                </div>
+<!-- MANUAL SECTION -->
+<div id="manualSection" class="hidden space-y-3">
 
-                <button onclick="generateManual()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl btn-glow shadow-lg">
-                    GENERATE KEY                </button>
-            </div>
+    <input id="ip" type="text" placeholder="Server IP"
+        class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 focus:border-blue-500 outline-none">
 
-        </div>
+    <input id="port" type="number" placeholder="Port"
+        class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 focus:border-blue-500 outline-none">
 
-        <!-- Result Box (Hidden by default) -->
-        <div id="result-box" class="hidden bg-slate-900 border-t border-slate-700 p-6 fade-in">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-green-400 font-bold text-sm"><i class="fas fa-check-circle mr-1"></i> SUCCESS</h3>
-                <button onclick="closeResult()" class="text-slate-500 hover:text-white"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div class="relative">
-                <textarea id="final-key" readonly class="w-full bg-black/50 border border-slate-700 rounded-xl p-3 text-xs text-slate-300 h-24 resize-none focus:outline-none font-mono break-all"></textarea>
-                <button onclick="copyKey()" class="absolute bottom-3 right-3 bg-slate-700 hover:bg-blue-600 text-white p-2 rounded-lg transition shadow-lg">
-                    <i class="far fa-copy"></i>
-                </button>
-            </div>
+    <input id="password" type="text" placeholder="Password"
+        class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 focus:border-blue-500 outline-none">
 
-            <div class="mt-4 grid grid-cols-2 gap-3">
-                <button onclick="openOutline()" class="bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold text-sm btn-glow">
-                    <i class="fas fa-plus mr-2"></i>Add to App
-                </button>
-                <button onclick="shareKey()" class="bg-slate-700 hover:bg-slate-600 text-white py-3 rounded-xl font-bold text-sm btn-glow">
-                    <i class="fas fa-share-alt mr-2"></i>Share
-                </button>
-            </div>
-        </div>
+    <select id="method"
+        class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 focus:border-blue-500 outline-none">
+        <option value="chacha20-ietf-poly1305">ChaCha20</option>
+        <option value="aes-256-gcm">AES-256-GCM</option>
+        <option value="aes-128-gcm">AES-128-GCM</option>
+    </select>
 
-        <!-- Footer -->
-        <div class="bg-slate-900/80 p-3 text-center text-xs text-slate-500 border-t border-slate-800">
-            v2.0 • For Educational Purposes Only
-        </div>
-    </div>
+    <button onclick="generateKey()"
+        class="w-full bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl font-bold transition">
+        Generate Key
+    </button>
+</div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-700 flex items-center space-x-2 transition-all duration-300 translate-y-20 opacity-0 z-50">
-        <i class="fas fa-info-circle text-blue-400"></i>
-        <span id="toast-msg" class="text-sm font-medium">Notification</span>
-    </div>
+<!-- RESULT -->
+<textarea id="result" readonly
+    class="w-full bg-black/60 border border-slate-700 rounded-xl p-3 text-xs font-mono h-24 resize-none"></textarea>
 
-    <script>
-        // --- Configuration & State ---
-        const sources = [
-            'https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml',
-            'https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml',
-            'https://raw.githubusercontent.com/mlabalabala/v2ray-node/main/nodefree4clash.txt'
-        ];
-        let currentSourceIndex = 0;
-        // --- Core Functions ---
+<div class="grid grid-cols-2 gap-3">
+    <button onclick="copyKey()"
+        class="bg-green-600 hover:bg-green-500 py-3 rounded-xl font-bold transition">
+        Copy
+    </button>
 
-        function switchTab(tabName) {
-            // Hide all sections
-            document.getElementById('section-auto').classList.add('hidden');
-            document.getElementById('section-manual').classList.add('hidden');
-            
-            // Reset Tab Styles
-            const autoTab = document.getElementById('tab-auto');
-            const manTab = document.getElementById('tab-manual');
-            
-            autoTab.className = "flex-1 py-4 text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition";
-            manTab.className = "flex-1 py-4 text-sm font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition";
+    <button onclick="openOutline()"
+        class="bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold transition">
+        Add to Outline
+    </button>
+</div>
 
-            // Show selected section
-            document.getElementById(`section-${tabName}`).classList.remove('hidden');
-            
-            // Highlight active tab
-            const activeTab = document.getElementById(`tab-${tabName}`);
-            activeTab.className = "flex-1 py-4 text-sm font-semibold text-blue-400 border-b-2 border-blue-500 hover:bg-slate-800 transition";
-        }
+</div>
 
-        function setSource(index) {
-            currentSourceIndex = index;
-            // Update UI buttons
-            for(let i=0; i<3; i++) {
-                const btn = document.getElementById(`src-${i}`);
-                if(i === index) {
-                    btn.className = "source-btn bg-blue-600 text-white py-2 rounded-lg text-xs font-medium transition shadow-lg shadow-blue-900/50";
-                } else {
-                    btn.className = "source-btn bg-slate-700 text-slate-300 py-2 rounded-lg text-xs font-medium hover:bg-slate-600 transition";
-                }
-            }
-            fetchKeys();
-        }
+<div class="bg-slate-900 text-center text-xs text-slate-500 py-3 border-t border-slate-700">
+    v3.0 Tailwind Edition
+</div>
 
-        async function fetchKeys() {
-            const listContainer = document.getElementById('key-list');
-            const icon = document.getElementById('refresh-icon');
-            
-            // Loading State
-            icon.classList.add('fa-spin');
-            listContainer.innerHTML = `
-                <div class="space-y-3">
-                    ${Array(4).fill(0).map(() => `
-                        <div class="h-16 bg-slate-800/50 rounded-xl animate-pulse"></div>
-                    `).join('')}
-                </div>
-            `;
-            try {
-                const response = await fetch(sources[currentSourceIndex]);
-                if (!response.ok) throw new Error('Network error');
-                
-                const text = await response.text();
-                const keys = parseShadowsocksLinks(text);
+</div>
 
-                if (keys.length === 0) {
-                    listContainer.innerHTML = `
-                        <div class="text-center py-8 text-yellow-500">
-                            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
-                            <p class="text-sm">No valid keys found in this source.</p>
-                            <button onclick="setSource((currentSourceIndex + 1) % 3)" class="mt-2 text-blue-400 underline text-xs">Try another source</button>
-                        </div>
-                    `;
-                } else {
-                    renderKeys(keys);
-                    showToast(`Found ${keys.length} servers!`, 'success');
-                }
+<script>
 
-            } catch (error) {
-                console.error(error);
-                listContainer.innerHTML = `
-                    <div class="text-center py-8 text-red-400">
-                        <i class="fas fa-wifi text-2xl mb-2"></i>
-                        <p class="text-sm">Failed to connect. Check internet.</p>
-                        <button onclick="fetchKeys()" class="mt-2 text-blue-400 underline text-xs">Retry</button>
-                    </div>
-                `;
-            } finally {
-                icon.classList.remove('fa-spin');
-            }
-        }
+const source = 'https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml';
 
-        function parseShadowsocksLinks(text) {
-            // Regex to find ss:// links
-            const regex = /ss:\/\/[A-Za-z0-9+\/%=:@._-]+/g;
-            const matches = text.match(regex) || [];
-            
-            const validKeys = [];
-            matches.forEach(link => {
-                try {
-                    // Basic validation: must contain @ and :
-                    if (link.includes('@') && link.includes(':')) {
-                        // Ensure outline parameter exists
-                        let cleanLink = link;
-                        if (!cleanLink.includes('outline=1')) {
-                            if (cleanLink.includes('?')) cleanLink += '&outline=1';
-                            else cleanLink += '/?outline=1';
-                        }                        if (!cleanLink.includes('#')) cleanLink += '#AutoGen';
-                        
-                        validKeys.push(cleanLink);
-                    }
-                } catch (e) {
-                    // Skip invalid links
-                }
-            });
-            return validKeys.slice(0, 20); // Limit to 20
-        }
+function showAuto(){
+    autoSection.classList.remove("hidden");
+    manualSection.classList.add("hidden");
+    autoBtn.classList.add("bg-blue-600");
+    autoBtn.classList.remove("bg-slate-800");
+    manualBtn.classList.add("bg-slate-800");
+    manualBtn.classList.remove("bg-blue-600");
+}
 
-        function renderKeys(keys) {
-            const container = document.getElementById('key-list');
-            container.innerHTML = '';
+function showManual(){
+    manualSection.classList.remove("hidden");
+    autoSection.classList.add("hidden");
+    manualBtn.classList.add("bg-blue-600");
+    manualBtn.classList.remove("bg-slate-800");
+    autoBtn.classList.add("bg-slate-800");
+    autoBtn.classList.remove("bg-blue-600");
+}
 
-            keys.forEach((key, idx) => {
-                const div = document.createElement('div');
-                div.className = "bg-slate-800/40 border border-slate-700 hover:border-blue-500 rounded-xl p-3 flex justify-between items-center cursor-pointer transition group";
-                div.onclick = () => showResult(key);
-                
-                div.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center text-blue-400 font-bold text-xs group-hover:bg-blue-600 group-hover:text-white transition">
-                            ${idx + 1}
-                        </div>
-                        <div>
-                            <div class="text-sm font-medium text-slate-200">Shadowsocks Server</div>
-                            <div class="text-xs text-slate-500">Encrypted Connection</div>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right text-slate-600 group-hover:text-blue-400 transition"></i>
-                `;
-                container.appendChild(div);
-            });
-        }
+async function fetchKeys(){
+    serverList.innerHTML="Loading...";
 
-        function generateManual() {
-            const ip = document.getElementById('m-ip').value.trim();
-            const port = document.getElementById('m-port').value.trim();
-            const method = document.getElementById('m-method').value;
-            const pass = document.getElementById('m-pass').value.trim();
+    try{
+        const res = await fetch(source);
+        const text = await res.text();
+        const regex = /ss:\/\/[A-Za-z0-9+\/%=:@._-]+/g;
+        const matches = text.match(regex) || [];
 
-            if (!ip || !port || !pass) {
-                showToast('Please fill all fields', 'error');
-                return;
-            }
+        serverList.innerHTML="";
 
-            // Encode Method:Password to Base64
-            const authStr = `${method}:${pass}`;
-            const base64Auth = btoa(authStr); // Standard base64
-            const finalKey = `ss://${base64Auth}@${ip}:${port}/?outline=1#ManualServer`;
-            showResult(finalKey);
-            showToast('Key Generated!', 'success');
-        }
-
-        function randomPass() {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$";
-            let pass = "";
-            for (let i = 0; i < 12; i++) {
-                pass += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById('m-pass').value = pass;
-        }
-
-        function showResult(key) {
-            document.getElementById('final-key').value = key;
-            document.getElementById('result-box').classList.remove('hidden');
-            // Smooth scroll to result
-            document.getElementById('result-box').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function closeResult() {
-            document.getElementById('result-box').classList.add('hidden');
-        }
-
-        async function copyKey() {
-            const key = document.getElementById('final-key').value;
-            try {
-                await navigator.clipboard.writeText(key);
-                showToast('Copied to clipboard!', 'success');
-            } catch (err) {
-                  // Fallback
-                const textarea = document.getElementById('final-key');
-                textarea.select();
-                document.execCommand('copy');
-                showToast('Copied!', 'success');
-            }
-        }
-
-        function openOutline() {
-            const key = document.getElementById('final-key').value;
-            const url = `outline://install#${encodeURIComponent(key)}`;
-            window.location.href = url;
-            setTimeout(() => {
-                showToast('If app didn\'t open, paste manually', 'info');
-            }, 1000);
-        }
-
-        async function shareKey() {
-            const key = document.getElementById('final-key').value;
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: 'VPN Access Key',
-                        text: key
-                    });
-                } catch (err) {}
-            } else {
-                copyKey();
-            }
-        }
-
-        function showToast(msg, type = 'info') {
-            const toast = document.getElementById('toast');
-            const span = document.getElementById('toast-msg');
-            const icon = toast.querySelector('i');
-
-            span.innerText = msg;
-            
-            if (type === 'success') {
-                icon.className = 'fas fa-check-circle text-green-400';
-                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-green-500/50 flex items-center space-x-2 transition-all duration-300 z-50 translate-y-0 opacity-100";
-            } else if (type === 'error') {
-                icon.className = 'fas fa-exclamation-circle text-red-400';
-                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-red-500/50 flex items-center space-x-2 transition-all duration-300 z-50 translate-y-0 opacity-100";
-            } else {
-                icon.className = 'fas fa-info-circle text-blue-400';
-                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-600 flex items-center space-x-2 transition-all duration-300 z-50 translate-y-0 opacity-100";
-            }
-
-            setTimeout(() => {
-                toast.className = "fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-700 flex items-center space-x-2 transition-all duration-300 translate-y-20 opacity-0 z-50";
-            }, 3000);
-        }
-
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchKeys();
+        matches.slice(0,15).forEach((k,i)=>{
+            const div=document.createElement("div");
+            div.className="bg-slate-800 p-3 rounded-xl cursor-pointer hover:bg-blue-600 transition text-sm";
+            div.innerText="Server "+(i+1);
+            div.onclick=()=>showResult(k);
+            serverList.appendChild(div);
         });
 
-    </script>
+        if(matches.length===0){
+            serverList.innerHTML="No servers found.";
+        }
+
+    }catch{
+        serverList.innerHTML="Failed to load.";
+    }
+}
+
+function safeBase64(str){
+    return btoa(unescape(encodeURIComponent(str)));
+}
+
+function generateKey(){
+    const ip=document.getElementById("ip").value.trim();
+    const port=document.getElementById("port").value.trim();
+    const pass=document.getElementById("password").value.trim();
+    const method=document.getElementById("method").value;
+
+    if(!ip||!port||!pass){
+        alert("Fill all fields!");
+        return;
+    }
+
+    const encoded=safeBase64(method+":"+pass);
+    const key=`ss://${encoded}@${ip}:${port}/?outline=1#Manual`;
+
+    showResult(key);
+}
+
+function showResult(key){
+    result.value=key;
+}
+
+function copyKey(){
+    result.select();
+    document.execCommand("copy");
+    alert("Copied!");
+}
+
+function openOutline(){
+    if(!result.value){
+        alert("No key generated!");
+        return;
+    }
+    window.location.href="outline://install#"+encodeURIComponent(result.value);
+}
+
+</script>
+
 </body>
-</html>
+    </html>
