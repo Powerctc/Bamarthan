@@ -123,7 +123,7 @@ export default function Page() {
     return (
       <div className="fixed inset-0 z-[999] bg-[#0f172a] flex flex-col items-center justify-center p-6 text-white text-center">
         <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-6"></div>
-        <h2 className="text-2xl font-black tracking-widest uppercase">S4ITMM TV</h2>
+        <h2 className="text-2xl font-black tracking-widest uppercase">FOTMOV TV</h2>
         <p className="text-slate-400 text-xs mt-3 uppercase tracking-widest font-medium">Checking Access...</p>
       </div>
     )
