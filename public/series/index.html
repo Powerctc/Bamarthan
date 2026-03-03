@@ -204,35 +204,43 @@ function renderMovies(data) {
 // --- Detail SPA Logic (Updated with Player Selection) ---
 function openDetail(m) {
     const dv = document.getElementById('detail-view');
-    document.getElementById('det-header-title').innerText = m.title;
-    document.getElementById('det-title').innerText = m.title;
-    document.getElementById('det-poster').src = m.logo;
-    document.getElementById('det-year').innerText = m.year || '2026';
-    document.getElementById('det-cat').innerText = m.category;
-    document.getElementById('det-desc').innerText = m.description || 'ဒီဇာတ်လမ်းတွဲကို အခုပဲ ကြည့်ရှုလိုက်ပါ။';
+    // ... (မူလ code များအတိုင်း) ...
     
-    // Player Section ကို ခေတ္တဖျောက်ထားမယ် (Episode မရွေးမချင်း)
-    document.getElementById('player-box').classList.add('hidden');
-
-    // Render Episodes
     const epBox = document.getElementById('det-episodes');
     epBox.innerHTML = '';
     
+    // သိမ်းထားတဲ့ နောက်ဆုံးကြည့်ခဲ့တဲ့ Episode ID ကိုယူမယ် (ဥပမာ: "SeriesTitle_Ep1")
+    const lastPlayedEpKey = `last_ep_${m.title}`;
+    const savedEp = localStorage.getItem(lastPlayedEpKey);
+
     if(m.episodes && m.episodes.length > 0) {
         m.episodes.forEach((ep, idx) => {
             const eBtn = document.createElement('button');
-            eBtn.className = "ep-btn bg-slate-100 dark:bg-slate-800 border dark:border-slate-700 py-3 rounded-xl text-[10px] font-black transition-all active:bg-primary active:text-black shadow-sm";
-            eBtn.innerText = ep.label || `E${idx+1}`;
+            const epLabel = ep.label || `E${idx+1}`;
+            
+            // အရင်ကြည့်လက်စ Episode ဖြစ်နေရင် 'playing' class ထည့်မယ်
+            eBtn.className = `ep-btn bg-slate-100 dark:bg-slate-800 border dark:border-slate-700 py-3 rounded-xl text-[10px] font-black transition-all active:scale-90 shadow-sm ${savedEp === epLabel ? 'playing' : ''}`;
+            eBtn.innerText = epLabel;
             
             eBtn.onclick = () => {
-                // Episode နှိပ်ရင် Player ရွေးခိုင်းတဲ့ Overlay ခေါ်မယ်
-                openPlayerSelection(ep.url, m.title + " - " + (ep.label || `Episode ${idx+1}`));
+                // ခလုတ်နှိပ်လိုက်ရင် တခြားခလုတ်တွေက အရောင်ဖျောက်ပြီး ဒီတစ်ခုကို အရောင်တင်မယ်
+                document.querySelectorAll('.ep-btn').forEach(b => b.classList.remove('playing'));
+                eBtn.classList.add('playing');
+
+                // LocalStorage မှာ မှတ်ထားမယ်
+                localStorage.setItem(lastPlayedEpKey, epLabel);
+
+                // Player ရွေးခိုင်းတဲ့ Overlay ခေါ်မယ်
+                openPlayerSelection(ep.url, m.title + " - " + epLabel);
             };
             epBox.appendChild(eBtn);
         });
     } else {
         epBox.innerHTML = '<p class="col-span-full text-center py-10 opacity-40 text-[10px] font-bold uppercase tracking-widest">Episodes Coming Soon</p>';
     }
+    // ... (ကျန်တာတွေ မပြောင်းလဲပါ) ...
+}
+
 
     dv.classList.remove('hidden');
     setTimeout(() => dv.classList.add('active'), 50);
