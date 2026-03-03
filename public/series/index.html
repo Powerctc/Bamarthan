@@ -127,151 +127,182 @@
     <script src="../sidebar.js"></script>
 
     <script>
-        const movieSources = [
-            { label: "Main Server", value: "series.json" }, 
-            { label: "Backup Server 1", value: "series-1.json" }
-        ];
+        // --- Global Variables ---
+const movieSources = [
+    { label: "Main Server", value: "series.json" }, 
+    { label: "Backup Server 1", value: "series-1.json" }
+];
+let allMovies = [];
+const grid = document.getElementById('movie-grid');
 
-        let allMovies = [];
-        const grid = document.getElementById('movie-grid');
+// --- Theme Management ---
+if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+}
+document.getElementById('theme-toggle').onclick = () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+};
 
-        // Theme Management
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
+// --- Content Loader ---
+async function loadMovies(url) {
+    grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-30 animate-pulse font-bold uppercase tracking-widest text-[10px]">Loading Series...</div>';
+    try {
+        const res = await fetch(`${url}?v=${Date.now()}`);
+        const data = await res.json();
+        allMovies = data.filter(m => 
+            m.category.toLowerCase().includes('series') || 
+            m.category.includes('ဇာတ်လမ်းတွဲ') ||
+            m.category.toLowerCase().includes('tv')
+        );
+        renderMovies(allMovies);
+    } catch (e) {
+        grid.innerHTML = '<div class="col-span-2 text-center py-20 text-red-500 text-[10px]">FAILED TO LOAD DATA.</div>';
+    }
+}
 
-        document.getElementById('theme-toggle').onclick = () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        };
+function renderMovies(data) {
+    grid.innerHTML = '';
+    if(data.length === 0) {
+        grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-50 text-[10px]">NO SERIES FOUND.</div>';
+        return;
+    }
+    const lastViewed = localStorage.getItem('s4itmm_last_series');
 
-        // Content Loader
-        async function loadMovies(url) {
-            grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-30 animate-pulse font-bold uppercase tracking-widest text-[10px]">Loading Series...</div>';
-            try {
-                const res = await fetch(`${url}?v=${Date.now()}`);
-                const data = await res.json();
-                allMovies = data.filter(m => 
-                    m.category.toLowerCase().includes('series') || 
-                    m.category.includes('ဇာတ်လမ်းတွဲ') ||
-                    m.category.toLowerCase().includes('tv')
-                );
-                renderMovies(allMovies);
-            } catch (e) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-20 text-red-500 text-[10px]">FAILED TO LOAD DATA.</div>';
-            }
-        }
+    data.forEach(m => {
+        const isRecent = (m.title === lastViewed);
+        const card = document.createElement('div');
+        card.className = `group relative bg-white dark:bg-darkCard rounded-2xl overflow-hidden transition-all active:scale-95 shadow-md border border-transparent dark:border-slate-800 ${isRecent ? 'ring-2 ring-primary' : ''}`;
+        
+        card.innerHTML = `
+            ${isRecent ? '<span class="absolute top-2 left-2 bg-primary text-black text-[7px] font-black px-1.5 py-0.5 rounded shadow-lg z-10 uppercase">Watching</span>' : ''}
+            <div class="aspect-[3/4] overflow-hidden bg-slate-800 relative">
+                <img src="${m.logo}" loading="lazy" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
+            </div>
+            <div class="p-3">
+                <h3 class="text-[11px] font-bold line-clamp-1 leading-tight mb-1 text-slate-800 dark:text-slate-100">${m.title}</h3>
+                <div class="flex items-center justify-between">
+                    <span class="text-[9px] opacity-50 font-medium">${m.year || '2026'}</span>
+                    <span class="text-[7px] font-black bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded uppercase">EPISODES</span>
+                </div>
+            </div>
+        `;
+        card.onclick = () => openDetail(m);
+        grid.appendChild(card);
+    });
+}
 
-        function renderMovies(data) {
-            grid.innerHTML = '';
-            if(data.length === 0) {
-                grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-50 text-[10px]">NO SERIES FOUND.</div>';
-                return;
-            }
-            const lastViewed = localStorage.getItem('s4itmm_last_series');
+// --- Detail SPA Logic (Updated with Player Selection) ---
+function openDetail(m) {
+    const dv = document.getElementById('detail-view');
+    document.getElementById('det-header-title').innerText = m.title;
+    document.getElementById('det-title').innerText = m.title;
+    document.getElementById('det-poster').src = m.logo;
+    document.getElementById('det-year').innerText = m.year || '2026';
+    document.getElementById('det-cat').innerText = m.category;
+    document.getElementById('det-desc').innerText = m.description || 'ဒီဇာတ်လမ်းတွဲကို အခုပဲ ကြည့်ရှုလိုက်ပါ။';
+    
+    // Player Section ကို ခေတ္တဖျောက်ထားမယ် (Episode မရွေးမချင်း)
+    document.getElementById('player-box').classList.add('hidden');
 
-            data.forEach(m => {
-                const isRecent = (m.title === lastViewed);
-                const card = document.createElement('div');
-                card.className = `group relative bg-white dark:bg-darkCard rounded-2xl overflow-hidden transition-all active:scale-95 shadow-md border border-transparent dark:border-slate-800 ${isRecent ? 'ring-2 ring-primary' : ''}`;
-                
-                card.innerHTML = `
-                    ${isRecent ? '<span class="absolute top-2 left-2 bg-primary text-black text-[7px] font-black px-1.5 py-0.5 rounded shadow-lg z-10 uppercase">Watching</span>' : ''}
-                    <div class="aspect-[3/4] overflow-hidden bg-slate-800 relative">
-                        <img src="${m.logo}" loading="lazy" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="text-[11px] font-bold line-clamp-1 leading-tight mb-1 text-slate-800 dark:text-slate-100">${m.title}</h3>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[9px] opacity-50 font-medium">${m.year || '2026'}</span>
-                            <span class="text-[7px] font-black bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded uppercase">EPISODES</span>
-                        </div>
-                    </div>
-                `;
-                card.onclick = () => openDetail(m);
-                grid.appendChild(card);
-            });
-        }
-
-        // --- Detail SPA Logic ---
-        function openDetail(m) {
-            const dv = document.getElementById('detail-view');
-            document.getElementById('det-header-title').innerText = m.title;
-            document.getElementById('det-title').innerText = m.title;
-            document.getElementById('det-poster').src = m.logo;
-            document.getElementById('det-year').innerText = m.year || '2026';
-            document.getElementById('det-cat').innerText = m.category;
-            document.getElementById('det-desc').innerText = m.description || 'No description available.';
+    // Render Episodes
+    const epBox = document.getElementById('det-episodes');
+    epBox.innerHTML = '';
+    
+    if(m.episodes && m.episodes.length > 0) {
+        m.episodes.forEach((ep, idx) => {
+            const eBtn = document.createElement('button');
+            eBtn.className = "ep-btn bg-slate-100 dark:bg-slate-800 border dark:border-slate-700 py-3 rounded-xl text-[10px] font-black transition-all active:bg-primary active:text-black shadow-sm";
+            eBtn.innerText = ep.label || `E${idx+1}`;
             
-            // Render Episodes
-            const epBox = document.getElementById('det-episodes');
-            epBox.innerHTML = '';
-            if(m.episodes && m.episodes.length > 0) {
-                m.episodes.forEach((ep, idx) => {
-                    const eBtn = document.createElement('button');
-                    eBtn.className = "ep-btn bg-slate-100 dark:bg-slate-800 border dark:border-slate-700 py-3 rounded-xl text-[10px] font-black transition-all active:bg-primary active:text-black";
-                    eBtn.innerText = ep.label || `E${idx+1}`;
-                    eBtn.onclick = () => {
-                        document.getElementById('main-player').src = ep.url;
-                        dv.scrollTo({ top: 0, behavior: 'smooth' });
-                    };
-                    epBox.appendChild(eBtn);
-                });
+            eBtn.onclick = () => {
+                // Episode နှိပ်ရင် Player ရွေးခိုင်းတဲ့ Overlay ခေါ်မယ်
+                openPlayerSelection(ep.url, m.title + " - " + (ep.label || `Episode ${idx+1}`));
+            };
+            epBox.appendChild(eBtn);
+        });
+    } else {
+        epBox.innerHTML = '<p class="col-span-full text-center py-10 opacity-40 text-[10px] font-bold uppercase tracking-widest">Episodes Coming Soon</p>';
+    }
+
+    dv.classList.remove('hidden');
+    setTimeout(() => dv.classList.add('active'), 50);
+    document.body.style.overflow = 'hidden';
+    localStorage.setItem('s4itmm_last_series', m.title);
+}
+
+function closeDetail() {
+    const dv = document.getElementById('detail-view');
+    dv.classList.remove('active');
+    document.getElementById('main-player').src = '';
+    setTimeout(() => dv.classList.add('hidden'), 400);
+    document.body.style.overflow = 'auto';
+    renderMovies(allMovies);
+}
+
+// --- Player Selection Overlay ---
+function openPlayerSelection(url, title) {
+    const items = [
+        { label: "PLAY IN-APP (BROWSER)", value: "inapp" },
+        { label: "PLAY IN MX PLAYER", value: "mx" }
+    ];
+    
+    openOverlay(`Choose Player for ${title}`, items, (choice) => {
+        if(choice === 'inapp') {
+            const pBox = document.getElementById('player-box');
+            const player = document.getElementById('main-player');
+            pBox.classList.remove('hidden');
+            player.src = url;
+            document.getElementById('detail-view').scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            const isAndroid = /android/i.test(navigator.userAgent);
+            if (isAndroid) {
+                window.location.href = `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(title)};end`;
             } else {
-                epBox.innerHTML = '<p class="col-span-full text-center py-4 opacity-40 text-[10px]">COMING SOON</p>';
+                window.open(url, '_blank');
             }
-
-            dv.classList.remove('hidden');
-            setTimeout(() => dv.classList.add('active'), 50);
-            document.body.style.overflow = 'hidden';
-            localStorage.setItem('s4itmm_last_series', m.title);
         }
+    });
+}
 
-        function closeDetail() {
-            const dv = document.getElementById('detail-view');
-            dv.classList.remove('active');
-            document.getElementById('main-player').src = '';
-            setTimeout(() => dv.classList.add('hidden'), 400);
-            document.body.style.overflow = 'auto';
-            renderMovies(allMovies); // Refresh grid to update "Watching" tag
-        }
+// --- Filter Overlays (Reusable) ---
+function openOverlay(title, items, callback) {
+    document.getElementById('overlay-title').innerText = title;
+    const list = document.getElementById('overlay-list');
+    list.innerHTML = '';
+    items.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full p-4 text-center text-xs font-black border-b dark:border-slate-800 active:bg-primary active:text-black transition-all dark:text-slate-300 uppercase tracking-tighter';
+        btn.innerText = item.label;
+        btn.onclick = () => { callback(item.value); closeOverlay(); };
+        list.appendChild(btn);
+    });
+    document.getElementById('overlay').classList.replace('hidden', 'flex');
+}
 
-        // Filter Overlays
-        function openOverlay(title, items, callback) {
-            document.getElementById('overlay-title').innerText = title;
-            const list = document.getElementById('overlay-list');
-            list.innerHTML = '';
-            items.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full p-4 text-center text-xs font-bold border-b dark:border-slate-800 active:bg-primary transition-all dark:text-slate-300';
-                btn.innerText = item.label;
-                btn.onclick = () => { callback(item.value); closeOverlay(); };
-                list.appendChild(btn);
-            });
-            document.getElementById('overlay').classList.replace('hidden', 'flex');
-        }
+function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
 
-        function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
+// --- Listeners ---
+document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
+document.getElementById('gen-btn').onclick = () => {
+    const genres = [...new Set(allMovies.map(m => m.category))];
+    const items = [{label: "ALL SERIES", value: "all"}, ...genres.map(g => ({label: g.toUpperCase(), value: g}))];
+    openOverlay("Browse Genre", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
+};
+document.getElementById('yr-btn').onclick = () => {
+    const years = [...new Set(allMovies.map(m => m.year))].filter(y => y).sort((a,b)=>b-a);
+    const items = [{label: "ANY YEAR", value: "all"}, ...years.map(y => ({label: y, value: y}))];
+    openOverlay("Release Year", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
+};
 
-        document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
-        document.getElementById('gen-btn').onclick = () => {
-            const genres = [...new Set(allMovies.map(m => m.category))];
-            const items = [{label: "ALL SERIES", value: "all"}, ...genres.map(g => ({label: g.toUpperCase(), value: g}))];
-            openOverlay("Browse Genre", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
-        };
-        document.getElementById('yr-btn').onclick = () => {
-            const years = [...new Set(allMovies.map(m => m.year))].filter(y => y).sort((a,b)=>b-a);
-            const items = [{label: "ANY YEAR", value: "all"}, ...years.map(y => ({label: y, value: y}))];
-            openOverlay("Release Year", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
-        };
+document.getElementById('search-bar').oninput = (e) => {
+    const term = e.target.value.toLowerCase();
+    renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(term)));
+};
 
-        document.getElementById('search-bar').oninput = (e) => {
-            const term = e.target.value.toLowerCase();
-            renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(term)));
-        };
-
-        window.onload = () => loadMovies(movieSources[0].value);
-    </script>
+window.onload = () => loadMovies(movieSources[0].value);
+        
+</script>
 </body>
 </html>
