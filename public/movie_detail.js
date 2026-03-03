@@ -1,106 +1,98 @@
-(function () {
-    'use strict';
+/**
+ * Fotlivemovies SPA Detail Module
+ */
 
-    // ၁။ CSS Styles များကို JS မှတစ်ဆင့် Inject လုပ်ခြင်း
-    const injectStyles = () => {
-        const style = document.createElement('style');
-        style.textContent = `
-            :root { --bg-dark: #0f172a; --card-bg: #1e293b; --primary-red: #ef4444; --accent-blue: #3b82f6; }
-            body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: #f1f5f9; }
-            
-            .player-wrapper { width: 100%; background: #000; aspect-ratio: 16/9; display: none; position: relative; border-bottom: 2px solid var(--accent-blue); }
-            .player-brand { position: absolute; top: 15px; right: 20px; z-index: 10; text-align: right; pointer-events: none; }
-            .brand-text { color: white; font-weight: 900; font-size: 18px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-            .format-badge { display: block; font-size: 10px; color: var(--accent-blue); font-weight: bold; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 4px; }
-            
-            .container { max-width: 1000px; margin: 20px auto; padding: 20px; display: grid; grid-template-columns: 300px 1fr; gap: 30px; }
-            .poster-side img { width: 100%; border-radius: 16px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
-            .movie-title { font-size: clamp(24px, 5vw, 40px); margin: 0; font-weight: 900; }
-            .description-box { background: var(--card-bg); padding: 20px; border-radius: 12px; margin: 15px 0; line-height: 1.6; }
-            
-            .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
-            .btn { padding: 14px 24px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; color: white; transition: 0.3s; }
-            .play-now { background: var(--accent-blue); }
-            .mx-play { background: var(--primary-red); }
-            .btn:active { transform: scale(0.95); }
+function showMovieDetails(movie) {
+    const container = document.getElementById('detail-view-container');
+    
+    // UI ဆောက်ခြင်း
+    container.innerHTML = `
+        <button onclick="closeDetails()" class="fixed top-5 left-5 z-[110] bg-black/50 backdrop-blur-md w-10 h-10 rounded-full text-white border border-white/10">
+            <i class="fas fa-arrow-left"></i>
+        </button>
 
-            @media (max-width: 768px) { .container { grid-template-columns: 1fr; text-align: center; } .poster-side img { max-width: 220px; margin: 0 auto; } .btn-group { justify-content: center; } }
-        `;
-        document.head.appendChild(style);
-    };
-
-    // ၂။ UI တစ်ခုလုံးကို ဆွဲထုတ်ခြင်း (Render)
-    const renderUI = (movie) => {
-        document.body.innerHTML = `
-            <a href="index.html" style="position:absolute; top:20px; left:20px; color:white; background:rgba(0,0,0,0.5); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:100; text-decoration:none;">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-
-            <div id="playerSection" class="player-wrapper">
-                <div class="player-brand">
-                    <span class="brand-text">Fotlivemovies</span>
-                    <span class="format-badge">All Formats Supported</span>
-                </div>
-                <div id="player-container" style="width:100%; height:100%;"></div>
+        <div id="playerSection" class="w-full bg-black aspect-video relative hidden border-b-2 border-primary">
+            <div class="absolute top-4 right-4 text-right z-10 pointer-events-none">
+                <span class="text-primary font-black text-lg tracking-tighter shadow-lg">FOTMOV</span>
+                <span class="block text-[8px] bg-blue-600/80 text-white px-1.5 py-0.5 rounded uppercase font-bold">All Format Support</span>
             </div>
+            <div id="video-box" class="w-full h-full"></div>
+        </div>
 
-            <div class="container">
-                <div class="poster-side">
-                    <img src="${movie.logo || ''}" alt="Poster">
+        <div class="p-5 max-w-4xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-6 items-center md:items-start">
+                <div class="w-40 flex-shrink-0">
+                    <img src="${movie.logo}" class="w-full rounded-2xl shadow-2xl border border-white/10">
                 </div>
-                <div class="info-side">
-                    <h1 class="movie-title">${movie.title}</h1>
-                    <div style="color:#94a3b8; margin: 10px 0;">${movie.year || '2026'} | ${movie.category || 'Movie'}</div>
-                    
-                    <div class="description-box">
-                        <strong>ဇာတ်လမ်းအညွှန်း</strong><br><br>
-                        ${movie.description || 'ဒီဇာတ်ကားကို Fotlivemovies မှာ အခုပဲ ကြည့်ရှုလိုက်ပါ။'}
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-2xl font-black text-white leading-tight">${movie.title}</h1>
+                    <div class="flex items-center justify-center md:justify-start gap-3 mt-2 text-primary font-bold text-xs uppercase tracking-widest">
+                        <span>${movie.year || '2026'}</span>
+                        <span class="w-1 h-1 bg-slate-600 rounded-full"></span>
+                        <span>${movie.category}</span>
                     </div>
 
-                    <div class="btn-group">
-                        <button data-action="activate-player" class="btn play-now"><i class="fas fa-play-circle"></i> In-App Player</button>
-                        <button data-action="open-mx" class="btn mx-play"><i class="fas fa-external-link-alt"></i> MX Player</button>
+                    <div class="bg-darkCard/50 border border-slate-800 p-4 rounded-2xl mt-5 text-slate-300 text-sm leading-relaxed text-left">
+                        <strong class="text-white block mb-2 font-bold">ဇာတ်လမ်းအညွှန်း</strong>
+                        ${movie.description || 'ဒီဇာတ်ကားကို Fotlivemovies မှာ အခုပဲ ကြည့်ရှုလိုက်ပါ။ အရည်အသွေးအကြည်ဖြင့် အခမဲ့ တင်ဆက်ထားပါသည်။'}
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-6">
+                        <button onclick="playInApp('${movie.url}')" class="bg-blue-600 hover:bg-blue-700 p-4 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all active:scale-95 text-white">
+                            <i class="fas fa-play-circle text-lg"></i> IN-APP PLAYER
+                        </button>
+                        <button onclick="playMX('${movie.url}', '${movie.title}')" class="bg-red-600 hover:bg-red-700 p-4 rounded-2xl font-black text-xs flex items-center justify-center gap-2 transition-all active:scale-95 text-white">
+                            <i class="fas fa-external-link-alt text-lg"></i> MX PLAYER
+                        </button>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-primary/10 rounded-xl border-l-4 border-primary text-[11px] text-slate-400">
+                        <i class="fas fa-info-circle text-primary mr-1"></i>
+                        Browser မှာတင်ကြည့်ရန် <b>In-App</b> ကိုနှိပ်ပါ။ ပိုမိုမြန်ဆန်သွက်လက်စေရန် Android ဖုန်းများတွင် <b>MX Player</b> ကိုသုံးပါ။
                     </div>
                 </div>
             </div>
-        `;
-    };
+        </div>
+    `;
 
-    // ၃။ Logic နှင့် Event Handling
-    const init = () => {
-        const stored = localStorage.getItem('selectedMovie');
-        if (!stored) return;
-        const movie = JSON.parse(stored);
+    // Show with animation
+    container.classList.remove('hidden');
+    setTimeout(() => container.classList.add('active'), 10);
+    document.body.style.overflow = 'hidden'; // Scroll disable
+}
 
-        injectStyles();
-        renderUI(movie);
+function closeDetails() {
+    const container = document.getElementById('detail-view-container');
+    container.classList.remove('active');
+    setTimeout(() => {
+        container.classList.add('hidden');
+        container.innerHTML = ''; // Reset memory
+    }, 300);
+    document.body.style.overflow = 'auto'; // Scroll enable
+}
 
-        [span_2](start_span)// Event Delegation[span_2](end_span)
-        document.addEventListener('click', (e) => {
-            const action = e.target.closest('[data-action]')?.dataset.action;
-            
-            if (action === 'activate-player') {
-                const container = document.getElementById('player-container');
-                container.innerHTML = `<video controls playsinline autoplay style="width:100%; height:100%;"><source src="${movie.url}" type="video/mp4"></video>`;
-                document.getElementById('playerSection').style.display = 'block';
-                [span_3](start_span)window.scrollTo({ top: 0, behavior: 'smooth' });[span_3](end_span)
-            }
+function playInApp(url) {
+    const playerSection = document.getElementById('playerSection');
+    const videoBox = document.getElementById('video-box');
+    
+    playerSection.classList.remove('hidden');
+    videoBox.innerHTML = `
+        <video id="main-video" controls playsinline autoplay class="w-full h-full object-contain">
+            <source src="${url}" type="video/mp4">
+            Your browser does not support video.
+        </video>
+    `;
+    
+    // Smooth scroll to top
+    document.getElementById('detail-view-container').scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-            if (action === 'open-mx') {
-                const isAndroid = /android/i.test(navigator.userAgent);
-                if (isAndroid) {
-                    window.location.href = `intent:${movie.url}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(movie.title)};end`;
-                } else {
-                    window.open(movie.url, '_blank');
-                }
-            }
-        });
-    };
-
-    [span_4](start_span)// DOM Ready ဖြစ်တာနဲ့ Run မည်[span_4](end_span)
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+function playMX(url, title) {
+    const isAndroid = /android/i.test(navigator.userAgent);
+    if (isAndroid) {
+        const intent = `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(title)};end`;
+        window.location.href = intent;
     } else {
-        init();
+        window.open(url, '_blank');
     }
-})();
+}
