@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV MOBILE</title>
+    <title>FOTMOV MOBILE - ULTIMATE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -18,17 +18,25 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-        .ad-color-run { padding: 3px; border-radius: 20px; background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); background-size: 600% 600%; animation: colorRun 4s linear infinite; }
-        @keyframes colorRun { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
-        .movie-glow:active { box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); }
         
-        /* Detail Page Transitions */
-        #detail-view-container { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
+        /* Color Run Border */
+        .ad-color-run {
+            padding: 3px; border-radius: 20px;
+            background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+            background-size: 600% 600%; animation: colorRun 4s linear infinite;
+        }
+        @keyframes colorRun { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
+        
+        /* Detail Page Animation */
+        #detail-view-container {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
+        }
         #detail-view-container.active { transform: translateX(0); }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
-    
+
     <div id="main-ui">
         <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
             <button id="menu-btn" class="text-primary text-2xl focus:outline-none w-10 text-left">
@@ -36,7 +44,7 @@
             </button>
             <div class="flex flex-col items-center">
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile</span>
+                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase text-white">Mobile</span>
             </div>
             <div class="w-10 text-right">
                 <button id="theme-toggle" class="text-xl text-slate-600 dark:text-primary focus:outline-none">
@@ -48,28 +56,28 @@
 
         <main class="mt-20 p-4">
             <div class="grid grid-cols-2 gap-3 text-[11px] mb-6">
-                <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
                     <span class="opacity-50 uppercase font-black text-[9px]">Device ID</span>
-                    <div id="u-id" class="text-blue-500 font-mono mt-1">...</div>
+                    <span id="u-id" class="text-blue-500 font-mono mt-1">GUEST-USER</span>
                 </div>
-                <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
                     <span class="opacity-50 uppercase font-black text-[9px]">Plan Status</span>
-                    <div id="u-exp" class="text-primary font-bold mt-1">...</div>
+                    <span id="u-exp" class="text-primary font-bold mt-1">ACTIVE</span>
                 </div>
             </div>
 
             <div class="mb-6">
-                <a href="#"><div class="ad-color-run shadow-lg"><img src="https://fotlivemovies.vercel.app/ad_banner.gif" class="w-full h-auto rounded-[17px]"></div></a>
+                <a href="#"><div class="ad-color-run"><img src="https://fotlivemovies.vercel.app/ad_banner.gif" class="w-full h-auto rounded-[17px] block"></div></a>
             </div>
 
             <div class="mb-4">
-                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm" placeholder="Search movies...">
+                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="Type movie name to search...">
             </div>
 
             <div class="grid grid-cols-3 gap-2 mb-6">
-                <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Source</button>
-                <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Genre</button>
-                <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Year</button>
+                <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary">Source</button>
+                <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary">Genre</button>
+                <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary">Year</button>
             </div>
 
             <div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
@@ -89,13 +97,82 @@
 
     <script src="movie_detail.js"></script>
     <script>
-        // ... (သင်၏ မူလ index script များ - loadMovies, renderMovies စသည်တို့)
-        // သတိပြုရန်- renderMovies ထဲမှ card.onclick ကို အောက်ပါအတိုင်း ပြောင်းပါ-
-        /*
-        card.onclick = () => {
-            showMovieDetails(m); // movie_detail.js ထဲက function ကို ခေါ်မယ်
+        const movieSources = [
+            { label: "Server 1 (Fast)", value: "zetflix.json" },
+            { label: "Server 2 (Backup)", value: "movies.json" }
+        ];
+
+        let allMovies = [];
+
+        // Theme Switcher
+        document.getElementById('theme-toggle').onclick = () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
         };
-        */
+
+        async function loadMovies(url) {
+            const grid = document.getElementById('movie-grid');
+            grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-30 text-xs font-black">LOADING MOVIES...</div>';
+            try {
+                const res = await fetch(url);
+                allMovies = await res.json();
+                renderMovies(allMovies);
+            } catch (e) { console.error("Load error:", e); }
+        }
+
+        function renderMovies(data) {
+            const grid = document.getElementById('movie-grid');
+            grid.innerHTML = '';
+            data.forEach(m => {
+                const card = document.createElement('div');
+                card.className = "group bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all";
+                card.innerHTML = `
+                    <div class="aspect-[3/4] overflow-hidden bg-slate-800"><img src="${m.logo}" loading="lazy" class="w-full h-full object-cover"></div>
+                    <div class="p-3">
+                        <h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3>
+                        <div class="flex items-center justify-between mt-1 opacity-50 text-[8px] font-black uppercase">
+                            <span>${m.year || '2024'}</span>
+                            <span class="bg-slate-800 px-1 rounded">${m.category}</span>
+                        </div>
+                    </div>
+                `;
+                card.onclick = () => showMovieDetails(m); // movie_detail.js ထဲက function ကိုခေါ်ခြင်း
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Logic
+        document.getElementById('search-bar').oninput = (e) => {
+            const term = e.target.value.toLowerCase();
+            renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(term)));
+        };
+
+        // Modal Logic
+        function openOverlay(title, items, callback) {
+            document.getElementById('overlay-title').innerText = title;
+            const list = document.getElementById('overlay-list');
+            list.innerHTML = '';
+            items.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 text-center text-xs font-bold border-b border-slate-800 active:bg-primary active:text-black';
+                btn.innerText = item.label;
+                btn.onclick = () => { callback(item.value); closeOverlay(); };
+                list.appendChild(btn);
+            });
+            document.getElementById('overlay').classList.replace('hidden', 'flex');
+        }
+        function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
+
+        document.getElementById('src-btn').onclick = () => openOverlay("Servers", movieSources, (val) => loadMovies(val));
+        document.getElementById('gen-btn').onclick = () => {
+            const genres = [...new Set(allMovies.map(m => m.category))];
+            openOverlay("Genres", genres.map(g => ({label: g.toUpperCase(), value: g})), (v) => renderMovies(allMovies.filter(m => m.category === v)));
+        };
+
+        window.onload = () => {
+            if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
+            loadMovies(movieSources[0].value);
+        };
     </script>
 </body>
 </html>
