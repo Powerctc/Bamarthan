@@ -14,30 +14,33 @@
         }
     </script>
     <style>
-        /* မင်းရဲ့ sidebar logic နဲ့ မငြိအောင် scroll ပိတ်တဲ့ style */
-        body.modal-open { overflow: hidden; }
-        #detail-view-container { 
-            transition: transform 0.4s ease; 
-            transform: translateX(100%); 
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Detail Page Animation */
+        #detail-view-container {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(100%);
         }
         #detail-view-container.active { transform: translateX(0); }
     </style>
 </head>
-<body class="bg-darkBg text-slate-100 transition-colors duration-300 overflow-x-hidden">
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-    <div id="sidebar-container"></div> 
+    <div id="sidebar-container"></div>
 
     <div id="main-ui">
-        <header class="fixed top-0 w-full z-40 bg-darkBg/80 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex justify-between items-center">
-            <button id="menu-btn" class="text-primary text-2xl w-10 text-left">
+        <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
+            <button id="menu-btn" class="text-primary text-2xl focus:outline-none w-10 text-left">
                 <i class="fas fa-bars-staggered"></i>
             </button>
             <div class="flex flex-col items-center">
-                <span class="text-primary font-black text-xl tracking-tighter">FOTMOV</span>
+                <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
                 <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile</span>
             </div>
             <div class="w-10 text-right">
-                <button id="theme-toggle" class="text-xl text-primary"><i class="fas fa-sun"></i></button>
+                <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
             </div>
         </header>
 
@@ -48,28 +51,43 @@
 
     <div id="detail-view-container" class="fixed inset-0 z-[100] bg-darkBg overflow-y-auto hidden"></div>
 
-    <script src="sidebar.js"></script> <script src="movie_detail.js"></script> <script>
-        // မင်းရဲ့ sidebar.js ထဲမှာ menu-btn ကို နှိပ်ရင် sidebar ပွင့်တဲ့ logic ပါရပါမယ်။
-        
-        // Movie Grid Render လုပ်တဲ့အခါ card.onclick ကို ဒီလိုသုံးပါ
+    <script src="sidebar.js"></script>
+    <script src="movie_detail.js"></script>
+
+    <script>
+        // Movie List Rendering Logic
+        const movieSources = "zetflix.json"; 
+
+        async function loadMovies() {
+            try {
+                const res = await fetch(movieSources);
+                const movies = await res.json();
+                renderMovies(movies);
+            } catch (e) { console.error("Error loading movies"); }
+        }
+
         function renderMovies(data) {
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '';
             data.forEach(m => {
                 const card = document.createElement('div');
-                card.className = "bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all";
-                card.innerHTML = `<img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
-                                  <div class="p-3"><h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3></div>`;
-                
-                // ဒီနေရာမှာ Detail ကို လှမ်းခေါ်မယ်
-                card.onclick = () => {
-                    if(typeof showMovieDetails === "function") {
-                        showMovieDetails(m); 
-                    }
-                };
+                card.className = "bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all cursor-pointer";
+                card.innerHTML = `
+                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
+                    <div class="p-3">
+                        <h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3>
+                    </div>
+                `;
+                // ရုပ်ရှင်နှိပ်လိုက်ရင် movie_detail.js ထဲက function ကိုခေါ်မယ်
+                card.onclick = () => showMovieDetails(m); 
                 grid.appendChild(card);
             });
         }
+
+        document.getElementById('theme-toggle').onclick = () => document.documentElement.classList.toggle('dark');
+
+        window.onload = loadMovies;
     </script>
 </body>
-</html>
+    </html>
+    
