@@ -17,12 +17,7 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        /* Detail Page Animation */
-        #detail-view-container {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(100%);
-        }
+        #detail-view-container { transition: transform 0.4s ease; transform: translateX(100%); }
         #detail-view-container.active { transform: translateX(0); }
     </style>
 </head>
@@ -32,9 +27,7 @@
 
     <div id="main-ui">
         <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-            <button id="menu-btn" class="text-primary text-2xl focus:outline-none w-10 text-left">
-                <i class="fas fa-bars-staggered"></i>
-            </button>
+            <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
             <div class="flex flex-col items-center">
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
                 <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile</span>
@@ -45,25 +38,47 @@
         </header>
 
         <main class="mt-20 p-4">
+            <div class="mb-4">
+                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="Search movies...">
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mb-6">
+                <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Source</button>
+                <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Genre</button>
+                <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Year</button>
+            </div>
+
             <div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
         </main>
     </div>
 
     <div id="detail-view-container" class="fixed inset-0 z-[100] bg-darkBg overflow-y-auto hidden"></div>
 
+    <div id="overlay" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-800">
+            <div id="overlay-title" class="p-4 text-center font-black text-primary border-b border-slate-800 uppercase text-xs">Select</div>
+            <div id="overlay-list" class="max-h-[50vh] overflow-y-auto"></div>
+            <button onclick="closeOverlay()" class="w-full p-4 text-xs font-black opacity-40 uppercase">Cancel</button>
+        </div>
+    </div>
+
     <script src="sidebar.js"></script>
     <script src="movie_detail.js"></script>
 
     <script>
-        // Movie List Rendering Logic
-        const movieSources = "zetflix.json"; 
+        const movieSources = [
+            { label: "Server 1 (Fast)", value: "zetflix.json" },
+            { label: "Server 2 (Backup)", value: "movies.json" }
+        ];
+        let allMovies = [];
 
-        async function loadMovies() {
+        // Load Movies
+        async function loadMovies(url) {
             try {
-                const res = await fetch(movieSources);
-                const movies = await res.json();
-                renderMovies(movies);
-            } catch (e) { console.error("Error loading movies"); }
+                const res = await fetch(url);
+                allMovies = await res.json();
+                renderMovies(allMovies);
+            } catch (e) { console.error("Fetch Error"); }
         }
 
         function renderMovies(data) {
@@ -71,22 +86,53 @@
             grid.innerHTML = '';
             data.forEach(m => {
                 const card = document.createElement('div');
-                card.className = "bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all cursor-pointer";
-                card.innerHTML = `
-                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
-                    <div class="p-3">
-                        <h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3>
-                    </div>
-                `;
-                // ရုပ်ရှင်နှိပ်လိုက်ရင် movie_detail.js ထဲက function ကိုခေါ်မယ်
-                card.onclick = () => showMovieDetails(m); 
+                card.className = "bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all";
+                card.innerHTML = `<img src="${m.logo}" class="w-full aspect-[3/4] object-cover"><div class="p-3"><h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3></div>`;
+                card.onclick = () => showMovieDetails(m);
                 grid.appendChild(card);
             });
         }
 
+        // Overlay Logic (Source, Genre, Year အတွက်)
+        function openOverlay(title, items, callback) {
+            document.getElementById('overlay-title').innerText = title;
+            const list = document.getElementById('overlay-list');
+            list.innerHTML = '';
+            items.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 text-center text-xs font-bold border-b border-slate-800 active:bg-primary active:text-black transition-all';
+                btn.innerText = item.label;
+                btn.onclick = () => { callback(item.value); closeOverlay(); };
+                list.appendChild(btn);
+            });
+            document.getElementById('overlay').classList.replace('hidden', 'flex');
+        }
+
+        function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
+
+        // Button Click Events
+        document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
+        
+        document.getElementById('gen-btn').onclick = () => {
+            const genres = [...new Set(allMovies.map(m => m.category))];
+            const items = [{label: "ALL CATEGORIES", value: "all"}, ...genres.map(g => ({label: g.toUpperCase(), value: g}))];
+            openOverlay("Browse Genre", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
+        };
+
+        document.getElementById('yr-btn').onclick = () => {
+            const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
+            const items = [{label: "ANY YEAR", value: "all"}, ...years.map(y => ({label: y, value: y}))];
+            openOverlay("Release Year", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
+        };
+
+        document.getElementById('search-bar').oninput = (e) => {
+            const term = e.target.value.toLowerCase();
+            renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(term)));
+        };
+
         document.getElementById('theme-toggle').onclick = () => document.documentElement.classList.toggle('dark');
 
-        window.onload = loadMovies;
+        window.onload = () => loadMovies(movieSources[0].value);
     </script>
 </body>
     </html>
