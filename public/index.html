@@ -27,6 +27,7 @@
         
         .action-btn { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
         .action-btn.active { background: #facc15 !important; color: #000 !important; border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); }
+        .fav-active { color: #facc15 !important; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -40,7 +41,8 @@
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
                 <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase text-center">Exo Engine</span>
             </div>
-            <div class="w-10 text-right">
+            <div class="flex gap-4 w-10 justify-end">
+                <button id="fav-list-btn" class="text-xl text-slate-400"><i class="fas fa-heart"></i></button>
                 <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
             </div>
         </header>
@@ -70,8 +72,6 @@
         </div>
     </div>
 
-    <script src="sidebar.js"></script>
-
     <script>
         const sources = [
             { label: "Series Default", value: "series.json" },
@@ -79,6 +79,7 @@
             { label: "Movies Server", value: "movies.json" }
         ];
         let allMovies = [];
+        let favorites = JSON.parse(localStorage.getItem('fotmov_favs')) || [];
         let currentLink = "";
 
         async function loadData(url) {
@@ -91,14 +92,21 @@
 
         function renderItems(data) {
             const grid = document.getElementById('movie-grid');
-            grid.innerHTML = data.map((m, i) => `
-                <div onclick="showDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
+            if(data.length === 0) {
+                grid.innerHTML = `<div class="col-span-2 py-10 text-center opacity-50 text-xs font-bold uppercase tracking-widest">No Items Found</div>`;
+                return;
+            }
+            grid.innerHTML = data.map((m, i) => {
+                // Find index in allMovies for showDetails
+                const originalIndex = allMovies.findIndex(am => am.title === m.title);
+                return `
+                <div onclick="showDetails(${originalIndex})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
                     <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
                     <div class="p-3">
                         <h3 class="text-[10px] font-bold line-clamp-1 uppercase text-center">${m.title}</h3>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         function showDetails(index) {
@@ -107,8 +115,9 @@
             const isSeries = item.episodes && item.episodes.length > 0;
             const links = isSeries ? item.episodes : (item.urls || [{title: "SD", url: item.url}]);
             
-            // Default link set
             currentLink = isSeries ? links[0].url : (item.urls ? item.urls[0] : (item.url || ""));
+            
+            const isFav = favorites.some(f => f.title === item.title);
 
             container.innerHTML = `
                 <div class="relative w-full aspect-video bg-black shadow-2xl">
@@ -117,6 +126,9 @@
                     </video>
                     <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all">
                         <i class="fas fa-arrow-left text-white"></i>
+                    </button>
+                    <button onclick="toggleFavorite(${index}, this)" class="absolute top-4 right-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all">
+                        <i class="fas fa-heart ${isFav ? 'text-yellow-400' : 'text-white'}"></i>
                     </button>
                 </div>
 
@@ -138,16 +150,49 @@
                         </div>
                     </div>
 
-                    <div class="mt-8">
+                    <div class="mt-8 text-center">
                         <button onclick="playExternal()" class="w-full bg-slate-800 border border-white/10 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4 active:scale-95 transition-all shadow-lg group">
                             <i class="fas fa-play text-primary"></i> 
                             <span class="text-xs uppercase tracking-widest">Open in Just Player</span>
                         </button>
+                        
+                        <div class="mt-4 px-4">
+                            <p class="text-[11px] text-primary font-bold mb-1">ပိုမိုကောင်းမွန်တဲ့ရုပ်သံနှင့်ကြည့်ရန်</p>
+                            <p class="text-[10px] opacity-60 mb-3">Open with Just Player ကိုနှိပ်ပါ</p>
+                            <a href="https://play.google.com/store/apps/details?id=com.brouken.player" class="text-[10px] bg-white/5 border border-white/10 px-4 py-2 rounded-full inline-block font-bold">
+                                Player မရှိသေးရင် install လုပ်လိုက်ပါ <i class="fas fa-download ml-1 text-primary"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             `;
             container.classList.add('active');
         }
+
+        // Save Functionality
+        function toggleFavorite(index, btn) {
+            const item = allMovies[index];
+            const icon = btn.querySelector('i');
+            const favIndex = favorites.findIndex(f => f.title === item.title);
+
+            if (favIndex === -1) {
+                favorites.push(item);
+                icon.classList.replace('text-white', 'text-yellow-400');
+            } else {
+                favorites.splice(favIndex, 1);
+                icon.classList.replace('text-yellow-400', 'text-white');
+            }
+            localStorage.setItem('fotmov_favs', JSON.stringify(favorites));
+        }
+
+        document.getElementById('fav-list-btn').onclick = function() {
+            this.classList.toggle('fav-active');
+            if(this.classList.contains('fav-active')) {
+                renderItems(favorites);
+            } else {
+                renderItems(allMovies);
+            }
+        };
 
         function switchSource(url, btn) {
             const video = document.getElementById('main-player');
@@ -160,7 +205,6 @@
         }
 
         function playExternal() {
-            // Just Player (com.brouken.player) package သုံးထားပါတယ်
             if (currentLink) window.location.href = `intent:${currentLink}#Intent;package=com.brouken.player;type=video/*;end`;
         }
 
@@ -170,12 +214,10 @@
             document.getElementById('detail-view-container').classList.remove('active');
         }
 
-        // --- Corrected Overlay Logic ---
         function openOverlay(title, items, callback) {
             document.getElementById('overlay-title').innerText = title;
             const list = document.getElementById('overlay-list');
-            list.innerHTML = ''; // Clear previous items
-
+            list.innerHTML = '';
             items.forEach(item => {
                 const btn = document.createElement('button');
                 btn.className = 'w-full p-5 text-center text-[11px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all';
@@ -191,7 +233,6 @@
 
         function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
 
-        // --- Filter Buttons ---
         document.getElementById('src-btn').onclick = () => openOverlay("Sources", sources, (v) => loadData(v));
         
         document.getElementById('gen-btn').onclick = () => {
