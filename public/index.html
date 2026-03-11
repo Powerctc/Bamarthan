@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV MOBILE - MULTI QUALITY</title>
+    <title>FOTMOV MOBILE - PRO QUALITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -18,7 +18,6 @@
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
         
-        /* Detail View Animation */
         #detail-view-container { 
             position: fixed; inset: 0; z-index: 100; background: #0f172a; 
             transform: translateX(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -26,6 +25,10 @@
         }
         #detail-view-container.active { transform: translateX(0); visibility: visible; }
         .aspect-video { aspect-ratio: 16 / 9; }
+
+        /* Quality Button Styles */
+        .q-btn { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .q-btn.active { background: #facc15 !important; color: #000 !important; border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); transform: scale(1.05); }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -77,6 +80,7 @@
             { label: "Server 2", value: "movies.json" }
         ];
         let allMovies = [];
+        let currentSelectedLink = ""; // လက်ရှိရွေးထားတဲ့ Link ကိုသိမ်းထားရန်
 
         async function loadMovies(url) {
             try {
@@ -89,87 +93,94 @@
         function renderMovies(data) {
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = data.map((m, i) => `
-                <div onclick="showMovieDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all">
+                <div onclick="showMovieDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
                     <img src="${m.logo}" class="w-full aspect-[3/4] object-cover" loading="lazy">
                     <div class="p-3">
-                        <h3 class="text-[10px] font-bold line-clamp-1 uppercase">${m.title}</h3>
+                        <h3 class="text-[10px] font-bold line-clamp-1 uppercase text-center">${m.title}</h3>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- Detail Page with SD/HD/FHD Logic ---
         function showMovieDetails(index) {
             const movie = allMovies[index];
             const container = document.getElementById('detail-view-container');
-            
-            // Quality Links extract (handle both single url or array)
             const links = movie.urls || [movie.url];
             
+            // Default ပထမဆုံး link ကို ရွေးထားမယ်
+            currentSelectedLink = links[0];
+
             container.innerHTML = `
-                <div class="relative w-full aspect-video bg-black">
+                <div class="relative w-full aspect-video bg-black shadow-2xl">
                     <video id="main-player" controls class="w-full h-full" poster="${movie.logo}">
-                        <source id="player-src" src="${links[0]}" type="video/mp4">
+                        <source src="${currentSelectedLink}" type="video/mp4">
                     </video>
-                    <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/40 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md">
-                        <i class="fas fa-chevron-left text-white"></i>
+                    <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all">
+                        <i class="fas fa-arrow-left text-white"></i>
                     </button>
                 </div>
 
                 <div class="p-6">
-                    <h2 class="text-2xl font-black text-primary uppercase leading-tight">${movie.title}</h2>
-                    <p class="text-[10px] opacity-50 mt-1 font-bold">${movie.year} • ${movie.category}</p>
+                    <h2 class="text-2xl font-black text-primary uppercase leading-tight tracking-tighter">${movie.title}</h2>
+                    <div class="flex items-center gap-3 mt-2 mb-8">
+                        <span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md border border-white/5 opacity-60">${movie.year}</span>
+                        <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md border border-primary/20 uppercase tracking-widest">${movie.category}</span>
+                    </div>
                     
-                    <div class="mt-8">
-                        <p class="text-[10px] font-black opacity-40 uppercase mb-3 tracking-widest">Select Quality</p>
-                        <div class="flex flex-wrap gap-2">
+                    <div class="mt-4">
+                        <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-[0.2em]">Select Resolution</p>
+                        <div class="flex gap-2">
                             ${links.map((link, idx) => {
                                 let label = (idx === 0) ? "SD" : (idx === 1) ? "HD" : "FHD";
-                                return `<button onclick="switchQuality('${link}', this)" class="q-btn flex-1 bg-slate-800 text-[10px] font-black py-3 rounded-xl border border-white/5 active:bg-primary active:text-black transition-all ${idx === 0 ? 'bg-primary text-black' : ''}">${label}</button>`;
+                                return `<button onclick="switchQuality('${link}', this)" class="q-btn flex-1 text-[11px] font-black py-4 rounded-2xl ${idx === 0 ? 'active' : ''}">${label}</button>`;
                             }).join('')}
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <button onclick="playExternal()" id="ext-btn" data-url="${links[0]}" class="w-full bg-white/5 border border-white/10 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-all text-xs">
-                            <i class="fas fa-share-square text-primary"></i> EXTERNAL PLAYER
+                    <div class="mt-8">
+                        <button onclick="playExternal()" class="w-full bg-slate-800 border border-white/10 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4 active:scale-95 transition-all shadow-lg group">
+                            <i class="fas fa-play text-primary group-active:text-black"></i> 
+                            <span class="text-xs uppercase tracking-widest">External Leone Player</span>
                         </button>
+                        <p class="text-[7px] text-center opacity-30 mt-4 uppercase font-bold tracking-[0.3em]">Enjoy high quality with com.genuine.leone</p>
                     </div>
                 </div>
             `;
 
             container.classList.add('active');
 
-            // Auto Retry logic
+            // Auto Retry
             const video = document.getElementById('main-player');
             video.onerror = () => {
                 if (links[1] && video.src !== links[1]) {
-                    video.src = links[1];
-                    video.load(); video.play();
+                    switchQuality(links[1], document.querySelectorAll('.q-btn')[1]);
                 }
             };
         }
 
         function switchQuality(url, btn) {
             const video = document.getElementById('main-player');
-            const extBtn = document.getElementById('ext-btn');
             const currentTime = video.currentTime;
             
-            // UI Update
-            document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('bg-primary', 'text-black'));
-            btn.classList.add('bg-primary', 'text-black');
+            // Save link to global variable for External Player use
+            currentSelectedLink = url;
             
-            // Player Update
+            // Update Button Styles
+            document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Switch Video Stream
             video.src = url;
-            extBtn.setAttribute('data-url', url);
             video.load();
             video.currentTime = currentTime;
-            video.play();
+            video.play().catch(e => console.log("Play interrupted"));
         }
 
         function playExternal() {
-            const url = document.getElementById('ext-btn').getAttribute('data-url');
-            window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;end`;
+            // လက်ရှိရွေးထားတဲ့ Quality Link အတိုင်း Leone Player နဲ့ ဖွင့်မယ်
+            if (currentSelectedLink) {
+                window.location.href = `intent:${currentSelectedLink}#Intent;package=com.genuine.leone;type=video/*;end`;
+            }
         }
 
         function closeDetails() {
@@ -178,34 +189,31 @@
             document.getElementById('detail-view-container').classList.remove('active');
         }
 
-        // --- Overlay Logic ---
+        // Overlay & Filters
         function openOverlay(title, items, callback) {
             document.getElementById('overlay-title').innerText = title;
             const list = document.getElementById('overlay-list');
-            list.innerHTML = '';
-            items.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full p-4 text-center text-[10px] font-bold border-b border-slate-800 active:bg-primary active:text-black uppercase';
-                btn.innerText = item.label;
-                btn.onclick = () => { callback(item.value); closeOverlay(); };
-                list.appendChild(btn);
-            });
+            list.innerHTML = items.map(item => `
+                <button onclick="(${callback.toString()})('${item.value}'); closeOverlay();" class="w-full p-5 text-center text-[10px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all">
+                    ${item.label}
+                </button>
+            `).join('');
             document.getElementById('overlay').classList.replace('hidden', 'flex');
         }
 
         function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
 
-        // --- Listeners ---
-        document.getElementById('src-btn').onclick = () => openOverlay("Servers", movieSources, (val) => loadMovies(val));
+        // Button Clicks
+        document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
         document.getElementById('gen-btn').onclick = () => {
             const genres = [...new Set(allMovies.map(m => m.category))];
-            const items = [{label: "All", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
-            openOverlay("Genres", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
+            const items = [{label: "All Categories", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
+            openOverlay("Browse Genre", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
         };
         document.getElementById('yr-btn').onclick = () => {
             const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
             const items = [{label: "Any Year", value: "all"}, ...years.map(y => ({label: y, value: y}))];
-            openOverlay("Years", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
+            openOverlay("Release Year", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
         };
         document.getElementById('search-bar').oninput = (e) => {
             const term = e.target.value.toLowerCase();
