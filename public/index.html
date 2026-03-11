@@ -189,15 +189,26 @@
             document.getElementById('detail-view-container').classList.remove('active');
         }
 
-        // Overlay & Filters
+                // Overlay & Filters (ပြင်ဆင်ပြီး version)
         function openOverlay(title, items, callback) {
             document.getElementById('overlay-title').innerText = title;
             const list = document.getElementById('overlay-list');
-            list.innerHTML = items.map(item => `
-                <button onclick="(${callback.toString()})('${item.value}'); closeOverlay();" class="w-full p-5 text-center text-[10px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all">
-                    ${item.label}
-                </button>
-            `).join('');
+            list.innerHTML = ''; // အရင်ရှိတာတွေကို ရှင်းထုတ်မယ်
+
+            items.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-5 text-center text-[10px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all';
+                btn.innerText = item.label;
+                
+                // ဒီနေရာမှာ callback ကို တိုက်ရိုက် ချိတ်ပေးလိုက်တာပါ
+                btn.onclick = () => {
+                    callback(item.value);
+                    closeOverlay();
+                };
+                
+                list.appendChild(btn);
+            });
+
             document.getElementById('overlay').classList.replace('hidden', 'flex');
         }
 
