@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV SERIES PLAYER</title>
+    <title>FOTMOV HYBRID PLAYER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -25,7 +25,6 @@
         }
         #detail-view-container.active { transform: translateX(0); visibility: visible; }
         
-        /* Episode/Quality Button Styles */
         .action-btn { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
         .action-btn.active { background: #facc15 !important; color: #000 !important; border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); }
     </style>
@@ -39,7 +38,7 @@
             <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
             <div class="flex flex-col items-center">
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase text-center">Premium Series</span>
+                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Premium Hub</span>
             </div>
             <div class="w-10 text-right">
                 <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
@@ -48,37 +47,54 @@
 
         <main class="mt-20 p-4">
             <div class="mb-4">
-                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="Search movies & series...">
+                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="Search...">
             </div>
+
+            <div class="grid grid-cols-3 gap-2 mb-6">
+                <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Source</button>
+                <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Genre</button>
+                <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Year</button>
+            </div>
+
             <div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
         </main>
     </div>
 
     <div id="detail-view-container"></div>
 
+    <div id="overlay" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-800">
+            <div id="overlay-title" class="p-4 text-center font-black text-primary border-b border-slate-800 uppercase text-xs">Select</div>
+            <div id="overlay-list" class="max-h-[50vh] overflow-y-auto"></div>
+            <button onclick="closeOverlay()" class="w-full p-4 text-xs font-black opacity-40 uppercase">Cancel</button>
+        </div>
+    </div>
+
     <script src="sidebar.js"></script>
 
     <script>
+        const sources = [
+            { label: "Default Series", value: "series.json" },
+            { label: "Series Backup", value: "series-1.json" }
+        ];
         let allMovies = [];
         let currentLink = "";
 
-        async function loadMovies() {
+        async function loadData(url) {
             try {
-                // သင်အသုံးပြုမည့် JSON file path ကို ဤနေရာတွင် ပြင်ပါ
-                const res = await fetch('series.json'); 
+                const res = await fetch(url);
                 allMovies = await res.json();
-                renderMovies(allMovies);
+                renderItems(allMovies);
             } catch (e) { console.error("Error loading JSON"); }
         }
 
-        function renderMovies(data) {
+        function renderItems(data) {
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = data.map((m, i) => `
                 <div onclick="showDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
                     <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
                     <div class="p-3">
                         <h3 class="text-[10px] font-bold line-clamp-1 uppercase text-center">${m.title}</h3>
-                        <p class="text-[8px] text-center opacity-50 mt-1">${m.year} • ${m.category}</p>
                     </div>
                 </div>
             `).join('');
@@ -87,37 +103,35 @@
         function showDetails(index) {
             const item = allMovies[index];
             const container = document.getElementById('detail-view-container');
-            
-            // Series လား Movie လား ခွဲခြားခြင်း
             const isSeries = item.episodes && item.episodes.length > 0;
             const links = isSeries ? item.episodes : (item.urls || [{title: "SD", url: item.url}]);
             
-            currentLink = isSeries ? links[0].url : (item.urls ? item.urls[0] : item.url);
+            currentLink = isSeries ? links[0].url : (item.urls ? item.urls[0] : (item.url || ""));
 
             container.innerHTML = `
                 <div class="relative w-full aspect-video bg-black shadow-2xl">
                     <video id="main-player" controls class="w-full h-full" poster="${item.logo}">
                         <source src="${currentLink}" type="video/mp4">
                     </video>
-                    <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10">
+                    <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all">
                         <i class="fas fa-arrow-left text-white"></i>
                     </button>
                 </div>
 
                 <div class="p-6">
                     <h2 class="text-2xl font-black text-primary uppercase leading-tight tracking-tighter">${item.title}</h2>
-                    <div class="flex items-center gap-3 mt-2 mb-6">
-                        <span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md opacity-60">${item.year}</span>
-                        <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md border border-primary/20 uppercase">${item.category}</span>
+                    <div class="flex items-center gap-3 mt-2 mb-8">
+                        <span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md border border-white/5 opacity-60">${item.year}</span>
+                        <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md border border-primary/20 uppercase tracking-widest">${item.category}</span>
                     </div>
                     
                     <div class="mt-4">
-                        <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-[0.2em]">${isSeries ? 'Select Episode' : 'Select Quality'}</p>
+                        <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-[0.2em]">${isSeries ? 'Episodes' : 'Resolutions'}</p>
                         <div class="grid ${isSeries ? 'grid-cols-4' : 'grid-cols-3'} gap-2">
                             ${links.map((linkObj, idx) => {
                                 let label = isSeries ? (idx + 1) : (idx === 0 ? "SD" : idx === 1 ? "HD" : "FHD");
                                 let finalUrl = isSeries ? linkObj.url : (item.urls ? item.urls[idx] : item.url);
-                                return `<button onclick="switchSource('${finalUrl}', this)" class="action-btn text-[11px] font-black py-3 rounded-xl ${idx === 0 ? 'active' : ''}">${label}</button>`;
+                                return `<button onclick="switchSource('${finalUrl}', this)" class="action-btn text-[11px] font-black py-4 rounded-2xl ${idx === 0 ? 'active' : ''}">${label}</button>`;
                             }).join('')}
                         </div>
                     </div>
@@ -130,26 +144,21 @@
                     </div>
                 </div>
             `;
-
             container.classList.add('active');
         }
 
         function switchSource(url, btn) {
             const video = document.getElementById('main-player');
             currentLink = url;
-            
             document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             video.src = url;
             video.load();
             video.play();
         }
 
         function playExternal() {
-            if (currentLink) {
-                window.location.href = `intent:${currentLink}#Intent;package=com.genuine.leone;type=video/*;end`;
-            }
+            if (currentLink) window.location.href = `intent:${currentLink}#Intent;package=com.genuine.leone;type=video/*;end`;
         }
 
         function closeDetails() {
@@ -158,15 +167,39 @@
             document.getElementById('detail-view-container').classList.remove('active');
         }
 
+        // Overlay & Filters
+        function openOverlay(title, items, callback) {
+            document.getElementById('overlay-title').innerText = title;
+            const list = document.getElementById('overlay-list');
+            list.innerHTML = items.map(item => `
+                <button onclick="(${callback.toString()})('${item.value}'); closeOverlay();" class="w-full p-5 text-center text-[10px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all">
+                    ${item.label}
+                </button>
+            `).join('');
+            document.getElementById('overlay').classList.replace('hidden', 'flex');
+        }
+
+        function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
+
+        // Buttons
+        document.getElementById('src-btn').onclick = () => openOverlay("Source", sources, (v) => loadData(v));
+        document.getElementById('gen-btn').onclick = () => {
+            const genres = [...new Set(allMovies.map(m => m.category))];
+            const items = [{label: "All Categories", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
+            openOverlay("Genre", items, (v) => v === "all" ? renderItems(allMovies) : renderItems(allMovies.filter(m => m.category === v)));
+        };
+        document.getElementById('yr-btn').onclick = () => {
+            const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
+            const items = [{label: "Any Year", value: "all"}, ...years.map(y => ({label: y, value: y}))];
+            openOverlay("Year", items, (v) => v === "all" ? renderItems(allMovies) : renderItems(allMovies.filter(m => m.year == v)));
+        };
         document.getElementById('search-bar').oninput = (e) => {
             const term = e.target.value.toLowerCase();
-            renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(term)));
+            renderItems(allMovies.filter(m => m.title.toLowerCase().includes(term)));
         };
-
         document.getElementById('theme-toggle').onclick = () => document.documentElement.classList.toggle('dark');
 
-        window.onload = loadMovies;
+        window.onload = () => loadData(sources[0].value);
     </script>
 </body>
-    </html>
-    
+</html>
