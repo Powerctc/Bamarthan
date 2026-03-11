@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV MOBILE - PRO QUALITY</title>
+    <title>FOTMOV - JUST PLAYER VERSION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -24,11 +24,9 @@
             overflow-y: auto; visibility: hidden;
         }
         #detail-view-container.active { transform: translateX(0); visibility: visible; }
-        .aspect-video { aspect-ratio: 16 / 9; }
-
-        /* Quality Button Styles */
-        .q-btn { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
-        .q-btn.active { background: #facc15 !important; color: #000 !important; border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); transform: scale(1.05); }
+        
+        .action-btn { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
+        .action-btn.active { background: #facc15 !important; color: #000 !important; border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -40,7 +38,7 @@
             <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
             <div class="flex flex-col items-center">
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile</span>
+                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase text-center">Exo Engine</span>
             </div>
             <div class="w-10 text-right">
                 <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
@@ -49,7 +47,7 @@
 
         <main class="mt-20 p-4">
             <div class="mb-4">
-                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="Search movies...">
+                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white text-sm" placeholder="Search movies & series...">
             </div>
 
             <div class="grid grid-cols-3 gap-2 mb-6">
@@ -62,7 +60,7 @@
         </main>
     </div>
 
-    <div id="detail-view-container" class="fixed inset-0 z-[100] bg-darkBg overflow-y-auto"></div>
+    <div id="detail-view-container"></div>
 
     <div id="overlay" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-800">
@@ -75,26 +73,27 @@
     <script src="sidebar.js"></script>
 
     <script>
-        const movieSources = [
-            { label: "Server 1", value: "zetflix.json" },
-            { label: "Server 2", value: "movies.json" }
+        const sources = [
+            { label: "Series Default", value: "series.json" },
+            { label: "Series Backup", value: "series-1.json" },
+            { label: "Movies Server", value: "movies.json" }
         ];
         let allMovies = [];
-        let currentSelectedLink = ""; // လက်ရှိရွေးထားတဲ့ Link ကိုသိမ်းထားရန်
+        let currentLink = "";
 
-        async function loadMovies(url) {
+        async function loadData(url) {
             try {
                 const res = await fetch(url);
                 allMovies = await res.json();
-                renderMovies(allMovies);
-            } catch (e) { console.error("Fetch Error"); }
+                renderItems(allMovies);
+            } catch (e) { console.error("Error loading JSON"); }
         }
 
-        function renderMovies(data) {
+        function renderItems(data) {
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = data.map((m, i) => `
-                <div onclick="showMovieDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
-                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover" loading="lazy">
+                <div onclick="showDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
+                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
                     <div class="p-3">
                         <h3 class="text-[10px] font-bold line-clamp-1 uppercase text-center">${m.title}</h3>
                     </div>
@@ -102,18 +101,19 @@
             `).join('');
         }
 
-        function showMovieDetails(index) {
-            const movie = allMovies[index];
+        function showDetails(index) {
+            const item = allMovies[index];
             const container = document.getElementById('detail-view-container');
-            const links = movie.urls || [movie.url];
+            const isSeries = item.episodes && item.episodes.length > 0;
+            const links = isSeries ? item.episodes : (item.urls || [{title: "SD", url: item.url}]);
             
-            // Default ပထမဆုံး link ကို ရွေးထားမယ်
-            currentSelectedLink = links[0];
+            // Default link set
+            currentLink = isSeries ? links[0].url : (item.urls ? item.urls[0] : (item.url || ""));
 
             container.innerHTML = `
                 <div class="relative w-full aspect-video bg-black shadow-2xl">
-                    <video id="main-player" controls class="w-full h-full" poster="${movie.logo}">
-                        <source src="${currentSelectedLink}" type="video/mp4">
+                    <video id="main-player" controls class="w-full h-full" poster="${item.logo}">
+                        <source src="${currentLink}" type="video/mp4">
                     </video>
                     <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all">
                         <i class="fas fa-arrow-left text-white"></i>
@@ -121,66 +121,47 @@
                 </div>
 
                 <div class="p-6">
-                    <h2 class="text-2xl font-black text-primary uppercase leading-tight tracking-tighter">${movie.title}</h2>
+                    <h2 class="text-2xl font-black text-primary uppercase leading-tight tracking-tighter">${item.title}</h2>
                     <div class="flex items-center gap-3 mt-2 mb-8">
-                        <span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md border border-white/5 opacity-60">${movie.year}</span>
-                        <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md border border-primary/20 uppercase tracking-widest">${movie.category}</span>
+                        <span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md border border-white/5 opacity-60">${item.year}</span>
+                        <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md border border-primary/20 uppercase tracking-widest">${item.category}</span>
                     </div>
                     
                     <div class="mt-4">
-                        <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-[0.2em]">Select Resolution</p>
-                        <div class="flex gap-2">
-                            ${links.map((link, idx) => {
-                                let label = (idx === 0) ? "SD" : (idx === 1) ? "HD" : "FHD";
-                                return `<button onclick="switchQuality('${link}', this)" class="q-btn flex-1 text-[11px] font-black py-4 rounded-2xl ${idx === 0 ? 'active' : ''}">${label}</button>`;
+                        <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-[0.2em]">${isSeries ? 'Episodes' : 'Resolutions'}</p>
+                        <div class="grid ${isSeries ? 'grid-cols-4' : 'grid-cols-3'} gap-2">
+                            ${links.map((linkObj, idx) => {
+                                let label = isSeries ? (idx + 1) : (idx === 0 ? "SD" : idx === 1 ? "HD" : "FHD");
+                                let finalUrl = isSeries ? linkObj.url : (item.urls ? item.urls[idx] : item.url);
+                                return `<button onclick="switchSource('${finalUrl}', this)" class="action-btn text-[11px] font-black py-4 rounded-2xl ${idx === 0 ? 'active' : ''}">${label}</button>`;
                             }).join('')}
                         </div>
                     </div>
 
                     <div class="mt-8">
                         <button onclick="playExternal()" class="w-full bg-slate-800 border border-white/10 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4 active:scale-95 transition-all shadow-lg group">
-                            <i class="fas fa-play text-primary group-active:text-black"></i> 
-                            <span class="text-xs uppercase tracking-widest">External Leone Player</span>
+                            <i class="fas fa-play text-primary"></i> 
+                            <span class="text-xs uppercase tracking-widest">Open in Just Player</span>
                         </button>
-                        <p class="text-[7px] text-center opacity-30 mt-4 uppercase font-bold tracking-[0.3em]">Enjoy high quality with com.genuine.leone</p>
                     </div>
                 </div>
             `;
-
             container.classList.add('active');
-
-            // Auto Retry
-            const video = document.getElementById('main-player');
-            video.onerror = () => {
-                if (links[1] && video.src !== links[1]) {
-                    switchQuality(links[1], document.querySelectorAll('.q-btn')[1]);
-                }
-            };
         }
 
-        function switchQuality(url, btn) {
+        function switchSource(url, btn) {
             const video = document.getElementById('main-player');
-            const currentTime = video.currentTime;
-            
-            // Save link to global variable for External Player use
-            currentSelectedLink = url;
-            
-            // Update Button Styles
-            document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+            currentLink = url;
+            document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            // Switch Video Stream
             video.src = url;
             video.load();
-            video.currentTime = currentTime;
-            video.play().catch(e => console.log("Play interrupted"));
+            video.play();
         }
 
         function playExternal() {
-            // လက်ရှိရွေးထားတဲ့ Quality Link အတိုင်း Leone Player နဲ့ ဖွင့်မယ်
-            if (currentSelectedLink) {
-                window.location.href = `intent:${currentSelectedLink}#Intent;package=com.genuine.leone;type=video/*;end`;
-            }
+            // Just Player (com.brouken.player) package သုံးထားပါတယ်
+            if (currentLink) window.location.href = `intent:${currentLink}#Intent;package=com.brouken.player;type=video/*;end`;
         }
 
         function closeDetails() {
@@ -189,50 +170,54 @@
             document.getElementById('detail-view-container').classList.remove('active');
         }
 
-                // Overlay & Filters (ပြင်ဆင်ပြီး version)
+        // --- Corrected Overlay Logic ---
         function openOverlay(title, items, callback) {
             document.getElementById('overlay-title').innerText = title;
             const list = document.getElementById('overlay-list');
-            list.innerHTML = ''; // အရင်ရှိတာတွေကို ရှင်းထုတ်မယ်
+            list.innerHTML = ''; // Clear previous items
 
             items.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = 'w-full p-5 text-center text-[10px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all';
+                btn.className = 'w-full p-5 text-center text-[11px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all';
                 btn.innerText = item.label;
-                
-                // ဒီနေရာမှာ callback ကို တိုက်ရိုက် ချိတ်ပေးလိုက်တာပါ
                 btn.onclick = () => {
                     callback(item.value);
                     closeOverlay();
                 };
-                
                 list.appendChild(btn);
             });
-
             document.getElementById('overlay').classList.replace('hidden', 'flex');
         }
 
         function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
 
-        // Button Clicks
-        document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
+        // --- Filter Buttons ---
+        document.getElementById('src-btn').onclick = () => openOverlay("Sources", sources, (v) => loadData(v));
+        
         document.getElementById('gen-btn').onclick = () => {
             const genres = [...new Set(allMovies.map(m => m.category))];
-            const items = [{label: "All Categories", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
-            openOverlay("Browse Genre", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
+            const items = [{label: "All Genres", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
+            openOverlay("Genres", items, (v) => {
+                v === "all" ? renderItems(allMovies) : renderItems(allMovies.filter(m => m.category === v));
+            });
         };
+
         document.getElementById('yr-btn').onclick = () => {
             const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
             const items = [{label: "Any Year", value: "all"}, ...years.map(y => ({label: y, value: y}))];
-            openOverlay("Release Year", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
+            openOverlay("Years", items, (v) => {
+                v === "all" ? renderItems(allMovies) : renderItems(allMovies.filter(m => m.year == v));
+            });
         };
+
         document.getElementById('search-bar').oninput = (e) => {
             const term = e.target.value.toLowerCase();
-            renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(term)));
+            renderItems(allMovies.filter(m => m.title.toLowerCase().includes(term)));
         };
+
         document.getElementById('theme-toggle').onclick = () => document.documentElement.classList.toggle('dark');
 
-        window.onload = () => loadMovies(movieSources[0].value);
+        window.onload = () => loadData(sources[0].value);
     </script>
 </body>
 </html>
