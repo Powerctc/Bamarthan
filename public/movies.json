@@ -1,161 +1,1101 @@
-[
-  
-  {
-    "title": "Mahar Bhawdi",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/maharbawdi.jpg",
-    "category": "Myanmar",
-    "url": "https://ppradio.b-cdn.net/LiveApp/streams/rHEBIW7pjQLU1677679374164.m3u8"
+[ 
+    
+        {
+    "title":"The Forever Purge",
+    "year": "2021",
+    "category": "Action",
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/lB068qa6bQ0QKYKyC2xnYGvYjl7.jpg",
+    "url":"https://stream.cmreel.com/file/Relink-Movie/Athena/The%20Forever%20Purge%20%282021%29%20720p.mp4"
   },
     {
-    "title": "MRTV",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv.jpg",
-    "category": "Myanmar",
-    "url": "https://mrtvott.com/cache/MRTV-HD/master.m3u8"
-  },
-  {
-    "title":"MRTV-4",
-    "category":"Myanmar" ,
-"logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv4.jpg",
+    "title":"The Forbidden City",
+    "year": "2025",
+    "category":"Action" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2026-02-03/gWnADMIkTzzg1phq7dBgLbL3uRp.jpg",
     "urls": [
-    "https://cdn-live-pyone.secureswiftcontent.com/han/MRTV4/MRTV4/LiveOutput/hvideo-720p.m3u8",
-  "https://cdn-live-pyone.secureswiftcontent.com/han/MRTV4/MRTV4/LiveOutput/manifest.m3u8"
+    "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/008/Double%20K/BO/The.Forbidden.City.2025.720p.BluRay%20%28K2%29.mp4",
+  "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/008/Double%20K/BO/The.Forbidden.City.2025.1080p.BluRay.HEVC%20%28K2%29.mkv"
   ]
 },
-  {
-    "title": "Mahar",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mahar.jpg",
-    "category": "Myanmar",
-    "url": "https://tv.mahar.live/mahar/website.stream/playlist.m3u8"
+    {
+    "title":"The Swordsman",
+    "year": "2020",
+    "category":"Action" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/r08U3dwiOeStXcjYmfnRyumgKyq.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/NALWYM/NCL/The.Swordsman%282020%29.720p.mp4",
+  "https://stream.cmreel.com/file/NALWYM/NCL/The%20Swordsman.2020.FHDRip.1080P.mp4"
+  ]
+},
+    {
+    "title":"Ong Bak",
+    "year": "2003",
+    "category":"Kung Fu, Martial Act, Action, Crime, Thirller" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/oagqAwp48dMPoCT94yDJUDOCVPi.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Ong-Bak.The.Thai.Warrior.2003.720p.BluRay.%28CM%29.mp4",
+  "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Ong-Bak.The.Thai.Warrior.2003.1080p.BluRay.%28CM%29.mkv"
+  ]
+},
+    {
+    "title":"Fantasia",
+    "year": "1940",
+    "category":"Animation" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/5m9njnidjR0syG2gpVPVgcEMB2X.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/NALWYM/Movies/Fantasia%20%5B1940%5D%20%28MM%20Sub%29%201080p.mp4",
+  "https://stream.cmapp.tv/file/NALWYM/Movies/Fantasia%20%5B1940%5D%20%28MM%20Sub%29%201080p.mp4"
+  ]
+},
+    {
+    "title":"The Great Dictator",
+    "year": "1940",
+    "category": "Comedy/War",
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/1QpO9wo7JWecZ4NiBuu625FiY1j.jpg",
+    "url":"https://stream.cmreel.com/file/cm-earlier-june-2023-movie/2022%20Movie/05%20May%202022/The%20Great%20Dictator%20%281940%29%20Criterion%20%20720P%20%7BCM%7D.mp4"
   },
-  {
-    "title": "Mahar Esport",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/maharesport.png",
-    "category": "Myanmar",
-    "url": "https://tv.mahar.live/esports/mahar.stream/playlist.m3u8"
+    {
+    "title":"The Wizard of Oz",
+    "year": "1939",
+    "category":"Adventure/ Fantasy/ Family/ Musical" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/1ZtVMXUsiVnziV2vtvQBHHrrEBC.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/2024-step/24step-movie/step-m-001/The.Wizard.of.Oz.1939.720p.BluRay%20%7BCM%7D.mp4",
+  "https://stream.cmreel.com/file/2024-step/24step-movie/step-m-001/The.Wizard.of.Oz.1939.1080p.BluRay%20%7BCM%7D.mp4"
+  ]
+},
+    {
+    "title":"Stagecoach",
+    "year": "1939",
+    "category":"Adventure,Drama,Western" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/zgMnfnwWZ3nkx4t0bUDEKtW24O8.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/2024-step/24step-movie/step-m-009/Stagecoach.1939.720p.BluRay.%28CM%29.mp4",
+  "https://stream.cmreel.com/file/2024-step/24step-movie/step-m-009/Stagecoach.1939.1080p.BluRay.%28CM%29.mp4"
+  ]
+},
+    {
+    "title":"Gone with the Wind",
+    "year": "1939",
+    "category":"Romance / Drama" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/lNz2Ow0wGCAvzckW7EOjE03KcYv.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/008/Double%20K/Gone.With.the.Wind.1939.70th.Anniversary.Edition.720p.BluRay%20%28CM%29.mp4",
+  "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/008/Double%20K/Gone.With.the.Wind.1939.70th.Anniversary.Edition.1080p.BluRay.HEVC%20%28CM%29.mkv",
+"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/008/Double%20K/4K/Gone.With.The.Wind.1939.2160p.BluRay.HEVC%20%28CM%29.mkv"
+  ]
+},
+    {
+    "title":"Bringing Up Baby",
+    "year": "1938",
+    "category":"Comedy" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2025-06-30/vTNNOtemaYmtx3k2NpsLMRJKEwZ.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Bringing.Up.Baby.1938.720p.BluRay.%28CM%29.mp4",
+  "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Bringing.Up.Baby.1938.1080p.BluRay.%28CM%29.mp4"
+  ]
+},
+    {
+    "title":"The Lady Vanishes",
+    "year": "1938",
+    "category":"Romance / Drama" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2025-11-09/c1t9LB76LvEARPanfEzXmkm7fwY.jpg",
+    "urls": [
+    "https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/001/The.Lady.Vanishes.1938.720p.BluRay%20MPK.mp4",
+  "https://stream.cmapp.tv/file/2025-step-190425/Movie-2025-Step/001/The.Lady.Vanishes.1938.1080p.BluRay%20MPK.mp4"
+  ]
+},
+    {
+    "title":"Dersu Uzala",
+    "year": "1975",
+    "category":"Adventure, Drama, Fantasy, Mystery" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2025-11-22/bIOrDQ3Gg68k3qJAnRU7nIZr0BW.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/001/Dersu.Uzala.1975.Imprint.720p.BluRay.mp4"
   },
-  {
-    "title": "FortuneTv",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/fortune.jpeg",
-    "category": "Myanmar",
-    "url": "http://103.215.194.93:8282/hls/fortunetv/live/vmix_1080.m3u8"
+    {
+    "title":"Lost Horizon",
+    "year": "1937",
+    "category":"Adventure, Drama, Fantasy, Mystery" ,
+"logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/posters/2024-09-21-19-36-56-ngGykUEzpB1jkCWkh1H39SU2x0B.jpg",
+    "url":"https://stream.cmreel.com/file/2024-step/24step-movie/step-m-008/%28CM%29%20Lost%20Horizon%20%281937%29%20BluRay%20720p.mp4"
+  },
+    {
+    "title":"Modern Times",
+    "year": "1936",
+    "category":"Funny" ,
+    "logo": "https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/7uoiKOEjxBBW0AgDGQWrlfGQ90w.jpg",
+    "url":"https://stream.cmreel.com/file/cm-earlier-june-2023-movie/2022%20Movie/03%20March%202022/Modern.Times.1936.REMASTERED.720p%28CM%29.mp4"
+  },
+    {
+    "title":"The 39 Steps",
+    "year": "1935",
+    "category": "Crime/Thriller/ Mystery",
+        "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2025-07-27/yRnl3nTtKVTIBcLHHyXrrXPZWVS.jpg",
+    "url":"https://stream.cmreel.com/file/2025-clean-version/001/Movies/The.39.Steps.1935.1080p.Bluray%20720p%20%28CM%29.mp4"
+  },
+    {
+    "title":"The KungFu Kid",
+    "year": "1993",
+    "category":"Action",
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/rz2LVFEWRflbToMUsCj0KAFhRQf.jpg",
+    "url":"https://stream.cmreel.com/file/2024-step/24step-movie/step-m-004/Shaolin%20Popey%20I%20%281994%29%20DVDRip%20CM.mp4"
+  },
+    {
+    "title":"Sree Ayyappan",
+    "year": "2026",
+    "category": "Devotional,Thriller", 
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2026-01-19/yg0LbADAAeWqz31QXojtS4PNYG5.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/005/Sree%20Ayyappan%20%282026%29%20Malayalam%C2%A0WEB-DL%20-%201080p%20-%20AVC%28Edit%29.mkv"
+  },
+    {
+    "title":"Undisputed-1",
+    "year": "2002",
+    "category": "comedy,mystery", "logo":"https://nextjs-tv-one.vercel.app/Undisputed.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Undisputed.2002.720p.BluRay.%28CM%29.mp4"
+  },
+{
+    "title":"Undisputed-2",
+    "year": "2006",
+    "category": "Action",
+    "logo":"https://nextjs-tv-one.vercel.app/Undisputed.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Undisputed.2.Last.Man.Standing.2006.720p.BluRay.%28CM%29.mp4"
+  },
+{
+    "title":"Undisputed-3",
+    "year": "2010",
+    "category": "Action",
+    "logo":"https://nextjs-tv-one.vercel.app/Undisputed.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/009/Undisputed.3.Redemption.2010.720p.BluRay.%28CM%29.mp4"
+  },
+{
+    "title":"Undisputed-4",
+    "year": "2017",
+    "category": "Action",
+    "logo":"https://nextjs-tv-one.vercel.app/Undisputed.jpg",
+    "url":"https://stream.cmreel.com/file/NALWYM/NCL/001%20%28movies%29/Boyka%20-%20Undisputed%20%5B2017%5D.mp4"
+  },
+    {
+    "title":"The Thin Man",
+    "year": "1934",
+    "category": "comedy,mystery", "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2025-12-03/6cL89ok9t8xEKboOjOVga2W66jj.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/001/The%20Thin%20Man%201934%20720p%20Bluray%20%20MPK.mp4"
+  },
+    {
+    "title":"It Happened One Night",
+    "year": "1934",
+    "category": "Drama, War", "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/2PNUGWAflH6UUumas0POMmokHlc.jpg",
+    "url":"https://stream.cmreel.com/file/2025-clean-version/A1/2023%20Movies/It.Happened.One.Night.1934.REMASTERED.480p.BluRay.%28CM%29_Fixed.mp4"
+  },
+    {
+    "title":"City Lights",
+    "year": "1931",
+    "category": "Drama", 
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/ugmakEL5y294I5bXgiBqApuZpwc.jpg",
+    "url":"https://stream.cmapp.tv/file/NALWYM/komyo/Movies/MV/mv/City%20Lights%20%281931%29%20720p.mp4"
+  },
+    {
+    "title":"Hell’s Angels",
+    "year": "1930",
+    "category": "Drama,War", 
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app/movies/vt6zF55B9WLzYENs6cuXy8J5o1X.jpg",
+    "url":"https://stream.cmreel.com/file/2024-step/24step-movie/step-m-009/Hells.Angels.1930.720p.BluRay.%28CM%29.mp4"
+  },
+    {
+    "title":"The RIP",
+    "year": "2026",
+    "category": "Crime,Drama,Mystery",
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2026-01-16/p4bW2sJKAwcHuLpfoZK7Zo63osA.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/003/Min%20Wai/2026%20Movie/January%202026/The%20Rip%20%282026%29%20WEB-DL%2C720p%20%28MW%29.mp4"
+  },
+{
+    "title":"Chicken Town",
+    "year": "2025",
+    "category": "Comedy,Crime,Drama",
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2025-12-18/lZ8JiwEyK238OFHSEf8D9TY34GA.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/008/Double%20K/Chicken.Town.2025.720p.WEBRip%20%28K2%29.mp4"
+  },
+ {
+    "title":"Kalamkaval",
+    "year": "2025",
+    "category": "Aventure/Drama",
+    "logo":"https://stream.cmapp.tv/file/bioscope-all-asset-uploads/cm-app-media-two/movies/2026-01-16/5vdogNH72GrriiZ45H8U7CPWGfO.jpg",
+    "url":"https://stream.cmreel.com/file/2025-step-190425/Movie-2025-Step/005/YSFlix/Kalamkaval%20%282025%29%20TRUE%20WEB-DL%20-%20720p%20-%20AVC%20-.mp4"
+  },
+ {
+    "title":"Invisible Tattoo",
+    "year": "2022",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcxopTkZQK5AM05_YkkMr7B9Sr9bxxom3rEz2zmAeoWg&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Invisible.Tattoo.2022/Invisible.Tattoo.2022.m3u8"
+  },
+ {
+    "title":"SpiderMan(No Way Home)",
+    "year": "2022",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUfwEmxch-gcvodRwYiwiWqtpHAmMfRmfGZIwGNYaAxA&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Spider.Man.No.Way.Home.2022.360P/Spider.Man.No.Way.Home.2022.360P.m3u8"
+  },
+{
+    "title":"Scream",
+    "year": "2022",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3uyHvF0xlRuH0AE7ph1H7O0Yw8ovVqv_MNqjeI8cxlA&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Scream.2022/Scream.2022.m3u8"
+  },
+{
+    "title":"Valimai",
+    "year": "2022",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1ks33IIcEAzb0PoZYzS9u9ii9JEtR5CuHf1s4b74q5w&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Valimai.2022/Valimai.2022.m3u8"
+  },
+ {
+    "title":"Iratta",
+    "year": "2023",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmvbASclNt84vDUnexFrFDAn3JtTkadyHBxOiEaWMxSg&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Iratta.2023.360p/Iratta.2023.360p.m3u8"
+  },
+ {
+    "title":"Thunivu",
+    "year": "2023",
+    "category": "Action",
+    "logo":"https://upload.wikimedia.org/wikipedia/en/6/65/Thunivu_poster.jpg",
+    "url":"http://media1.mycinema.asia/media/films/Thunivu.2023.360p/Thunivu.2023.360p.m3u8"
   },
    {
-    "title": "မန္တလေး FM",
-    "logo": "https://pyoneplay-library.s3.ap-south-1.amazonaws.com/radios/1687507312CTBVbq.jpeg",
-    "category": "Myanmar",
-    "url": "https://pplive.comquas.com:5443/LiveApp/streams/ECIK67X0Q0Px1722483310879.m3u8"
+    "title":"Supercell",
+    "year": "2023",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2FXh7UfgbxcvDM2svS91MOl7PW_vq87AZ_nZJtHUZ1zLOZ_eQ_rE4OeDCcorxeCixzqdsOT6EEsZ2Q1Pv1LWj-4rnblYfjAUUW1hOps&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Supercell.2023.360p/Supercell.2023.360p.m3u8"
+  },
+   {
+    "title":"UNSEEN",
+    "year": "2023",
+    "category": "Action",
+    "logo":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQRzkwp_Q1jBPnfPMxoIRyMUnouhrjhOnDIUKcgNeqYTIC2DC590vWzoX&s=10",
+    "url":"http://media1.mycinema.asia/media/films/Unseen.2023.360p/Unseen.2023.360p.m3u8"
+  },
+ {
+        "title": "Presence",
+        "year": "2025",
+        "category": "Drama/Horror",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/c90fdb0d-82a1-488f-9c3b-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-ecf4f621.mp4"
+    },
+    {
+        "title": "Companion",
+        "year": "2025",
+        "category": "Action/War",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/a4678bf8-3b9e-4142-ae0d-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-5f007374.mp4"
+    },
+ {
+        "title": "The Seeds",
+        "year": "2024",
+        "category": "Crime/Horror",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/1573ab50-3dae-431c-b363-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-8914a895.mp4"
+    },
+    {
+        "title": "Sky Force",
+        "year": "2025",
+        "category": "Action/War",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/c5e4559f-8866-4b78-bf53-.jpg",
+        "url": "https://files1-en.channelmyanmar.info/zen-742ec6c3.mp4"
+    },
+ {
+        "title": "Now it's my turn",
+        "year": "2025",
+        "category": "Drama",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/eb1122aa-57cf-42f9-8466-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-27c4f0b2.mp4"
+    },
+    {
+        "title": "Ziam",
+        "year": "2025",
+        "category": "Zombie/Horror",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/597242d9-b849-4186-91f4-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-e62497ff.mp4"
+    },
+    
+    {
+        "title": "Demon City",
+        "year": "2025",
+        "category": "Action/Adventure",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/cff5bdc2-f7e1-407c-a981-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-edd40f8c.mp4"
+    },
+    {
+        "title": "Bullet Train Explosion",
+        "year": "2025",
+        "category": "Comedy/Drama",
+        "logo": "https://en.zboxmm.com/uploads/display-ss/8ace1b2a-f0da-4bdc-a252-.jpg",
+        "url": "https://files1-en.zboxmm.com/zen-88c290cb.mp4"
+    },
+ {
+        "title": "Love and Monsters",
+        "year": "2020",
+        "category": "Adventure/Comedy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9DSh_3rSpus82AadqY9wnBEfs-ME1S3JXLUazy47WdA&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210425/69c49f67aea7495.mp4"
+    },
+    {
+        "title": "Panda",
+        "year": "2008",
+        "category": "Animation",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTApVDNMDa_lpfnKyh0j82rqnS08u0OZNmT5Uxz0PdZKg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210517/e5e134d091c84e6.mp4"
+    },
+    
+    {
+        "title": "The Martian",
+        "year": "2012",
+        "category": "Sci-Fi/Adventure",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpZK9hhebPSsyncbJN50ceF9lHh1HlU8JS8meJXGHvcw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210611/636e5aff265442d.mp4"
+    },
+    {
+        "title": "Focus",
+        "year": "2015",
+        "category": "Comedy/Drama",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP7MQhrkRwRGUp-S12FFlpkmblvtqGJcNFAQBs6JOC8w&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210424/167fdee08f6f424.mp4"
+    },
+  {
+        "title": "365 Days",
+        "year": "2022",
+        "category": "Romance/Drama (18+)",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2zKS0ESskTABcKATxg5E6eZWjH8g2zqu82A&s",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210506/ca0c5ba359fd43c.mp4"
+    },
+    {
+        "title": "Fifty Shades Of Grey",
+        "year": "2015",
+        "category": "Romance/Drama (18+)",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOkhJ1tnEkJsA51I2n_Bfpd0da8K8MDo_pIlQpFKt6xQ&s",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210424/e756ba768f9d425.mp4"
+    },
+    {
+        "title": "Fifty Shades Darker",
+        "year": "2017",
+        "category": "Romance/Drama (18+)",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRIprRlkqOABLtjW2c9ocyp7yLAdtvWeKeJHclhsnIww&s=10",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210423/a530f2644d78495.mp4"
+    },
+    {
+        "title": "Fifty Shades Freed",
+        "year": "2018",
+        "category": "Romance/Drama (18+)",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTTex3jYTIO8DZXxqzSMZJ1ZnA7VzeaJNSCA&s",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210426/4181b35937a14b7.mp4"
+    },
+    {
+        "title": "World War Z",
+        "year": "2013",
+        "category": "Action/Horror",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTneXLpnZs4whOxEbYmesO6yvi9pzxpdzMnBnzKdWm_Mg&s=10",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210503/b48c317fb98546d.mp4"
+    },
+  {
+        "title": "Salt",
+        "year": "2010",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFEBF21T5jLfDhXg8upf6MszVntlTjasdLxIGNVCaH7g&s=10",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210426/8e127165378f4e3.mp4"
+    },
+    {
+        "title": "Jurassic Park",
+        "year": "1993",
+        "category": "Sci-Fi/Adventure",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzjKoFuzNPA4kDIYi2PSnYSuLcax_RC2QuWbxrauPs_Q&s=10",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210425/b52398bf0c614c2.mp4"
+    },
+    {
+        "title": "The Lost World: Jurassic Park",
+        "year": "1997",
+        "category": "Sci-Fi/Adventure",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRcUfdcQeTaH7qnEQ6--SV6gneKnfpGaXbfdvorC6ijg&s=10",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210425/e7317d9d481e483.mp4"
+    },
+    {
+        "title": "Moana",
+        "year": "2016",
+        "category": "Animation/Musical",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5XBNV798u70wt6SY8e4FojbplCRbunxCR8Nt9BE5Ang&s",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210504/b739198085dc4c2.mp4"
+    },
+    {
+        "title": "Wrath Of Man",
+        "year": "2021",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5YaIkC68YP4GGlpbBW7sGHV2zIhhk-Rzc-A&s",
+        "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210527/5c5788119929483.mp4"
+    },
+   {
+        "title": "Baaghi",
+        "year": "2016",
+        "category": "Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwPaplqEWc6OqNcA4FX0XulrIdvo8eTpR-Jw&s",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210618/e138c25849134f6.mp4"
+    },
+    {
+        "title": "Baaghi 2",
+        "year": "2018",
+        "category": "Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIpEL8uNhDDM7pyMPxDY0t6GxU4DnZNZHMhkefvpiApg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210618/e138c25849134f6.mp4"
+    },
+    {
+        "title": "Baaghi 3",
+        "year": "2020",
+        "category": "Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3-d8JijKfZtwuH4zaJTqd83GubxPEVL3VgQNpyeywrw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210618/c2bde8b77f604a4.mp4"
+    },
+    {
+        "title": "Spiderman Cartoon",
+        "year": "2020",
+        "category": "Animation",
+        "logo": "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/6e64907bd87a446.mp4"
+    },
+    {
+        "title": "G.I.Joe: The Rise of Cobra",
+        "year": "2009",
+        "category": "Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2WBPvJUbm06ziAfrnlnsdDPL5E-sg-cRZj85zm_WJ-w&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210517/3586f64649724d8.mp4"
+    },
+    {
+        "title": "G.I. Joe: Retaliation",
+        "year": "2013",
+        "category": "Action",
+        "logo": "https://m.media-amazon.com/images/M/MV5BNzk5ODM0OTQ0N15BMl5BanBnXkFtZTcwODg2ODE4OA@@._V1_.jpg",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210517/132d0cd9b928495.mp4"
+    },
+    {
+        "title": "The Gods Must Be Crazy 3",
+        "year": "1991",
+        "category": "Comedy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNIvoXUoyAcb4HuXxE-Iv04_48gkGVyr4IFqxKuBrMCV8HaUnXd5spKhg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210607/53211494e7f9412.mp4"
+    },
+    {
+        "title": "The Gods Must Be Crazy 2",
+        "year": "1989",
+        "category": "Comedy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNIvoXUoyAcb4HuXxE-Iv04_48gkGVyr4IFqxKuBrMCV8HaUnXd5spKhg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210607/53211494e7f9412.mp4"
+    },
+    {
+        "title": "The Gods Must Be Crazy",
+        "year": "1980",
+        "category": "Comedy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNIvoXUoyAcb4HuXxE-Iv04_48gkGVyr4IFqxKuBrMCV8HaUnXd5spKhg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20200604/6f7356c5a15d4a9.mp4"
+    },
+   {
+        "title": "The Mummy",
+        "year": "2017",
+        "category": "action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-5z-QhodtPK8-oc5UKbhU4TYY_ulSlDf5xN__ruXjvw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210422/036f0ec40fcc469.mp4"
+    },
+    {
+        "title": "The Courier",
+        "year": "2021",
+        "category": "Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRye3W1DcTXV9uwG9bSDwLbuZsLo1_3y9j4WXVeCRm_Jw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210422/399f11a0150e457.mp4"
+    },
+    {
+        "title": "Rise of the Guardians",
+        "year": "2012",
+        "category": "Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgV-l2OD1oCH42DNhcu9NWozLvu4g6S67zDznTMGlB0g&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/9703e1d75960462.mp4"
+    },
+    {
+        "title": "Koi Ja Ni Na",
+        "year": "2021",
+        "category": "action",
+        "logo": "https://upload.wikimedia.org/wikipedia/en/thumb/b/b6/Koi_Jaane_Na.jpg/250px-Koi_Jaane_Na.jpg",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210608/b7b17d47dbe9447.mp4"
+    },
+    {
+        "title": "Twenty Hacker",
+        "year": "2021",
+        "category": "action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqy8N4cX4nvx4pCrOKyyP-K7iOcE9yEWspzANV9C1_Ug&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210610/8e8fdd76f81548e.mp4"
+    },
+   {
+        "title": "PK",
+        "year": "2014",
+        "category": "Comedy/Drama",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3rVsotGtZr12x9j1JKFoVgaTfxLzbbOU5BwBnhyRVLw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210531/c1f50074c6364e8.mp4"
+    },
+    {
+        "title": "Lucy",
+        "year": "2014",
+        "category": "Sci/Fi",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCSfNMG79HKunFlZtZhAkjNjPFCM3N1u_m32sUZ9mcA&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210503/d1f63f3302d744a.mp4"
+    },
+    {
+        "title": "John Wick",
+        "year": "2014",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiKtCvF4ANjPgX8MagkgJkxJPklem9kor6Kw&s",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210424/860dafc7aef649b.mp4"
+    },
+    {
+        "title": "Wrath of Man",
+        "year": "2021",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcKh16D8HBIhp-IDElnPtWo61zpRx53o-J-wQM3HBtMw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210527/5c5788119929483.mp4"
+    },
+    {
+        "title": "Venom",
+        "year": "2018",
+        "category": "Sci/Fi/Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1auCqrmog_vhvVYj91bLiBdj_lsXNiccMhl86gdHsfA&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210531/7d2f3d9c3bf34ee.mp4"
+    },
+    {
+        "title": "Space Sweepers",
+        "year": "2021",
+        "category": "Sci/Fi",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSALaLzkXBz0vL1DWcYR7wGUFFtfhH4qf3aWO_nXXAWQ&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/b5d63b232f9c479.mp4"
+    },
+    {
+        "title": "Mortal Kombat",
+        "year": "2021",
+        "category": "Action/Fantasy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfro0a83lGDuMJeTjxwKz7_chFpBo9LPPOH7XzgggDOw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/A26E35FDA5514743B97.mp4"
+    },
+    {
+        "title": "Hua Mulan",
+        "year": "2020",
+        "category": "Action/Adventure",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1N3q-lWI0V7mKXCrWTu71BCxKWhu_0zO0GfcgORG7Mg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/e9da178187f443b.mp4"
+    },
+    {
+        "title": "The Vault",
+        "year": "2021",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUwxOYDHqYA4ri6zg1AfjPIo7JGr3euyQqBhOtfjNkdQ&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210424/a63f3e7c775a497.mp4"
+    },
+    {
+        "title": "Karnan",
+        "year": "2021",
+        "category": "Action/Drama",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAeSSW7AQ0gzVfmdfE6p3-SE9UTvVQ5CCu3Wlbx7yqmw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210517/1531fc19e07d4fb.mp4"
+    },
+    {
+        "title": "Nobody",
+        "year": "2021",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpvD94giW4tSm3ygIp6yjYsGj_Qul_caIK2LQfYDzdOw&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210425/885dd80174f040e.mp4"
+    },
+    {
+        "title": "Catman",
+        "year": "2021",
+        "category": "Romantic-Fantasy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLyxNS96OjlSUkYuOpIc1XmRxTqFnXGGJOdwi8uY_K4Q&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210605/e3720f351e0d4af.mp4"
+    },
+    {
+        "title": "Mandela",
+        "year": "2021",
+        "category": "Comedy/Drama",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB9AxWRjKAEVjxKZjxOD8iHSuivZ0pRkyTOLIm2LbqNQ&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210522/5d44f56d1d2249e.mp4"
+    },
+    {
+        "title": "Kala",
+        "year": "2021",
+        "category": "Action/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRA8_6HCuRfPhf0CtLYz-jNl_bROg4FUH4qK7tRag1hsA&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210522/b6de457f091d455.mp4"
+    },
+    {
+        "title": "Recalled",
+        "year": "2021",
+        "category": "Mystery/Thriller",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfv8pKZoD-CW85A08gpYHWIEhGB8Hv7pPzKIzKXBcj7g&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210520/b2f7cb17ce044ed.mp4"
+    },
+    {
+        "title": "Earth to Echo",
+        "year": "2014",
+        "category": "Sci/Fi/Adventure",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOPaPVXPiYBtcT4LL3U0RcCKQjz8cyu6PKp5tS09hGRg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/73f789df7af34d0.mp4"
+    },
+    {
+        "title": "ARMY OF THE DEAD",
+        "year": "2021",
+        "category": "Action/Horror",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI9Dvqr5HCsoT3agSchOSOvDoC0EjC8SZf42Mlq55pqA&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210531/10f91c3b229f4a4.mp4"
+    },
+    {
+        "title": "Seobok",
+        "year": "2021",
+        "category": "Sci/Fi/Action",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9aBsn8u1wUqHQua12EqdewcVlPH2sti2IMaFxCLKlDA&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210423/125212b7889e414.mp4"
+    },
+    {
+        "title": "Ready Player One",
+        "year": "2018",
+        "category": "Sci/Fi/Adventure",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc2DF3CPPHQD2VhzyhIWHzgd6bSw5TIM2kfsvdzxo22A&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210422/b737e2861763487.mp4"
+    },
+    {
+        "title": "Pokemon Detective Pikachu",
+        "year": "2019",
+        "category": "Fantasy/Mystery",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgwabmJuXryiBYfRiHuUx-AC6a_GPV5050eWeNZCCixg&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210601/75aae500b0ab43a.mp4"
+    },
+    {
+        "title": "LOKI",
+        "year": "2021",
+        "category": "Sci/Fi/Fantasy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQriYxD8mD1HnBieIeIxgk4Bw7_D6mCxqqAHmS38ZRt3g&s=10",
+        "url": ""
+    },
+    {
+        "title": "Loki 0101",
+        "year": "2021",
+        "category": "Sci/Fi/Fantasy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQriYxD8mD1HnBieIeIxgk4Bw7_D6mCxqqAHmS38ZRt3g&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210610/92bb3ab5d9d9437.mp4"
+    },
+    {
+        "title": "Loki 0102",
+        "year": "2021",
+        "category": "Sci/Fi/Fantasy",
+        "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQriYxD8mD1HnBieIeIxgk4Bw7_D6mCxqqAHmS38ZRt3g&s=10",
+        "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210616/401b1c5713f5400.mp4"
+    },
+   {
+    "title": "Captain America: Brave New World",
+    "year": "2025",
+    "category": "Sci/Fi",
+    "logo": "http://mycinema.asia/image//20250510/avatar_10887.jpg",
+    "url": "https://media1.mycinema.asia/media/films/Captain.America.Brave.New.World.2025/Captain.America.Brave.New.World.2025.m3u8"
   },
   {
-    "title": "MNTV",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mntv.jpg",
-    "category": "Myanmar",
-    "url": "https://l1-xl1.myanmarnet.com/relay/mntv/ch1/stream.m3u8"
-  },
-  
-  {
-    "title": "Channel-7 HD",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/channel7.jpg",
-    "category": "Myanmar",
-    "url": "https://cdn-live-pyone.secureswiftcontent.com/han/PyonePlay/Channel7/LiveOutput/manifest.m3u8"
+    "title": "Justice League: Zack Snyder's Cut",
+    "year": "2021",
+    "category": "Action",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQy5gnDG_mZqwl3UbeW2AvNdUCWpBbzD4d7Rw&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210423/81508a47c080494.mp4"
   },
   {
-    "title": "Pyoneplay Sport",
-    "logo": "https://pyoneplay-library.s3.ap-south-1.amazonaws.com/lives/1754747478fW7JWU.png",
-    "category": "Myanmar",
-    "url": "https://cdn-live-pyone.secureswiftcontent.com/han/pyone/sport/HLSoutput/manifest.m3u8"
-  },
-  
-  {
-    "title": "MRTV NRC",
-    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGT88XCyjEXQZtTU6ecEJw_waMjUAf88nRfJywdCX4QQ&s",
-    "category": "Myanmar",
-    "url": "https://asia.sipradius.net/cache/SEAGames2/master.m3u8"
-  },
-  
-  {
-    "title": "RTM ASEAN",
-    "logo": "myhttps://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIAOtjraeSvsJY_QmhlQoT0YnbCUX_cQi08kzXg58TOg&s=10",
-    "category": "Myanmar",
-    "url": "https://d25tgymtnqzu8s.cloudfront.net/event/smil:event1/chunklist_b2596000_slENG.m3u8"
+    "title": "Riders of Justice",
+    "year": "2021",
+    "category": "Action",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9kMshZdpfnrw4nKv6NUM8E_WXwvavPFJkfQ&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210531/acb72057222d491.mp4"
   },
   {
-    "title": "MSC Movie",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/msc.png",
-    "category": "Myanmar",
-    "url": "https://l1-xl1.myanmarnet.com/relay2/mcs/ch1/stream_standard/index.m3u8"
+    "title": "Rise of Empire",
+    "year": "2014",
+    "category": "History",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_01Hg1e4oJDzqX1NUNFPacgtdzFiL-9O1Yg&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210424/cc488e245f9b4fc.mp4"
   },
   {
-    "title": "TVM",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/tvm.jpeg",
-    "category": "Myanmar",
-    "url": "http://203.81.84.130/hls/mwd_serie/index.m3u8"
+    "title": "Wish Dragon",
+    "year": "2021",
+    "category": "Animation",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFc7wE_120rhe3Tyf9s6bFEYcVrxLDXGuzMQ&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210422/925FED505B234F668B6.mp4"
   },
   {
-    "title": "MVMTv",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mvm.png",
-    "category": "Myanmar",
-    "url": "https://edge6a.v2h-cdn.com/mvm/mvm.stream/playlist.m3u8"
+    "title": "Real Steel",
+    "year": "2011",
+    "category": "Sci/Fi",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSkxZXeCEImN6NO73C0CuPTuG-ZZ1UWscM7g&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210503/4246e4412f6642b.mp4"
   },
   {
-    "title": "MITV",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mitv.jpg",
-    "category": "Myanmar",
-    "url": "https://l1-xl1.myanmarnet.com/relay/mitv/ch1/stream.m3u8"
-  },
-  
-  {
-    "title": "MRTV Entertainment",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtvent.jpg",
-    "category": "Myanmar",
-    "url": "https://5a13fe32ef748.streamlock.net/mmplay/mrtv-entertainment/chunklist_w1578284018.m3u8"
+    "title": "The Gods Must Be Crazy",
+    "year": "1980",
+    "category": "Comedy",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrUx1d65ZdHKPEspMrS1L96DGeFxYNr5vv9A&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210607/848c1ef957a34df.mp4"
   },
   {
-    "title": "Music",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/music.jpg",
-    "category": "Myanmar",
-    "url": "https://l1-xl1.myanmarnet.com/relay/music/ch1/stream_hi/index.m3u8"
+    "title": "Basic Instinct",
+    "year": "1992",
+    "category": "Thriller",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNS_X9Yvry0Mr2UWF77rifbYdIyYmpYCIJ9w&s",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210423/19b057d67fbe4a4.mp4"
   },
   {
-    "title": "Light",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/light.jpeg",
-    "category": "Myanmar",
-    "url": "http://203.81.84.130/hls/mwd_family/index.m3u8"
+    "title": "The Platform",
+    "year": "2019",
+    "category": "Sci/Fi",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhNySdypOthpJQWirt7lgX54vVYru2mOM_SA&s",
+    "url": "https://media1.mytel.com.mm/video/videomocha_upload/mp4/20210503/4ec6e1bb325c4d5.mp4"
+  },
+   
+   {
+    "title": "Captain.America.Brave.New.World",
+    "year": "2025",
+    "category": "Sci/Fi",
+    "logo": "http://mycinema.asia/image//20250510/avatar_10887.jpg",
+    "url": "https://media1.mycinema.asia/media/films/Captain.America.Brave.New.World.2025/Captain.America.Brave.New.World.2025.m3u8"
+  },
+    {
+    "title": "ČERNÁK",
+    "year": "2025",
+    "category": "Drama/Crime/Thriller",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5_5byKA0qbmF-xz5j-SntKH31JlaW4--uuQ&s",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Dramas%20(%E1%80%92%E1%80%9B%E1%80%AC%E1%80%99%E1%80%AC)/CERNAK%20(aka)%20%D0%A7%D0%B5%D1%80%D0%BD%D0%B0%D0%BA%20(2025).mp4"
+  },
+{
+    "title": "The Match",
+    "year": "2025",
+    "category": "Drama",
+    "logo": "https://image.tmdb.org/t/p/original/aAXSZgbKD4iwovGbwalyPNMJ0hD.jpg",
+    "url": "https://pyazzindex-production.up.railway.app/d/Movies/Dramas%20(%E1%80%92%E1%80%9B%E1%80%AC%E1%80%99%E1%80%AC)/The%20Match%20(aka)%20%EC%8A%B9%EB%B6%80%20(2025).mp4"
+  },
+    {
+    "title": "The Gorge",
+    "year": "2025",
+    "category": "Action/Horror/Romance",
+    "logo": "http://mycinema.asia/image//20250514/avatar_10905.jpg",
+    "url": "https://media1.mycinema.asia/media/films/The.Gorge.2025/The.Gorge.2025.m3u8"
+    },
+   {
+    "title": "Anora",
+    "year": "2024",
+    "category": "Comedy/Drama/Romance",
+    "logo": "http://mycinema.asia/image//20250514/avatar_10909.jpg",
+    "url": "http://media1.mycinema.asia/media/films/Anora.2024/Anora.2024.m3u8"
+   },
+   {
+    "title": "Invisible Tattoo",
+    "year": "2022",
+    "category": "Action/Drama",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk8o9bLpreGLyZFeHPmv0i-xFgZQJgG2vLwQ&s",
+    "url": "http://media1.mycinema.asia/media/films/Invisible.Tattoo.2022/Invisible.Tattoo.2022.m3u8"
+  },
+   {
+    "title": "Black Crab",
+    "year": "2022",
+    "category": "War/Action",
+    "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMqS4opNjdiEy5CF_qPWIQR29N0Frm1vJP_Q&s",
+    "url": "http://media1.mycinema.asia/media/films/Black.Crab.2022/Black.Crab.2022.m3u8"
+  },
+   {
+    "title": "Infinity War",
+    "year": "2021",
+    "category": "Avenger",
+    "logo": "https://moviesplaylist-github-io.vercel.app/2posters/infinitywar.jpg",
+    "url": "http://media1.mytel.com.mm:80/video/videomocha_upload/mp4/20210423/0228F7F1F9164479844.mp4"
   },
   {
-    "title": "Golden Land",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/goldenland.jpg",
-    "category": "Myanmar",
-    "url": "http://203.81.84.130/hls/mwd_document/index.m3u8"
+    "title": "Superman",
+    "year": "2025",
+    "category": "Hindi",
+    "logo": "https://moviesplaylist-github-io.vercel.app/2posters/superman.png",
+    "url": "https://pixeldrain.dev/api/file/SRujTBXp"
   },
+    {
+    "title": "Knock At The",
+    "year": "2023",
+    "category": "Western",
+    "logo": "https://i.imgur.com/D7YAcZf.jpg",
+    "url": "http://media1.mycinema.asia/media/films/Knock.at.the.Cabin.2023.360p/Knock.at.the.Cabin.2023.360p.m3u8"
+  },
+  {
+    "title": "Brain Work",
+    "year": "2023",
+    "category": "Series",
+    "logo": "https://i.imgur.com/89xKuua.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Brain_Works/Brain_Works_Ep1/Brain_Works_Ep1.m3u8"
+  },
+  {
+    "title": "Missing",
+    "year": "2023",
+    "category": "Western",
+    "logo": "https://i.imgur.com/LIC1QAY.jpg",
+    "url": "http://media1.mycinema.asia/media/films/Missing.2023.360p/Missing.2023.360p.m3u8"
+  },
+  {
+    "title": "Winter Soldier",
+    "year": "2021",
+    "category": "Action",
+    "logo": "https://i.imgur.com/NDemOpC.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210531/1cbcaf497d1a46b.mp4"
+  },
+  {
+    "title": "Far From Home",
+    "year": "2019",
+    "category": "Marvel",
+    "logo": "https://i.imgur.com/DZ7YOv3.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/ca6798f9b89a485.mp4"
+  },
+  {
+    "title": "Fast & Furious",
+    "year": "2021",
+    "category": "Action",
+    "logo": "https://i.imgur.com/YsiBFKQ.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210422/f6eb7e9f975e434.mp4"
+  },
+  {
+    "title": "Love & Monsters",
+    "year": "2020",
+    "category": "Sci-Fi",
+    "logo": "https://i.imgur.com/zdqXufm.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210425/69c49f67aea7495.mp4"
+  },
+  {
+    "title": "Rider Of Justice",
+    "year": "2021",
+    "category": "Action",
+    "logo": "https://i.imgur.com/oZhdyYE.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210531/acb72057222d491.mp4"
+  },
+  {
+    "title": "Martian",
+    "year": "2015",
+    "category": "Sci-Fi",
+    "logo": "https://i.imgur.com/x1ozU85.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210611/636e5aff265442d.mp4"
+  },
+  {
+    "title": "Mulan",
+    "year": "2020",
+    "category": "Action",
+    "logo": "https://i.imgur.com/Ghufzx2.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210426/e9da178187f443b.mp4"
+  },
+  {
+    "title": "John Wick",
+    "year": "2014",
+    "category": "Action",
+    "logo": "https://i.imgur.com/qDoxnUq.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210424/860dafc7aef649b.mp4"
+  },
+  {
+    "title": "Justice League",
+    "year": "2021",
+    "category": "DC",
+    "logo": "https://i.imgur.com/sWW74xW.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210424/860dafc7aef649b.mp4"
+  },
+  {
+    "title": "Joker",
+    "year": "2019",
+    "category": "Drama",
+    "logo": "https://i.imgur.com/5jhdfWw.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210428/018a3418f81f4d9.mp4"
+  },
+  {
+    "title": "Lucy",
+    "year": "2014",
+    "category": "Sci-Fi",
+    "logo": "https://i.imgur.com/fhNqPl3.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Snowdrop/Snowdrop.Ep1.360/Snowdrop.Ep1.360.m3u8"
+  },
+  {
+    "title": "Sherlock Holmes",
+    "year": "2009",
+    "category": "Detective",
+    "logo": "https://i.imgur.com/n0ianXp.jpg",
+    "url": "http://media1.mytel.com.mm/video/videomocha_upload/mp4/20210524/845ac1d40d314cf.mp4"
+  },
+  {
+    "title": "The Legend Of Bayi Grandpa",
+    "year": "2024",
+    "category": "Asian",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/strange-things-in-changle-town-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/asian/The.Legend.Of.Bayi.Grandpa.2024.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "Primbon",
+    "year": "2023",
+    "category": "Asian",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/primbon-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/asian/Primbon.2023.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "Night Swim",
+    "year": "2024",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/night-swim-2024-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/Night.Swim.2024.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "After Sundown",
+    "year": "2023",
+    "category": "Asian",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/after-sundown-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/asian/After.Sundown.2023..mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "Moloch",
+    "year": "2022",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/moloch-2022-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/Moloch.2022.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "Thanksgiving",
+    "year": "2023",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/thanksgiving-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/Thanksgiving.2023.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "A Vampire in the Family",
+    "year": "2023",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/a-vampire-in-the-family-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/A.Vampire.in.the.Family.2023.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "The Rope Curse 3",
+    "year": "2023",
+    "category": "Asian",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/the-rope-curse-3-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/asian/The.Rope.Curse.3.2023.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "The Lair",
+    "year": "2022",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/the-lair-2022-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/The.Lair.2022.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "You Are Not My Mother",
+    "year": "2023",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/you-are-not-my-mother-2022-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/You.Are.Not.My.Mother.2023.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "Knock At The Cabin",
+    "year": "2023",
+    "category": "Western",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/knock-at-the-cabin-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/western/Knock.At.The.Cabin.2023.mp4/playlist.m3u8"
+    
+  },
+  {
+    "title": "Curse of the Totem",
+    "year": "2023",
+    "category": "Asian",
+    "logo": "https://24mm.moviesapi.de/uploads/posters/the-curse-of-the-totem-2023-poster-.jpg",
+    "url":"https://api.starsmovies24.com/24mm/asian/Curse.of.the.Totem.2023.mp4/playlist.m3u8"
+    },
 
-  {
-    "title": "MRTV NRC",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv.jpg",
-    "category": "Myanmar",
-    "url": "https://l1-xl1.myanmarnet.com/relay/mrtvnrc/ch1/stream.m3u8"
+ {
+    "title": "EVE",
+    "year": "2022",
+    "logo": "https://i.imgur.com/9jraUr8.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Eve_2022/Eve_2022_Ep1/Eve_2022_Ep1.m3u8"
   },
   {
-    "title": "MRTV Hluttaw",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mrtv.jpg",
-    "category": "Myanmar",
-    "url": "https://5a13fe32ef748.streamlock.net/mmplay/hluttaw/chunklist_w347202258.m3u8"
+    "title": "The Girl on a Bulldozer",
+    "year": "2022",
+    "logo": "https://i.imgur.com/1AZUhAc.jpg",
+    "url": "http://media1.mycinema.asia/media/films/The.Girl.on.a.Bulldozer.2022.360p/The.Girl.on.a.Bulldozer.2022.360p.m3u8"
   },
   {
-    "title": "MWD HD",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mwd.png",
-    "category": "Myanmar",
-    "url": "http://203.81.84.130/hls/mwd/index.m3u8"
+    "title": "Shooting Stars",
+    "year": "2022",
+    "logo": "https://i.imgur.com/5eVTZ6W.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Shooting_Stars_2022/Shooting_Stars_2022_Ep1/Shooting_Stars_2022_Ep1.m3u8"
   },
   {
-    "title": "MWD Variety",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mwd.png",
-    "category": "Myanmar",
-    "url": "http://203.81.84.130/hls/mwd_variety/index.m3u8"
+    "title": "Our Blues",
+    "year": "2022",
+    "logo": "http://i.imgur.com/FvJBNVx.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Our_Blues_2022/Our_Blues_2022_Ep1/Our_Blues_2022_Ep1.m3u8"
   },
   {
-    "title": "MWD School",
-    "logo": "https://moviesplaylist-github-io.vercel.app/mmtvposters/mwd.png",
-    "category": "Myanmar",
-    "url": "http://203.81.84.130/hls/mwd_movie/index.m3u8"
+    "title": "Again My Life",
+    "year": "2022",
+    "logo": "https://i.imgur.com/5XuODhf.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Again_my_life/Again_my_life_Ep1/Again_my_life_Ep1.m3u8"
+  },
+  {
+    "title": "Tomorrow",
+    "year": "2022",
+    "logo": "https://i.imgur.com/YNJKoVI.jpg",
+    "url": "http://media1.mycinema.asia/media/series/tomorrow.2022/Tomorrow.2022.Ep1/Tomorrow.2022.Ep1.m3u8"
+  },
+  {
+    "title": "Pachinko",
+    "year": "2022",
+    "logo": "https://i.imgur.com/FVqjbr9.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Pachinko.2022/Pachinko.2022.Ep1/Pachinko.2022.Ep1.m3u8"
+  },
+  {
+    "title": "Death on the Nile",
+    "year": "2022",
+    "logo": "https://i.imgur.com/cRG99TS.jpg",
+    "url": "http://media1.mycinema.asia/media/films/Death.on.the.Nile.2022/Death.on.the.Nile.2022.m3u8"
+  },
+  {
+    "title": "Thirty Nine",
+    "year": "2022",
+    "logo": "https://i.imgur.com/qO1AEyH.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Thirty.Nine/Thirty.Nine.ep1/Thirty.Nine.ep1.m3u8"
+  },
+  {
+    "title": "Twenty Five Twenty One",
+    "year": "2022",
+    "logo": "https://i.imgur.com/phR7xun.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Twenty.Five.Twenty.One/Twenty.Five.Twenty.One.Ep1.360/Twenty.Five.Twenty.One.Ep1.360.m3u8"
+  },
+  {
+    "title": "Snowdrop",
+    "year": "2022",
+    "logo": "https://i.imgur.com/eZ0eAlq.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Snowdrop/Snowdrop.Ep1.360/Snowdrop.Ep1.360.m3u8"
+  },
+  {
+    "title": "Ghost Doctor",
+    "year": "2022",
+    "logo": "https://i.imgur.com/K47e4kI.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Ghost.Doctor.2022/Ghost.Doctor.2022.E01.360/Ghost.Doctor.2022.E01.360.m3u8"
+  },
+  {
+    "title": "Bad and Crazy",
+    "year": "2022",
+    "logo": "https://i.imgur.com/LgAnyJh.jpg",
+    "url": "http://media1.mycinema.asia/media/series/Bad.and.crazy/Bad.and.crazy.Episode.1.360/Bad.and.crazy.Episode.1.360.m3u8"
   }
 ]
