@@ -65,7 +65,7 @@
         async function loadMovies() {
             try {
                 // သင်အသုံးပြုမည့် JSON file path ကို ဤနေရာတွင် ပြင်ပါ
-                const res = await fetch('zetflix.json'); 
+                const res = await fetch('series.json'); 
                 allMovies = await res.json();
                 renderMovies(allMovies);
             } catch (e) { console.error("Error loading JSON"); }
