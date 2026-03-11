@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV MOBILE</title>
+    <title>FOTMOV MOBILE - MULTI QUALITY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -37,7 +37,7 @@
             <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
             <div class="flex flex-col items-center">
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile Player</span>
+                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile</span>
             </div>
             <div class="w-10 text-right">
                 <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
@@ -59,7 +59,7 @@
         </main>
     </div>
 
-    <div id="detail-view-container"></div>
+    <div id="detail-view-container" class="fixed inset-0 z-[100] bg-darkBg overflow-y-auto"></div>
 
     <div id="overlay" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-800">
@@ -78,7 +78,6 @@
         ];
         let allMovies = [];
 
-        // --- Data Loading ---
         async function loadMovies(url) {
             try {
                 const res = await fetch(url);
@@ -91,29 +90,26 @@
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = data.map((m, i) => `
                 <div onclick="showMovieDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all">
-                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
+                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover" loading="lazy">
                     <div class="p-3">
-                        <h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3>
-                        <p class="text-[8px] opacity-50">${m.year} • ${m.category}</p>
+                        <h3 class="text-[10px] font-bold line-clamp-1 uppercase">${m.title}</h3>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- Detail View Logic (Single Page) ---
+        // --- Detail Page with SD/HD/FHD Logic ---
         function showMovieDetails(index) {
             const movie = allMovies[index];
             const container = document.getElementById('detail-view-container');
             
-            // Link Handling (url string or urls array)
-            const videoLinks = movie.urls ? movie.urls : [movie.url];
-            const mainUrl = videoLinks[0];
-            const backupUrl = videoLinks.length > 1 ? videoLinks[1] : null;
-
+            // Quality Links extract (handle both single url or array)
+            const links = movie.urls || [movie.url];
+            
             container.innerHTML = `
                 <div class="relative w-full aspect-video bg-black">
                     <video id="main-player" controls class="w-full h-full" poster="${movie.logo}">
-                        <source id="player-src" src="${mainUrl}" type="video/mp4">
+                        <source id="player-src" src="${links[0]}" type="video/mp4">
                     </video>
                     <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/40 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md">
                         <i class="fas fa-chevron-left text-white"></i>
@@ -122,59 +118,76 @@
 
                 <div class="p-6">
                     <h2 class="text-2xl font-black text-primary uppercase leading-tight">${movie.title}</h2>
-                    <div class="flex gap-2 my-4">
-                        <span class="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full">${movie.year}</span>
-                        <span class="text-[10px] font-bold bg-primary/20 text-primary px-3 py-1 rounded-full">${movie.category}</span>
-                    </div>
+                    <p class="text-[10px] opacity-50 mt-1 font-bold">${movie.year} • ${movie.category}</p>
                     
-                    <div class="mt-8 space-y-3">
-                        <button onclick="playExternal('${mainUrl}')" class="w-full bg-primary text-black font-black py-4 rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-all">
-                            <i class="fas fa-play"></i> EXTERNAL PLAYER
+                    <div class="mt-8">
+                        <p class="text-[10px] font-black opacity-40 uppercase mb-3 tracking-widest">Select Quality</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${links.map((link, idx) => {
+                                let label = (idx === 0) ? "SD" : (idx === 1) ? "HD" : "FHD";
+                                return `<button onclick="switchQuality('${link}', this)" class="q-btn flex-1 bg-slate-800 text-[10px] font-black py-3 rounded-xl border border-white/5 active:bg-primary active:text-black transition-all ${idx === 0 ? 'bg-primary text-black' : ''}">${label}</button>`;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button onclick="playExternal()" id="ext-btn" data-url="${links[0]}" class="w-full bg-white/5 border border-white/10 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-all text-xs">
+                            <i class="fas fa-share-square text-primary"></i> EXTERNAL PLAYER
                         </button>
-                        <p class="text-[8px] text-center opacity-40 tracking-widest uppercase font-bold">Package: com.genuine.leone</p>
                     </div>
                 </div>
             `;
 
             container.classList.add('active');
 
-            // Auto Retry Logic
+            // Auto Retry logic
             const video = document.getElementById('main-player');
             video.onerror = () => {
-                if (backupUrl && video.src !== backupUrl) {
-                    video.src = backupUrl;
-                    video.load();
-                    video.play();
+                if (links[1] && video.src !== links[1]) {
+                    video.src = links[1];
+                    video.load(); video.play();
                 }
             };
         }
 
-        function closeDetails() {
-            const player = document.getElementById('main-player');
-            if(player) player.pause();
-            document.getElementById('detail-view-container').classList.remove('active');
+        function switchQuality(url, btn) {
+            const video = document.getElementById('main-player');
+            const extBtn = document.getElementById('ext-btn');
+            const currentTime = video.currentTime;
+            
+            // UI Update
+            document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('bg-primary', 'text-black'));
+            btn.classList.add('bg-primary', 'text-black');
+            
+            // Player Update
+            video.src = url;
+            extBtn.setAttribute('data-url', url);
+            video.load();
+            video.currentTime = currentTime;
+            video.play();
         }
 
-        function playExternal(url) {
+        function playExternal() {
+            const url = document.getElementById('ext-btn').getAttribute('data-url');
             window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;end`;
         }
 
+        function closeDetails() {
+            const v = document.getElementById('main-player');
+            if(v) v.pause();
+            document.getElementById('detail-view-container').classList.remove('active');
+        }
+
         // --- Overlay Logic ---
-        function openOverlay(title, items, type) {
+        function openOverlay(title, items, callback) {
             document.getElementById('overlay-title').innerText = title;
             const list = document.getElementById('overlay-list');
             list.innerHTML = '';
-            
             items.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = "w-full p-4 text-center text-[10px] font-bold border-b border-slate-800 active:bg-primary active:text-black uppercase";
+                btn.className = 'w-full p-4 text-center text-[10px] font-bold border-b border-slate-800 active:bg-primary active:text-black uppercase';
                 btn.innerText = item.label;
-                btn.onclick = () => {
-                    if(type === 'source') loadMovies(item.value);
-                    if(type === 'genre') item.value === 'all' ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === item.value));
-                    if(type === 'year') item.value === 'all' ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == item.value));
-                    closeOverlay();
-                };
+                btn.onclick = () => { callback(item.value); closeOverlay(); };
                 list.appendChild(btn);
             });
             document.getElementById('overlay').classList.replace('hidden', 'flex');
@@ -182,17 +195,17 @@
 
         function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
 
-        // --- UI Events ---
-        document.getElementById('src-btn').onclick = () => openOverlay("Servers", movieSources, 'source');
+        // --- Listeners ---
+        document.getElementById('src-btn').onclick = () => openOverlay("Servers", movieSources, (val) => loadMovies(val));
         document.getElementById('gen-btn').onclick = () => {
             const genres = [...new Set(allMovies.map(m => m.category))];
             const items = [{label: "All", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
-            openOverlay("Genres", items, 'genre');
+            openOverlay("Genres", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
         };
         document.getElementById('yr-btn').onclick = () => {
             const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
             const items = [{label: "Any Year", value: "all"}, ...years.map(y => ({label: y, value: y}))];
-            openOverlay("Years", items, 'year');
+            openOverlay("Years", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
         };
         document.getElementById('search-bar').oninput = (e) => {
             const term = e.target.value.toLowerCase();
