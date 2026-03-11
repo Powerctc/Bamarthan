@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV MOBILE</title>
+    <title>FOTMOV MOBILE - PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -17,20 +17,28 @@
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        #detail-view-container { transition: transform 0.4s ease; transform: translateX(100%); }
-        #detail-view-container.active { transform: translateX(0); }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* Detail View Animation */
+        #detail-view { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            z-index: 100; background: #0f172a; 
+            transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto; display: none;
+        }
+        #detail-view.active { transform: translateX(0); display: block; }
+        
+        .aspect-video { aspect-ratio: 16 / 9; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-    <div id="sidebar-container"></div>
-
     <div id="main-ui">
         <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-            <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
+            <button class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
             <div class="flex flex-col items-center">
                 <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile</span>
+                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Mobile Player</span>
             </div>
             <div class="w-10 text-right">
                 <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
@@ -52,28 +60,26 @@
         </main>
     </div>
 
-    <div id="detail-view-container" class="fixed inset-0 z-[100] bg-darkBg overflow-y-auto hidden"></div>
+    <div id="detail-view">
+        <div id="detail-content"></div>
+    </div>
 
     <div id="overlay" class="fixed inset-0 z-[200] hidden items-center justify-center p-6 bg-black/80 backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-800">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
             <div id="overlay-title" class="p-4 text-center font-black text-primary border-b border-slate-800 uppercase text-xs">Select</div>
             <div id="overlay-list" class="max-h-[50vh] overflow-y-auto"></div>
             <button onclick="closeOverlay()" class="w-full p-4 text-xs font-black opacity-40 uppercase">Cancel</button>
         </div>
     </div>
 
-    <script src="sidebar.js"></script>
-    <script src="movie_detail.js"></script>
-
     <script>
         const movieSources = [
-            { label: "Server 1 (Fast)", value: "zetflix.json" },
-            { label: "Server 2 (Backup)", value: "movies-1.json" },
-            { label: "Server 3 (Backup)", value: "movies.json" }
+            { label: "Server 1 (Zetflix)", value: "zetflix.json" },
+            { label: "Server 2 (Backup)", value: "movies-1.json" }
         ];
         let allMovies = [];
 
-        // Load Movies
+        // --- Data Fetching ---
         async function loadMovies(url) {
             try {
                 const res = await fetch(url);
@@ -84,45 +90,113 @@
 
         function renderMovies(data) {
             const grid = document.getElementById('movie-grid');
-            grid.innerHTML = '';
-            data.forEach(m => {
-                const card = document.createElement('div');
-                card.className = "bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all";
-                card.innerHTML = `<img src="${m.logo}" class="w-full aspect-[3/4] object-cover"><div class="p-3"><h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3></div>`;
-                card.onclick = () => showMovieDetails(m);
-                grid.appendChild(card);
-            });
+            grid.innerHTML = data.map(m => `
+                <div onclick='showDetails(${JSON.stringify(m).replace(/'/g, "&apos;")})' class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm active:scale-95 transition-all">
+                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover" loading="lazy">
+                    <div class="p-3">
+                        <h3 class="text-[10px] font-bold line-clamp-1">${m.title}</h3>
+                        <p class="text-[8px] opacity-60">${m.year} • ${m.category}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Overlay Logic (Source, Genre, Year အတွက်)
+        // --- Detail View Logic ---
+        function showDetails(movie) {
+            const detailContainer = document.getElementById('detail-view');
+            const content = document.getElementById('detail-content');
+            
+            content.innerHTML = `
+                <div class="relative w-full aspect-video bg-black group">
+                    <video id="inapp-player" controls class="w-full h-full" poster="${movie.logo}">
+                        <source id="video-source" src="${movie.url1}" type="video/mp4">
+                    </video>
+                    <button onclick="closeDetail()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md">
+                        <i class="fas fa-chevron-left text-white"></i>
+                    </button>
+                </div>
+
+                <div class="p-5">
+                    <h2 class="text-xl font-black text-primary uppercase">${movie.title}</h2>
+                    <div class="flex gap-3 my-3 text-[10px] font-bold opacity-70">
+                        <span class="bg-primary/20 text-primary px-2 py-1 rounded">${movie.year}</span>
+                        <span class="bg-slate-800 px-2 py-1 rounded">${movie.category}</span>
+                    </div>
+                    <p class="text-sm opacity-70 leading-relaxed line-clamp-3 mb-6">${movie.description || 'No description available.'}</p>
+
+                    <div class="grid grid-cols-1 gap-3">
+                        <button onclick="playExternal('${movie.url1}')" class="bg-primary text-black font-black py-4 rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-all">
+                            <i class="fas fa-play"></i> EXTERNAL PLAYER
+                        </button>
+                        <p class="text-[8px] text-center opacity-50 uppercase tracking-widest">Powered by Leone Player (com.genuine.leone)</p>
+                    </div>
+                </div>
+            `;
+
+            detailContainer.classList.add('active');
+            setupAutoRetry(movie);
+        }
+
+        // --- In-App Auto Retry Logic ---
+        function setupAutoRetry(movie) {
+            const video = document.getElementById('inapp-player');
+            let retryCount = 0;
+
+            video.onerror = function() {
+                if (retryCount === 0 && movie.url2) {
+                    console.log("URL1 failed, trying URL2...");
+                    retryCount++;
+                    const source = document.getElementById('video-source');
+                    source.src = movie.url2;
+                    video.load();
+                    video.play();
+                } else {
+                    alert("Playback failed. Please try external player.");
+                }
+            };
+        }
+
+        // --- External Player Intent ---
+        function playExternal(url) {
+            // Android Intent for com.genuine.leone
+            const intentUrl = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;end`;
+            window.location.href = intentUrl;
+        }
+
+        function closeDetail() {
+            const detailContainer = document.getElementById('detail-view');
+            const video = document.getElementById('inapp-player');
+            if(video) video.pause();
+            detailContainer.classList.remove('active');
+        }
+
+        // --- Overlay & UI Helpers ---
         function openOverlay(title, items, callback) {
             document.getElementById('overlay-title').innerText = title;
             const list = document.getElementById('overlay-list');
-            list.innerHTML = '';
-            items.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full p-4 text-center text-xs font-bold border-b border-slate-800 active:bg-primary active:text-black transition-all';
-                btn.innerText = item.label;
-                btn.onclick = () => { callback(item.value); closeOverlay(); };
-                list.appendChild(btn);
-            });
+            list.innerHTML = items.map(item => `
+                <button onclick="(${callback.toString()})('${item.value}'); closeOverlay();" 
+                        class="w-full p-4 text-center text-[10px] font-bold border-b border-slate-100 dark:border-slate-800 active:bg-primary active:text-black transition-all uppercase">
+                    ${item.label}
+                </button>
+            `).join('');
             document.getElementById('overlay').classList.replace('hidden', 'flex');
         }
 
         function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
 
-        // Button Click Events
-        document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
+        // --- Event Listeners ---
+        document.getElementById('src-btn').onclick = () => openOverlay("Select Source", movieSources, (val) => loadMovies(val));
         
         document.getElementById('gen-btn').onclick = () => {
             const genres = [...new Set(allMovies.map(m => m.category))];
-            const items = [{label: "ALL CATEGORIES", value: "all"}, ...genres.map(g => ({label: g.toUpperCase(), value: g}))];
-            openOverlay("Browse Genre", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
+            const items = [{label: "All Genres", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
+            openOverlay("Genres", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.category === v)));
         };
 
         document.getElementById('yr-btn').onclick = () => {
             const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
-            const items = [{label: "ANY YEAR", value: "all"}, ...years.map(y => ({label: y, value: y}))];
+            const items = [{label: "Any Year", value: "all"}, ...years.map(y => ({label: y, value: y}))];
             openOverlay("Release Year", items, (v) => v === "all" ? renderMovies(allMovies) : renderMovies(allMovies.filter(m => m.year == v)));
         };
 
@@ -136,5 +210,4 @@
         window.onload = () => loadMovies(movieSources[0].value);
     </script>
 </body>
-    </html>
-    
+</html>
