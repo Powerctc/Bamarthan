@@ -1,211 +1,437 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV HYBRID PLAYER</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="sidebar.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { primary: '#facc15', darkBg: '#0f172a', darkCard: '#1e293b' } } }
-        }
-    </script>
-    <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        #detail-view-container { 
-            position: fixed; inset: 0; z-index: 100; background: #0f172a; 
-            transform: translateX(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto; visibility: hidden;
-        }
-        #detail-view-container.active { transform: translateX(0); visibility: visible; }
-        
-        .action-btn { background: rgba(255,255,255,0.05); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; }
-        .action-btn.active { background: #facc15 !important; color: #000 !important; border-color: #facc15; box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>FOTMOV HYBRID PLAYER</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="sidebar.js"></script>
+
+<script>
+tailwind.config={
+darkMode:'class',
+theme:{
+extend:{
+colors:{
+primary:'#facc15',
+darkBg:'#0f172a',
+darkCard:'#1e293b'
+}
+}
+}
+}
+</script>
+
+<style>
+
+*{
+-webkit-tap-highlight-color:transparent;
+outline:none;
+}
+
+::-webkit-scrollbar{
+width:0;
+background:transparent;
+}
+
+.line-clamp-1{
+display:-webkit-box;
+-webkit-line-clamp:1;
+-webkit-box-orient:vertical;
+overflow:hidden;
+}
+
+#ad-color-run{
+animation:borderRun 4s linear infinite;
+}
+
+@keyframes borderRun{
+0%{box-shadow:0 0 10px #facc15;}
+50%{box-shadow:0 0 25px #facc15;}
+100%{box-shadow:0 0 10px #facc15;}
+}
+
+#detail-view-container{
+position:fixed;
+inset:0;
+z-index:100;
+background:#0f172a;
+transform:translateX(100%);
+transition:0.4s cubic-bezier(0.4,0,0.2,1);
+overflow-y:auto;
+visibility:hidden;
+}
+
+#detail-view-container.active{
+transform:translateX(0);
+visibility:visible;
+}
+
+.action-btn{
+background:rgba(255,255,255,0.05);
+color:#94a3b8;
+border:1px solid rgba(255,255,255,0.1);
+transition:all .3s;
+}
+
+.action-btn.active{
+background:#facc15!important;
+color:#000!important;
+border-color:#facc15;
+box-shadow:0 0 15px rgba(250,204,21,.3);
+}
+
+</style>
 </head>
+
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-    <div id="sidebar-container"></div>
+<div id="sidebar-container"></div>
 
-    <div id="main-ui">
-        <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-            <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
-            <div class="flex flex-col items-center">
-                <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-                <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Premium Hub</span>
-            </div>
-            <div class="w-10 text-right">
-                <button id="theme-toggle" class="text-xl dark:text-primary"><i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i></button>
-            </div>
-        </header>
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
 
-        <main class="mt-20 p-4">
-            <div class="mb-6">
-            <a href="http://m-sport-download.static.hf.space/">
-                <div class="ad-color-run shadow-lg">
-                    <img src="https://fotlivemovies.vercel.app/sports.gif" class="w-full h-auto block">
-                </div>
-            </a>
-            </div>
-            <div class="mb-4">
-                <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="Search...">
-            </div>
+<button id="menu-btn" class="text-primary text-2xl w-10 text-left">
+<i class="fas fa-bars-staggered"></i>
+</button>
 
-            <div class="grid grid-cols-3 gap-2 mb-6">
-                <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Source</button>
-                <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Genre</button>
-                <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary transition-colors">Year</button>
-            </div>
+<div class="flex flex-col items-center">
+<span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
+<span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Premium Hub</span>
+</div>
 
-            <div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
-        </main>
-    </div>
+<div class="w-10 text-right">
+<button id="theme-toggle" class="text-xl dark:text-primary">
+<i class="fas fa-moon dark:hidden"></i>
+<i class="fas fa-sun hidden dark:block"></i>
+</button>
+</div>
 
-    <div id="detail-view-container"></div>
+</header>
 
-    <div id="home-view">
-    <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-        <button id="menu-btn" class="text-primary text-2xl w-10 text-left">
-            <i class="fas fa-bars-staggered"></i>
-        </button> </div>
-    </div>
+<main class="mt-20 p-4">
 
-    <script src="sidebar.js"></script>
+<div class="mb-6">
+<a href="http://m-sport-download.static.hf.space/">
+<div id="ad-color-run" class="shadow-lg rounded-xl overflow-hidden">
+<img src="https://fotlivemovies.vercel.app/sports.gif"
+class="w-full h-auto block">
+</div>
+</a>
+</div>
 
-    <script>
-        const sources = [
-            { label: "Default Series", value: "series.json" },
-            { label: "Series Backup", value: "series-1.json" }
-        ];
-        let allMovies = [];
-        let currentLink = "";
+<div class="mb-4">
+<input type="text"
+id="search-bar"
+class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl focus:ring-2 focus:ring-primary shadow-sm dark:text-white"
+placeholder="Search...">
+</div>
 
-        async function loadData(url) {
-            try {
-                const res = await fetch(url);
-                allMovies = await res.json();
-                renderItems(allMovies);
-            } catch (e) { console.error("Error loading JSON"); }
-        }
+<div class="grid grid-cols-3 gap-2 mb-6">
 
-        function renderItems(data) {
-            const grid = document.getElementById('movie-grid');
-            grid.innerHTML = data.map((m, i) => `
-                <div onclick="showDetails(${i})" class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition-all shadow-lg">
-                    <img src="${m.logo}" class="w-full aspect-[3/4] object-cover">
-                    <div class="p-3">
-                        <h3 class="text-[10px] font-bold line-clamp-1 uppercase text-center">${m.title}</h3>
-                    </div>
-                </div>
-            `).join('');
-        }
+<button id="src-btn"
+class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase">
+Source
+</button>
 
-        function showDetails(index) {
-            const item = allMovies[index];
-            const container = document.getElementById('detail-view-container');
-            const isSeries = item.episodes && item.episodes.length > 0;
-            const links = isSeries ? item.episodes : (item.urls || [{title: "SD", url: item.url}]);
-            
-            currentLink = isSeries ? links[0].url : (item.urls ? item.urls[0] : (item.url || ""));
+<button id="gen-btn"
+class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase">
+Genre
+</button>
 
-            container.innerHTML = `
-                <div class="relative w-full aspect-video bg-black shadow-2xl">
-                    <video id="main-player" controls class="w-full h-full" poster="${item.logo}">
-                        <source src="${currentLink}" type="video/mp4">
-                    </video>
-                    <button onclick="closeDetails()" class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all">
-                        <i class="fas fa-arrow-left text-white"></i>
-                    </button>
-                </div>
+<button id="yr-btn"
+class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase">
+Year
+</button>
 
-                <div class="p-6">
-                    <h2 class="text-2xl font-black text-primary uppercase leading-tight tracking-tighter">${item.title}</h2>
-                    <div class="flex items-center gap-3 mt-2 mb-8">
-                        <span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md border border-white/5 opacity-60">${item.year}</span>
-                        <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md border border-primary/20 uppercase tracking-widest">${item.category}</span>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-[0.2em]">${isSeries ? 'Episodes' : 'Resolutions'}</p>
-                        <div class="grid ${isSeries ? 'grid-cols-4' : 'grid-cols-3'} gap-2">
-                            ${links.map((linkObj, idx) => {
-                                let label = isSeries ? (idx + 1) : (idx === 0 ? "SD" : idx === 1 ? "HD" : "FHD");
-                                let finalUrl = isSeries ? linkObj.url : (item.urls ? item.urls[idx] : item.url);
-                                return `<button onclick="switchSource('${finalUrl}', this)" class="action-btn text-[11px] font-black py-4 rounded-2xl ${idx === 0 ? 'active' : ''}">${label}</button>`;
-                            }).join('')}
-                        </div>
-                    </div>
+</div>
 
-                    <div class="mt-8">
-                        <button onclick="playExternal()" class="w-full bg-slate-800 border border-white/10 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4 active:scale-95 transition-all shadow-lg group">
-                            <i class="fas fa-play text-primary"></i> 
-                            <span class="text-xs uppercase tracking-widest">External Leone Player</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-            container.classList.add('active');
-        }
+<div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
 
-        function switchSource(url, btn) {
-            const video = document.getElementById('main-player');
-            currentLink = url;
-            document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            video.src = url;
-            video.load();
-            video.play();
-        }
+</main>
 
-        function playExternal() {
-            if (currentLink) window.location.href = `intent:${currentLink}#Intent;package=com.genuine.leone;type=video/*;end`;
-        }
+<div id="detail-view-container"></div>
 
-        function closeDetails() {
-            const v = document.getElementById('main-player');
-            if(v) v.pause();
-            document.getElementById('detail-view-container').classList.remove('active');
-        }
+<!-- Overlay -->
 
-        // Overlay & Filters
-        function openOverlay(title, items, callback) {
-            document.getElementById('overlay-title').innerText = title;
-            const list = document.getElementById('overlay-list');
-            list.innerHTML = items.map(item => `
-                <button onclick="(${callback.toString()})('${item.value}'); closeOverlay();" class="w-full p-5 text-center text-[10px] font-black border-b border-white/5 active:bg-primary active:text-black uppercase tracking-widest transition-all">
-                    ${item.label}
-                </button>
-            `).join('');
-            document.getElementById('overlay').classList.replace('hidden', 'flex');
-        }
+<div id="overlay"
+class="fixed inset-0 hidden items-center justify-center bg-black/80 z-[200]">
 
-        function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
+<div class="bg-darkCard w-[90%] max-w-md rounded-2xl overflow-hidden">
 
-        // Buttons
-        document.getElementById('src-btn').onclick = () => openOverlay("Source", sources, (v) => loadData(v));
-        document.getElementById('gen-btn').onclick = () => {
-            const genres = [...new Set(allMovies.map(m => m.category))];
-            const items = [{label: "All Categories", value: "all"}, ...genres.map(g => ({label: g, value: g}))];
-            openOverlay("Genre", items, (v) => v === "all" ? renderItems(allMovies) : renderItems(allMovies.filter(m => m.category === v)));
-        };
-        document.getElementById('yr-btn').onclick = () => {
-            const years = [...new Set(allMovies.map(m => m.year))].sort((a,b)=>b-a);
-            const items = [{label: "Any Year", value: "all"}, ...years.map(y => ({label: y, value: y}))];
-            openOverlay("Year", items, (v) => v === "all" ? renderItems(allMovies) : renderItems(allMovies.filter(m => m.year == v)));
-        };
-        document.getElementById('search-bar').oninput = (e) => {
-            const term = e.target.value.toLowerCase();
-            renderItems(allMovies.filter(m => m.title.toLowerCase().includes(term)));
-        };
-        document.getElementById('theme-toggle').onclick = () => document.documentElement.classList.toggle('dark');
+<div class="p-4 border-b border-white/10 text-center font-black text-primary"
+id="overlay-title">
+</div>
 
-        window.onload = () => loadData(sources[0].value);
-    </script>
+<div id="overlay-list" class="max-h-[400px] overflow-y-auto"></div>
+
+<button onclick="closeOverlay()"
+class="w-full py-4 text-center font-black bg-primary text-black">
+CLOSE
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const sources=[
+{label:"Default Series",value:"series.json"},
+{label:"Series Backup",value:"series-1.json"}
+];
+
+let allMovies=[];
+let currentLink="";
+
+async function loadData(url){
+
+try{
+
+const res=await fetch(url);
+allMovies=await res.json();
+
+renderItems(allMovies);
+
+}catch(e){
+
+console.log("JSON error");
+
+}
+
+}
+
+function renderItems(data){
+
+const grid=document.getElementById("movie-grid");
+
+grid.innerHTML=data.map((m,i)=>`
+
+<div onclick="showDetails(${i})"
+class="bg-white dark:bg-darkCard rounded-2xl overflow-hidden active:scale-95 transition shadow-lg">
+
+<img src="${m.logo}"
+class="w-full aspect-[3/4] object-cover">
+
+<div class="p-3">
+
+<h3 class="text-[10px] font-bold line-clamp-1 uppercase text-center">
+${m.title}
+</h3>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+function showDetails(index){
+
+const item=allMovies[index];
+
+const container=document.getElementById("detail-view-container");
+
+const isSeries=item.episodes && item.episodes.length>0;
+
+const links=isSeries ? item.episodes : (item.urls || [{title:"SD",url:item.url}]);
+
+currentLink=isSeries ? links[0].url : (item.urls ? item.urls[0] : item.url);
+
+container.innerHTML=`
+
+<div class="relative w-full aspect-video bg-black">
+
+<video id="main-player"
+controls
+class="w-full h-full"
+src="${currentLink}"
+poster="${item.logo}">
+</video>
+
+<button onclick="closeDetails()"
+class="absolute top-4 left-4 bg-black/50 w-10 h-10 rounded-full flex items-center justify-center">
+
+<i class="fas fa-arrow-left text-white"></i>
+
+</button>
+
+</div>
+
+<div class="p-6">
+
+<h2 class="text-2xl font-black text-primary uppercase">
+${item.title}
+</h2>
+
+<div class="flex gap-3 mt-2 mb-8">
+
+<span class="text-[10px] font-black bg-white/10 px-3 py-1 rounded-md">
+${item.year}
+</span>
+
+<span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1 rounded-md">
+${item.category}
+</span>
+
+</div>
+
+<div class="grid ${isSeries?'grid-cols-4':'grid-cols-3'} gap-2">
+
+${links.map((l,i)=>{
+
+let label=isSeries ? i+1 : ["SD","HD","FHD"][i];
+
+let url=isSeries ? l.url : (item.urls ? item.urls[i] : item.url);
+
+return `<button onclick="switchSource('${url}',this)"
+class="action-btn text-[11px] font-black py-4 rounded-2xl ${i==0?'active':''}">
+${label}
+</button>`
+
+}).join("")}
+
+</div>
+
+<button onclick="playExternal()"
+class="w-full mt-8 bg-slate-800 border border-white/10 text-white font-black py-5 rounded-2xl flex items-center justify-center gap-4">
+
+<i class="fas fa-play text-primary"></i>
+
+External Leone Player
+
+</button>
+
+</div>
+
+`;
+
+container.classList.add("active");
+
+}
+
+function switchSource(url,btn){
+
+const video=document.getElementById("main-player");
+
+currentLink=url;
+
+document.querySelectorAll(".action-btn")
+.forEach(b=>b.classList.remove("active"));
+
+btn.classList.add("active");
+
+video.src=url;
+video.play();
+
+}
+
+function playExternal(){
+
+if(currentLink)
+
+window.location.href=`intent:${currentLink}#Intent;package=com.genuine.leone;type=video/*;end`;
+
+}
+
+function closeDetails(){
+
+const v=document.getElementById("main-player");
+
+if(v) v.pause();
+
+document.getElementById("detail-view-container")
+.classList.remove("active");
+
+}
+
+function openOverlay(title,items,callback){
+
+document.getElementById("overlay-title").innerText=title;
+
+const list=document.getElementById("overlay-list");
+
+list.innerHTML=items.map(item=>`
+
+<button onclick="(${callback.toString()})('${item.value}');closeOverlay();"
+class="w-full p-5 text-center text-[10px] font-black border-b border-white/5">
+
+${item.label}
+
+</button>
+
+`).join("");
+
+document.getElementById("overlay")
+.classList.replace("hidden","flex");
+
+}
+
+function closeOverlay(){
+
+document.getElementById("overlay")
+.classList.replace("flex","hidden");
+
+}
+
+document.getElementById("src-btn").onclick=
+()=>openOverlay("Source",sources,(v)=>loadData(v));
+
+document.getElementById("gen-btn").onclick=()=>{
+
+const genres=[...new Set(allMovies.map(m=>m.category))];
+
+const items=[{label:"All Categories",value:"all"},
+...genres.map(g=>({label:g,value:g}))];
+
+openOverlay("Genre",items,(v)=>{
+
+v==="all"?renderItems(allMovies):
+renderItems(allMovies.filter(m=>m.category===v));
+
+});
+
+};
+
+document.getElementById("yr-btn").onclick=()=>{
+
+const years=[...new Set(allMovies.map(m=>m.year))]
+.sort((a,b)=>b-a);
+
+const items=[{label:"Any Year",value:"all"},
+...years.map(y=>({label:y,value:y}))];
+
+openOverlay("Year",items,(v)=>{
+
+v==="all"?renderItems(allMovies):
+renderItems(allMovies.filter(m=>m.year==v));
+
+});
+
+};
+
+document.getElementById("search-bar").oninput=(e)=>{
+
+const term=e.target.value.toLowerCase();
+
+renderItems(
+allMovies.filter(m=>m.title.toLowerCase().includes(term))
+);
+
+};
+
+document.getElementById("theme-toggle").onclick=
+()=>document.documentElement.classList.toggle("dark");
+
+window.onload=()=>loadData(sources[0].value);
+
+</script>
+
 </body>
 </html>
