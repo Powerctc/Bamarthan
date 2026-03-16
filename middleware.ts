@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const referer = request.headers.get('referer');
-  const allowedOrigin = 'https://yourwebsite.com';
+  const allowedOrigin = 'https://fotlivemovies.vercel.app/';
 
   // API လမ်းကြောင်းဖြစ်ပြီး referer က ကိုယ့် domain မဟုတ်ရင် ပိတ်မယ်
   if (request.nextUrl.pathname.startsWith('/api')) {
