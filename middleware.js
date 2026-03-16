@@ -1,16 +1,16 @@
-// middleware.ts
+// middleware.js
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function middleware(request) {
   const referer = request.headers.get('referer');
-  const allowedOrigin = 'https://fotlivemovies.vercel.app/';
+  const host = request.headers.get('host') || "";
 
-  // API လမ်းကြောင်းဖြစ်ပြီး referer က ကိုယ့် domain မဟုတ်ရင် ပိတ်မယ်
+  // API လမ်းကြောင်းတွေကို စစ်ဆေးမယ်
   if (request.nextUrl.pathname.startsWith('/api')) {
-    if (!referer || !referer.startsWith(allowedOrigin)) {
+    // Referer မပါရင် ဒါမှမဟုတ် ကိုယ့် Domain မဟုတ်ရင် ပိတ်မယ်
+    if (!referer || !referer.includes(host)) {
       return new NextResponse(
-        JSON.stringify({ message: 'Forbidden access' }),
+        JSON.stringify({ message: 'Unauthorized Access' }),
         { status: 403, headers: { 'content-type': 'application/json' } }
       );
     }
@@ -18,3 +18,8 @@ export function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+// API routes တွေအတွက်ပဲ middleware အလုပ်လုပ်အောင် ကန့်သတ်ထားမယ်
+export const config = {
+  matcher: '/api/:path*',
+};
