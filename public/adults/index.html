@@ -1,228 +1,149 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="my">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S4ITMM MOBILE - Adults 18+</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#facc15', 
-                        darkBg: '#0f172a',
-                        darkCard: '#1e293b'
-                    }
-                }
-            }
-        }
-    </script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lotaya Movies</title>
     <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
-        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-        
-        /* Color Run Border Logic */
-        .ad-color-run {
-            padding: 3px;
-            border-radius: 20px;
-            background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
-            background-size: 600% 600%;
-            animation: colorRun 4s linear infinite;
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
         }
-        @keyframes colorRun { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
-        
-        .ad-color-run img { border-radius: 17px; }
-        .movie-glow:active { box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Color Running Button */
+        @keyframes colorRun {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .download-btn {
+            text-decoration: none;
+            color: white;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            width: 90%;
+            max-width: 400px;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: colorRun 4s ease infinite;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        /* 1 Roll 2 Cards Layout */
+        .movie-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* တစ်တန်းလျှင် ၂ ကား */
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .movie-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .movie-card img {
+            width: 100%;
+            aspect-ratio: 2/3; /* ပုံအရွယ်အစား ညီနေစေရန် */
+            object-fit: cover;
+            display: block;
+        }
+
+        .movie-info {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .movie-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .loader {
+            border: 3px solid #334155;
+            border-top: 3px solid #38bdf8;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<body>
 
-    <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-        <button id="menu-toggle" class="text-primary text-2xl w-10 text-left active:scale-90 transition-transform">
-            <i class="fas fa-bars-staggered"></i>
-        </button>
+    <a href="https://m-sport-download.static.hf.space/" class="download-btn">
+        ပိုမိုကြည့်ရှုရန် App ကို ဒေါင်းလုဒ်ဆွဲပါ
+    </a>
 
-        <div class="flex flex-col items-center">
-            <span class="text-primary font-black text-xl tracking-tighter leading-none">S4ITMM</span>
-            <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Adults 18+</span>
-        </div>
-
-        <div class="w-10 text-right">
-            <button id="theme-toggle" class="text-xl text-slate-600 dark:text-primary active:scale-90 transition-transform">
-                <i class="fas fa-moon dark:hidden"></i>
-                <i class="fas fa-sun hidden dark:block"></i>
-            </button>
-        </div>
-    </header>
-
-    <div id="sidebar-container"></div>
-
-    <main class="p-4 pt-20">
-        
-        <div class="mb-6">
-            <div class="mb-6">
-            <a href="http://m-sport-download.static.hf.space/">
-                <div class="ad-color-run shadow-lg">
-                    <img src="https://fotlivemovies.vercel.app/sports.gif" class="w-full h-auto block">
-                </div>
-            </a>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2 mb-6">
-            <a href="https://www.xnxx.com/" class="bg-pink-600 text-white p-3 rounded-xl text-[10px] font-black text-center uppercase active:scale-95 transition-transform">XNXX</a>
-            <a href="https://www.pornhub.com/" class="bg-orange-500 text-white p-3 rounded-xl text-[10px] font-black text-center uppercase active:scale-95 transition-transform">Pornhub</a>
-        
-            <a href="https://yotepya.com/" class="bg-blue-600 text-white p-3 rounded-xl text-[10px] font-black text-center uppercase active:scale-95 transition-transform">ရုပ်ပြ</a>
-            </div>
-            <div class="grid grid-cols-3 gap-2 mb-6">
-            <a href="https://myanmarxnxxadultonly.blogspot.com/?m=1" class="bg-blue-600 text-white p-3 rounded-xl text-[10px] font-black text-center uppercase active:scale-95 transition-transform">Xblog</a>
-            <a href="https://blue.lawka-ahla.com/" class="bg-orange-500 text-white p-3 rounded-xl text-[10px] font-black text-center uppercase active:scale-95 transition-transform">ဝတ္ထု</a>
-            
-            <a href="https://drmgnyo.com/" class="bg-pink-600 text-white p-3 rounded-xl text-[10px] font-black text-center uppercase active:scale-95 transition-transform">ဝတ္ထု</a>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2 mb-6">
-            <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary active:text-black transition-all">Source</button>
-            <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary active:text-black transition-all">Genre</button>
-            <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase active:bg-primary active:text-black transition-all">Year</button>
-        </div>
-
-        <div id="loading" class="hidden py-20 text-center"><div class="inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>
-        
-        <div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
-    </main>
-
-    <div id="overlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-black/90 backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 scale-95 duration-200">
-            <div id="overlay-title" class="p-4 text-center font-black text-primary border-b border-slate-100 dark:border-slate-800 uppercase tracking-widest text-xs">Select Source</div>
-            <div id="overlay-list" class="max-h-[50vh] overflow-y-auto"></div>
-            <button onclick="closeOverlay()" class="w-full p-4 text-xs font-black opacity-40 uppercase tracking-widest border-t border-slate-100 dark:border-slate-800">Cancel</button>
-        </div>
-    </div>
-
-    <script src="../sidebar.js"></script>
+    <div id="loading" class="loader"></div>
+    <div class="movie-container" id="movie-grid"></div>
 
     <script>
-        const movieSources = [
-            { label: "Adults Server 1", value: "movies.json" },
-            { label: "Adults Server 2", value: "adults.m3u" },
-            { label: "Adults Server 3", value: "0108.m3u" }
+        const apis = [
+            'https://livesportmm-lotayamovies.hf.space/api/movies',
+            'https://livesportmm-lotayamovies-2.hf.space/api/movies'
         ];
 
-        let allMovies = [];
-        const KEY_LAST_WATCHED = "s4itmm_last_watched_adult";
-
-        document.getElementById('theme-toggle').onclick = () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        };
-
-        const parseM3U = (data) => {
-            const lines = data.split('\n');
-            const items = [];
-            let currentItem = {};
-            for (const line of lines) {
-                if (line.startsWith('#EXTINF:')) {
-                    const logoMatch = line.match(/tvg-logo="([^"]+)"/);
-                    currentItem.logo = logoMatch ? logoMatch[1] : '';
-                    currentItem.title = line.split(',').pop().trim();
-                } else if (line.startsWith('http')) {
-                    currentItem.link = line;
-                    items.push(currentItem);
-                    currentItem = {};
-                }
-            }
-            return items;
-        };
-
-        async function loadMovies(url) {
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('movie-grid').innerHTML = '';
+        async function fetchMovies() {
+            const grid = document.getElementById('movie-grid');
+            const loader = document.getElementById('loading');
             
             try {
-                const res = await fetch(url);
-                const textData = await res.text();
-                
-                if (textData.trim().startsWith('{') || textData.trim().startsWith('[')) {
-                    const json = JSON.parse(textData);
-                    allMovies = json.items || (Array.isArray(json) ? json : []);
-                } else {
-                    allMovies = parseM3U(textData);
+                for (const url of apis) {
+                    const response = await fetch(url);
+                    const movies = await response.json();
+                    
+                    // API တစ်ခုစီမှ ၅ ကားစီ ယူမည်
+                    const limitedMovies = movies.slice(0, 5);
+                    
+                    limitedMovies.forEach(movie => {
+                        const card = document.createElement('div');
+                        card.className = 'movie-card';
+                        
+                        // API ထဲရှိ key name (poster သို့မဟုတ် image) အပေါ်မူတည်ပြီး ပြင်ပေးပါ
+                        card.innerHTML = `
+                            <img src="${movie.poster || movie.image || 'https://via.placeholder.com/200x300'}" alt="movie">
+                            <div class="movie-info">
+                                <p class="movie-title">${movie.title || 'Loading...'}</p>
+                            </div>
+                        `;
+                        grid.appendChild(card);
+                    });
                 }
-                renderMovies(allMovies);
-            } catch (e) {
-                document.getElementById('movie-grid').innerHTML = '<div class="col-span-2 text-center py-10 opacity-50">Failed to load content.</div>';
+                loader.style.display = 'none';
+            } catch (error) {
+                grid.innerHTML = '<p style="grid-column: span 2; text-align: center;">Error loading movies.</p>';
+                loader.style.display = 'none';
             }
-            document.getElementById('loading').classList.add('hidden');
         }
 
-        function renderMovies(data) {
-            const grid = document.getElementById('movie-grid');
-            const lastWatched = localStorage.getItem(KEY_LAST_WATCHED);
-            grid.innerHTML = '';
-
-            data.forEach(m => {
-                const isRecent = m.link === lastWatched;
-                const card = document.createElement('div');
-                card.className = `group relative bg-white dark:bg-darkCard rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 transition-all active:scale-95 movie-glow ${isRecent ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-darkBg' : 'shadow-sm'}`;
-                
-                card.innerHTML = `
-                    ${isRecent ? '<span class="absolute top-2 right-2 bg-primary text-black text-[7px] font-black px-1.5 py-0.5 rounded shadow-lg z-10 uppercase">Recent</span>' : ''}
-                    <div class="aspect-video overflow-hidden bg-slate-900">
-                        <img src="${m.logo || m.image}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x225/1e293b/facc15?text=18+'">
-                    </div>
-                    <div class="p-3">
-                        <h3 class="text-[10px] font-bold line-clamp-1 text-slate-800 dark:text-slate-100">${m.title || m.name}</h3>
-                        <div class="flex items-center justify-between mt-1.5">
-                            <span class="text-[7px] font-black bg-red-500/10 text-red-500 px-1.5 py-0.5 rounded uppercase">ADULT</span>
-                            <span class="text-[8px] opacity-40 font-bold uppercase tracking-widest">${m.year || '2026'}</span>
-                        </div>
-                    </div>
-                `;
-                
-                card.onclick = () => {
-                    localStorage.setItem(KEY_LAST_WATCHED, m.link);
-                    localStorage.setItem("selectedMovie", JSON.stringify(m));
-                    window.location.href = "movie_detail.html";
-                };
-                grid.appendChild(card);
-            });
-        }
-
-        function openOverlay(title, items, callback) {
-            document.getElementById('overlay-title').innerText = title;
-            const list = document.getElementById('overlay-list');
-            list.innerHTML = '';
-            items.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full p-4 text-center text-xs font-bold border-b border-slate-50 dark:border-slate-800 active:bg-primary active:text-black transition-all';
-                btn.innerText = item.label;
-                btn.onclick = () => { callback(item.value, item.label); closeOverlay(); };
-                list.appendChild(btn);
-            });
-            document.getElementById('overlay').classList.replace('hidden', 'flex');
-        }
-
-        function closeOverlay() { document.getElementById('overlay').classList.replace('flex', 'hidden'); }
-
-        document.getElementById('src-btn').onclick = () => {
-            openOverlay("Change Source", movieSources, (val, label) => {
-                document.getElementById('src-btn').textContent = label;
-                loadMovies(val);
-            });
-        };
-
-        window.onload = () => {
-            if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
-            loadMovies(movieSources[0].value);
-        };
+        fetchMovies();
     </script>
 </body>
-      </html>
+</html>
