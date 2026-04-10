@@ -3,147 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotaya Movies</title>
+    <title>S4ITMM - Movies Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-color: #0b1120;
             --card-bg: #1e293b;
-            --text-color: #f8fafc;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Color Running Button */
+        /* Color Running Button Animation */
         @keyframes colorRun {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        .download-btn {
-            text-decoration: none;
-            color: white;
-            padding: 12px 20px;
-            font-weight: bold;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            width: 90%;
-            max-width: 400px;
+        .color-btn {
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
             background-size: 400% 400%;
             animation: colorRun 4s ease infinite;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(231, 60, 126, 0.3);
         }
 
-        /* 1 Roll 2 Cards Layout */
-        .movie-container {
+        /* 1 Row 2 Cards Grid Customization */
+        .movie-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* တစ်တန်းလျှင် ၂ ကား */
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            width: 100%;
-            max-width: 500px;
         }
 
         .movie-card {
             background: var(--card-bg);
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
         }
 
-        .movie-card img {
-            width: 100%;
-            aspect-ratio: 2/3; /* ပုံအရွယ်အစား ညီနေစေရန် */
-            object-fit: cover;
-            display: block;
+        .movie-card:active {
+            transform: scale(0.95);
         }
 
-        .movie-info {
-            padding: 10px;
-            text-align: center;
-        }
-
-        .movie-title {
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin: 0;
-            white-space: nowrap;
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
         }
-
-        .loader {
-            border: 3px solid #334155;
-            border-top: 3px solid #38bdf8;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            animation: spin 1s linear infinite;
-            margin-top: 20px;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="p-4">
 
-    <a href="https://m-sport-download.static.hf.space/" class="download-btn">
-        ပိုမိုကြည့်ရှုရန် App ကို ဒေါင်းလုဒ်ဆွဲပါ
-    </a>
+    <div class="max-w-md mx-auto mb-6 text-center">
+        <h1 class="text-xl font-bold text-white mb-4">Lotaya Movies Selection</h1>
+        
+        <a href="https://m-sport-download.static.hf.space/" 
+           class="color-btn w-full block py-4 rounded-2xl text-white font-black uppercase tracking-wider text-sm shadow-lg mb-6">
+            <i class="fas fa-download mr-2"></i> ပိုမိုကြည့်ရှုရန် App ကို ဒေါင်းလုဒ်ဆွဲပါ
+        </a>
+    </div>
 
-    <div id="loading" class="loader"></div>
-    <div class="movie-container" id="movie-grid"></div>
+    <div id="movie-grid" class="movie-grid max-w-md mx-auto">
+        <div class="animate-pulse bg-slate-800 h-60 rounded-12"></div>
+        <div class="animate-pulse bg-slate-800 h-60 rounded-12"></div>
+    </div>
+
+    <div id="error-msg" class="hidden text-center mt-10 text-slate-500 text-sm">
+        <i class="fas fa-exclamation-circle mb-2 text-2xl"></i>
+        <p>ဒေတာရယူ၍မရပါ သို့မဟုတ် ခွင့်ပြုချက်မရှိပါ။</p>
+    </div>
 
     <script>
-        const apis = [
-            'https://livesportmm-lotayamovies-2.hf.space/api/movies',
-            'https://livesportmm-lotayamovies.hf.space/api/movies'
-        ];
+        // ၁။ လုံခြုံရေးအတွက် Session စစ်ဆေးခြင်း
+        // အကယ်၍ Verification မလုပ်ထားရင် index (သို့မဟုတ်) ပြန်ပို့မယ်
+        if (sessionStorage.getItem("unlocked") !== "yes") {
+            window.location.replace("index.html");
+        }
 
-        async function fetchMovies() {
+        async function loadMovies() {
             const grid = document.getElementById('movie-grid');
-            const loader = document.getElementById('loading');
-            
+            const errorMsg = document.getElementById('error-msg');
+
             try {
-                for (const url of apis) {
-                    const response = await fetch(url);
-                    const movies = await response.json();
+                // ၂။ ကျွန်တော်တို့ တည်ဆောက်ခဲ့တဲ့ API ကို လှမ်းခေါ်ခြင်း
+                const response = await fetch('/api/movies/jav');
+                
+                if (!response.ok) throw new Error('Unauthorized');
+
+                const movies = await response.json();
+                
+                // Grid ကို ရှင်းထုတ်ခြင်း
+                grid.innerHTML = '';
+
+                // ၃။ ရလာတဲ့ ၁၀ ကား (၅ ကားစီ) ကို ပတ်ပြီး ပြသခြင်း
+                movies.forEach(movie => {
+                    const card = document.createElement('div');
+                    card.className = 'movie-card border border-slate-800 shadow-xl';
                     
-                    // API တစ်ခုစီမှ ၅ ကားစီ ယူမည်
-                    const limitedMovies = movies.slice(0, 5);
-                    
-                    limitedMovies.forEach(movie => {
-                        const card = document.createElement('div');
-                        card.className = 'movie-card';
-                        
-                        // API ထဲရှိ key name (poster သို့မဟုတ် image) အပေါ်မူတည်ပြီး ပြင်ပေးပါ
-                        card.innerHTML = `
-                            <img src="${movie.poster || movie.image || 'https://via.placeholder.com/200x300'}" alt="movie">
-                            <div class="movie-info">
-                                <p class="movie-title">${movie.title || 'Loading...'}</p>
+                    card.innerHTML = `
+                        <div class="relative">
+                            <img src="${movie.poster || movie.image || 'https://via.placeholder.com/200x300'}" 
+                                 class="w-full aspect-[2/3] object-cover" 
+                                 alt="movie">
+                            <div class="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] font-bold text-red-400 uppercase">
+                                HD
                             </div>
-                        `;
-                        grid.appendChild(card);
-                    });
-                }
-                loader.style.display = 'none';
+                        </div>
+                        <div class="p-3">
+                            <h3 class="text-xs font-semibold text-slate-200 line-clamp-1">${movie.title}</h3>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
             } catch (error) {
-                grid.innerHTML = '<p style="grid-column: span 2; text-align: center;">Error loading movies.</p>';
-                loader.style.display = 'none';
+                console.error("Error:", error);
+                grid.innerHTML = '';
+                errorMsg.classList.remove('hidden');
             }
         }
 
-        fetchMovies();
+        // စာမျက်နှာစဖွင့်သည်နှင့် Load လုပ်မည်
+        window.onload = loadMovies;
     </script>
 </body>
 </html>
