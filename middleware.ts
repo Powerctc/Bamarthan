@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
   }
 
   // ၂။ APK User Agent စစ်ဆေးခြင်း
-  if (!userAgent.includes('s4itmm-tv-apk/2.0')) {
+  if (!userAgent.includes('https://fotlivemovies.vercel.app/')) {
     // Access Denied ဖြစ်တဲ့အခါ ပြမယ့် HTML Design
     return new NextResponse(
       `
