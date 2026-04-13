@@ -3,134 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S4ITMM - Movies Selection</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Movie Detail Card</title>
     <style>
-        :root {
-            --bg-color: #0b1120;
-            --card-bg: #1e293b;
-        }
-
         body {
-            background-color: var(--bg-color);
+            background-color: #0f172a;
             color: #f8fafc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Color Running Button Animation */
-        @keyframes colorRun {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .color-btn {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: colorRun 4s ease infinite;
-            box-shadow: 0 4px 15px rgba(231, 60, 126, 0.3);
-        }
-
-        /* 1 Row 2 Cards Grid Customization */
-        .movie-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         .movie-card {
-            background: var(--card-bg);
-            border-radius: 12px;
+            background: #1e293b;
+            border-radius: 16px;
             overflow: hidden;
-            transition: transform 0.2s;
+            width: 350px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
         }
 
-        .movie-card:active {
-            transform: scale(0.95);
+        .movie-card:hover {
+            transform: translateY(-5px);
         }
 
-        .line-clamp-1 {
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .movie-poster {
+            width: 100%;
+            height: none;
+            object-fit: cover;
+            border-bottom: 3px solid #3b82f6;
         }
+
+        .movie-content {
+            padding: 20px;
+        }
+
+        .movie-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .movie-meta {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            background: #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
+        .btn-watch {
+            display: block;
+            background: #3b82f6;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-watch:hover {
+            background: #2563eb;
+        }
+         /* --- Running Color Banner --- */
+
+    .banner-container {
+
+      position: relative;
+
+      margin-bottom: 30px;
+
+      padding: 3px;
+
+      border-radius: 18px;
+
+      background: linear-gradient(270deg, #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff, #ff0000);
+
+      background-size: 600%;
+
+      animation: colorRun 5s linear infinite;
+
+      overflow: hidden;
+
+    }
+
+    @keyframes colorRun { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+    .banner-inner { background: var(--bg-dark); border-radius: 15px; overflow: hidden; }
+
+    .banner-inner img { width: 100%; display: block; object-fit: cover; max-height: 220px; }
+    
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <div class="max-w-md mx-auto mb-6 text-center">
-        <h1 class="text-xl font-bold text-white mb-4">Lotaya Movies Selection</h1>
+    <div class="movie-card">
+        <img src="https://javmyanmar.com/wp-content/uploads/2026/04/cemd783pl.webp" alt="Fc2ppv Poster" class="movie-poster">
         
-        <a href="https://m-sport-download.static.hf.space/" 
-           class="color-btn w-full block py-4 rounded-2xl text-white font-black uppercase tracking-wider text-sm shadow-lg mb-6">
-            <i class="fas fa-download mr-2"></i> ပိုမိုကြည့်ရှုရန် App ကို ဒေါင်းလုဒ်ဆွဲပါ
+        <div class="movie-content">
+            <h2 class="movie-title">CEMD-783</h2>
+            
+            <div class="movie-meta">
+                <span class="badge">2026</span>
+                <span class="badge">MM Sub</span>
+            </div>
+
+            <a href="https://video.hejav.site/cemd-783.mp4" class="btn-watch">
+                ယခုကြည့်မည်
+            </a>
+        <br>
+<div class="banner-container">
+
+      <div class="banner-inner">
+
+        <a href="https://m-sport-download.static.hf.space/" target="_blank">🎥ပိုမိုကြည့်ရှု့ရန်ဒေါင်းပါ
+
+          <img alt="Banner" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjk4GfoDCjC4PUepdmoM5h1K9zrFBRQun9bRwx0ezVXh49vWOSRrtLGZRVE7dVAo59SYWkQ6TET6qggaGdTLIOq6BOLEg7Y_g9lGPnfjb_kHHqLwfFgsztFIXZyRRpAbwiAW7nQ0E0iFNlcQaImYPheedfSE2hGTxTJNNut-Wm45qRVi-kbiwRIHY3BTEo/s320/sports.gif" />
+
         </a>
+
+      </div></div></div>
     </div>
-
-    <div id="movie-grid" class="movie-grid max-w-md mx-auto">
-        <div class="animate-pulse bg-slate-800 h-60 rounded-12"></div>
-        <div class="animate-pulse bg-slate-800 h-60 rounded-12"></div>
-    </div>
-
-    <div id="error-msg" class="hidden text-center mt-10 text-slate-500 text-sm">
-        <i class="fas fa-exclamation-circle mb-2 text-2xl"></i>
-        <p>ဒေတာရယူ၍မရပါ သို့မဟုတ် ခွင့်ပြုချက်မရှိပါ။</p>
-    </div>
-
-    <script>
-        // ၁။ လုံခြုံရေးအတွက် Session စစ်ဆေးခြင်း
-        // အကယ်၍ Verification မလုပ်ထားရင် index (သို့မဟုတ်) ပြန်ပို့မယ်
-        if (sessionStorage.getItem("unlocked") !== "yes") {
-            window.location.replace("index.html");
-        }
-
-        async function loadMovies() {
-            const grid = document.getElementById('movie-grid');
-            const errorMsg = document.getElementById('error-msg');
-
-            try {
-                // ၂။ ကျွန်တော်တို့ တည်ဆောက်ခဲ့တဲ့ API ကို လှမ်းခေါ်ခြင်း
-                const response = await fetch('/api/movies/jav');
-                
-                if (!response.ok) throw new Error('Unauthorized');
-
-                const movies = await response.json();
-                
-                // Grid ကို ရှင်းထုတ်ခြင်း
-                grid.innerHTML = '';
-
-                // ၃။ ရလာတဲ့ ၁၀ ကား (၅ ကားစီ) ကို ပတ်ပြီး ပြသခြင်း
-                movies.forEach(movie => {
-                    const card = document.createElement('div');
-                    card.className = 'movie-card border border-slate-800 shadow-xl';
-                    
-                    card.innerHTML = `
-                        <div class="relative">
-                            <img src="${movie.poster || movie.image || 'https://via.placeholder.com/200x300'}" 
-                                 class="w-full aspect-[2/3] object-cover" 
-                                 alt="movie">
-                            <div class="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded text-[10px] font-bold text-red-400 uppercase">
-                                HD
-                            </div>
-                        </div>
-                        <div class="p-3">
-                            <h3 class="text-xs font-semibold text-slate-200 line-clamp-1">${movie.title}</h3>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-
-            } catch (error) {
-                console.error("Error:", error);
-                grid.innerHTML = '';
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        // စာမျက်နှာစဖွင့်သည်နှင့် Load လုပ်မည်
-        window.onload = loadMovies;
-    </script>
 </body>
 </html>
