@@ -9,6 +9,10 @@ const APPROVED_USERS_URL = `${HF_BASE_URL}/Web/approved_users.json`;
 const ADD_USER_API = `${HF_BASE_URL}/add_user`;
 const DEFAULT_SEASON_PASS = "2026-12-31T23:59:59Z";
 
+// Web Version Storage Keys
+const ID_KEY = 'zetflix_device_id_web'; // Mobile နဲ့ မရောအောင် _web ပြောင်းထားတယ်
+const APPROVED_KEY = 'zetflix_approved';
+
 export default function Page() {
   const [deviceID, setDeviceID] = useState(null)
   const [expiryDate, setExpiryDate] = useState(null)
@@ -19,36 +23,43 @@ export default function Page() {
   const [copied, setCopied] = useState(false)
   const timerRef = useRef(null)
 
-  // ၁။ Device ID Generator (Stable ID)
+  // ၁။ Web-Specific Fingerprint Generator
   const generateFingerprintId = useCallback(() => {
     if (typeof window === 'undefined') return null;
-    let id = localStorage.getItem('zetflix_device_id_mob')
+    
+    let id = localStorage.getItem(ID_KEY)
     if (id) return id;
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     ctx.textBaseline = "alphabetic"; ctx.font = "14px Arial";
-    ctx.fillText('S4ITMM-MOBILE-2026', 2, 15);
+    // Web version အတွက် unique identifier ပြောင်းလိုက်တယ်
+    ctx.fillText('S4ITMM-WEB-SURF-2026', 2, 15);
+    
     const b64 = canvas.toDataURL().replace("data:image/png;base64,", "");
     let hash = 0;
     for (let i = 0; i < b64.length; i++) { hash = (hash << 5) - hash + b64.charCodeAt(i); hash |= 0; }
-    const platformInfo = navigator.userAgent + screen.width + screen.height;
+    
+    const platformInfo = navigator.userAgent + screen.width + screen.height + navigator.language;
     let finalHash = hash;
     for (let j = 0; j < platformInfo.length; j++) { finalHash = (finalHash << 5) - finalHash + platformInfo.charCodeAt(j); }
-    const finalID = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12) + "mob";
-    localStorage.setItem('zetflix_device_id_mob', finalID);
+    
+    const finalID = Math.abs(finalHash).toString().padStart(12, "0").slice(0, 12) + "web";
+    localStorage.setItem(ID_KEY, finalID);
     return finalID;
   }, [])
 
   // ၂။ Redirect Logic
   const redirect = (id, expires, name) => {
-    localStorage.setItem('zetflix_approved', 'true');
+    localStorage.setItem(APPROVED_KEY, 'true');
     localStorage.setItem('zetflix_device_id', id);
     localStorage.setItem('zetflix_expiry', expires || '');
     if (name) localStorage.setItem('zetflix_user_name', name);
-    window.location.href = '/index.html';
+    // Web app route ပေါ်မူတည်ပြီး ပြောင်းနိုင်ပါတယ်
+    window.location.href = '/home'; 
   }
 
-  // ၃။ Access Check (ဦးမောင် ပြင်လိုက်တဲ့ JSON Date ကို အဓိက စစ်ဆေးမည့်အပိုင်း)
+  // ၃။ Access Check Logic
   const checkAccess = useCallback(async (id) => {
     try {
       const res = await fetch(`${APPROVED_USERS_URL}?_t=${Date.now()}`, { 
@@ -58,55 +69,53 @@ export default function Page() {
       const users = res.ok ? await res.json() : []
       let user = users.find(u => u.id === id)
 
-      // အကယ်၍ User မရှိသေးရင် Auto Register လုပ်မယ်
+      // Web User အဖြစ် Auto Register လုပ်ခြင်း
       if (!user) {
         const registerRes = await fetch(ADD_USER_API, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, expires: DEFAULT_SEASON_PASS, name: "Mobile_User", type: "phone" })
+          method: "POST", 
+          headers: { "Content-Type": "application/json" },
+          // type ကို "web" ဟု ပြောင်းလဲသတ်မှတ်ထားသည်
+          body: JSON.stringify({ id, expires: DEFAULT_SEASON_PASS, name: "Web_Explorer", type: "web" })
         });
-        if (registerRes.ok) user = { id, expires: DEFAULT_SEASON_PASS, name: "Mobile_User" };
+        if (registerRes.ok) user = { id, expires: DEFAULT_SEASON_PASS, name: "Web_Explorer" };
       }
 
       if (user) {
         setUserName(user.name);
         setExpiryDate(user.expires);
 
-        // --- Date Comparison Engine (ဦးမောင်အတွက် အဓိကပြင်ထားသောအပိုင်း) ---
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // ဒီနေ့ မနက် 00:00:00
+        today.setHours(0, 0, 0, 0); 
+        const expDate = new Date(user.expires);
 
-        // JSON ထဲက Date ကို Parse လုပ်ခြင်း
-        const expStr = user.expires;
-        const expDate = new Date(expStr);
-
-        // Date Format စစ်ဆေးခြင်း
-        const isValidDate = !isNaN(expDate.getTime());
-
-        if (!isValidDate || expDate < today) {
-          // Date format မှားနေရင် (သို့) ဒီနေ့ထက် ငယ်နေရင် (Expired)
+        if (isNaN(expDate.getTime()) || expDate < today) {
           setIsExpired(true);
           setStatus('denied');
         } else {
-          // Date မှန်ပြီး သက်တမ်းရှိနေရင်
           setIsExpired(false);
           setStatus('approved');
           if (timerRef.current) clearInterval(timerRef.current)
           timerRef.current = setInterval(() => {
             setCountdown(prev => {
-              if (prev <= 1) { clearInterval(timerRef.current); redirect(id, user.expires, user.name); return 0; }
+              if (prev <= 1) { 
+                clearInterval(timerRef.current); 
+                redirect(id, user.expires, user.name); 
+                return 0; 
+              }
               return prev - 1;
             })
           }, 1000)
         }
       } else { setStatus('denied'); }
     } catch (e) { 
-      console.error("Critical Error:", e);
+      console.error("Web Access Error:", e);
       setStatus('denied'); 
     }
   }, [])
 
   useEffect(() => {
-    const id = generateFingerprintId(); setDeviceID(id);
+    const id = generateFingerprintId(); 
+    setDeviceID(id);
     if (id) checkAccess(id);
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [generateFingerprintId, checkAccess])
@@ -118,78 +127,72 @@ export default function Page() {
     }
   }
 
-  // --- UI Loading ---
+  // --- UI Rendering --- (Loading State)
   if (status === 'loading') {
     return (
-      <div className="fixed inset-0 z-[999] bg-[#0f172a] flex flex-col items-center justify-center p-6 text-white text-center">
-        <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-6"></div>
-        <h2 className="text-2xl font-black tracking-widest uppercase">FOTMOV TV</h2>
-        <p className="text-slate-400 text-xs mt-3 uppercase tracking-widest font-medium">Checking Access...</p>
+      <div className="fixed inset-0 z-[999] bg-[#020617] flex flex-col items-center justify-center p-6 text-white text-center">
+        <div className="w-12 h-12 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin mb-6"></div>
+        <h2 className="text-xl font-bold tracking-widest uppercase">FOTMOV WEB</h2>
+        <p className="text-slate-500 text-[10px] mt-2 uppercase tracking-widest">Verifying Connection...</p>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl relative">
+    <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 selection:bg-sky-500/30">
+      <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-[2rem] p-12 shadow-2xl shadow-black">
         
         {status === 'approved' ? (
-          <div className="text-center relative z-10">
-            <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/30">
-              <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path></svg>
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 mb-6">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Access Granted</h1>
-            <p className="text-slate-400 mb-8">Hello, <span className="text-green-400 font-bold">{userName}</span></p>
-            <div className="relative w-32 h-32 mx-auto mb-10">
-              <svg className="w-full h-full -rotate-90">
-                <circle cx="64" cy="64" r="60" className="stroke-white/10 fill-none" strokeWidth="6" />
-                <circle cx="64" cy="64" r="60" className="stroke-green-500 fill-none transition-all duration-1000" strokeWidth="6" 
-                  strokeDasharray="377" strokeDashoffset={377 - (377 * (countdown/REDIRECT_DELAY))} strokeLinecap="round" />
-              </svg>
-              <span className="absolute inset-0 flex items-center justify-center text-4xl font-black text-white">{countdown}</span>
+            <h1 className="text-2xl font-bold text-white mb-2">Authenticated</h1>
+            <p className="text-slate-400 mb-8 text-sm">Welcome back, <span className="text-sky-400 font-semibold">{userName}</span></p>
+            
+            <div className="mb-10 flex justify-center">
+              <div className="relative flex items-center justify-center">
+                <svg className="w-24 h-24 -rotate-90">
+                  <circle cx="48" cy="48" r="44" className="stroke-white/5 fill-none" strokeWidth="4" />
+                  <circle cx="48" cy="48" r="44" className="stroke-sky-500 fill-none transition-all duration-1000" strokeWidth="4" 
+                    strokeDasharray="276" strokeDashoffset={276 - (276 * (countdown/REDIRECT_DELAY))} strokeLinecap="round" />
+                </svg>
+                <span className="absolute text-2xl font-mono font-bold text-white">{countdown}</span>
+              </div>
             </div>
-            <button onClick={() => redirect(deviceID, expiryDate, userName)} className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-5 rounded-2xl transition-all shadow-xl shadow-blue-600/20">Enter Now</button>
+
+            <button onClick={() => redirect(deviceID, expiryDate, userName)} className="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-sky-900/20">Launch Portal</button>
           </div>
         ) : (
-          <div className="text-center relative z-10">
-            <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/30 text-red-500 flex items-center justify-center">
-               <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m0-8v4m-9 5h18c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2H3c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2z"></path></svg>
-            </div>
-            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
-              {isExpired ? "Access Expired" : "Unauthorized"}
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white mb-2">
+              {isExpired ? "Access Revoked" : "Web Access Required"}
             </h1>
-            <p className="text-slate-400 mb-8 leading-relaxed px-4">
+            <p className="text-slate-400 mb-8 text-sm leading-relaxed">
               {isExpired 
-                ? "သင်၏ သက်တမ်းကုန်ဆုံးသွားပါပြီ။ ကျေးဇူးပြု၍ သက်တမ်းတိုးပေးပါ။" 
-                : "အသုံးပြုရန် ခွင့်ပြုချက် ရယူရန် လိုအပ်ပါသည်။"}
+                ? "သင်၏ ဝဘ်ဆိုဒ်အသုံးပြုခွင့် သက်တမ်းကုန်ဆုံးသွားပါပြီ။" 
+                : "ဤဝဘ်ဆိုဒ်ကို အသုံးပြုရန် အက်ဒမင်ထံမှ ခွင့်ပြုချက် လိုအပ်ပါသည်။"}
             </p>
             
-            <div className="bg-black/40 rounded-3xl p-6 mb-8 border border-white/5 text-left">
-              <div className="flex justify-between items-center mb-3 text-[10px] font-black uppercase tracking-widest">
-                <span className="text-slate-500">Device Identity</span>
-                <span className="text-red-500 bg-red-500/10 px-2 py-1 rounded-md">Status: Expired</span>
-              </div>
-              <p className="text-blue-400 font-mono text-sm break-all bg-blue-500/5 p-3 rounded-xl border border-blue-500/20">{deviceID}</p>
+            <div className="bg-black/20 rounded-2xl p-5 mb-8 border border-white/5 text-left">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Web Instance ID</span>
+              <code className="text-sky-400 font-mono text-xs break-all block bg-sky-950/30 p-3 rounded-lg border border-sky-500/10">
+                {deviceID}
+              </code>
             </div>
 
-            <div className="space-y-4 mb-8">
-              <a href="https://t.me/S4ITMM" target="_blank" className="flex items-center justify-center gap-3 bg-[#0088cc]/10 hover:bg-[#0088cc]/20 text-[#0088cc] py-4 rounded-2xl border border-[#0088cc]/30 transition-all">
-                <span className="font-bold">Contact Admin to Renew</span>
-              </a>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <button onClick={handleCopy} className={`py-4 rounded-2xl font-bold transition-all text-xs uppercase ${copied ? 'bg-green-600 text-white' : 'bg-white/10 text-white border border-white/10'}`}>
-                {copied ? "Copied!" : "Copy ID"}
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={handleCopy} className="py-3.5 rounded-xl font-bold text-[11px] uppercase transition-all bg-white/5 text-white border border-white/10 hover:bg-white/10">
+                {copied ? "Copied!" : "Copy Identity"}
               </button>
-              <button onClick={checkAccess.bind(null, deviceID)} className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl transition-all text-xs uppercase shadow-lg shadow-blue-600/20">Retry</button>
+              <button onClick={() => window.location.reload()} className="bg-sky-600 hover:bg-sky-500 text-white font-bold py-3.5 rounded-xl text-[11px] uppercase shadow-lg shadow-sky-900/20">Re-verify</button>
             </div>
           </div>
         )}
       </div>
 
-      <footer className="mt-12 text-center opacity-30 text-[9px] text-white uppercase tracking-[0.4em] font-bold">
-        S4ITMM Mobile Control v2.1
+      <footer className="mt-8 text-[10px] text-slate-600 uppercase tracking-[0.3em]">
+        FOTMOV TV &bull; Web Station v2.2
       </footer>
     </div>
   )
