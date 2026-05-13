@@ -1,4 +1,4 @@
-'use client'
+home'nt'
 
 import { useEffect, useState, useRef, useCallback } from 'react'
 
@@ -56,7 +56,7 @@ export default function Page() {
     localStorage.setItem('zetflix_expiry', expires || '');
     if (name) localStorage.setItem('zetflix_user_name', name);
     // Web app route ပေါ်မူတည်ပြီး ပြောင်းနိုင်ပါတယ်
-    window.location.href = '/home'; 
+    window.location.href = '/index.html'; 
   }
 
   // ၃။ Access Check Logic
