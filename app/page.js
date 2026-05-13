@@ -5,7 +5,7 @@ import { useEffect, useState, useRef, useCallback } from 'react'
 // Configuration
 const REDIRECT_DELAY = 5
 const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
-const APPROVED_USERS_URL = `${HF_BASE_URL}/Phone/approved_users.json`;
+const APPROVED_USERS_URL = `${HF_BASE_URL}/Web/approved_users.json`;
 const ADD_USER_API = `${HF_BASE_URL}/add_user`;
 const DEFAULT_SEASON_PASS = "2026-05-31T23:59:59Z";
 
