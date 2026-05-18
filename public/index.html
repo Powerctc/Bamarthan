@@ -132,20 +132,20 @@
             grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
             
             try {
-                // (၁) Main API ကို ဒေတာဆွဲမယ် (CORS ဖြစ်နိုင်ခြေရှိရင် Proxy သို့ Auto ပြောင်းခေါ်မည်)
                 let apiData = null;
-                const apiMainUrl = '/api/get-matches.js?_t=' + Date.now();
+                // Absolute URL ပြန်ပြင်ဆင်ထားသည်
+                const apiMainUrl = 'https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now();
+                
                 try {
                     const res = await fetch(apiMainUrl, { cache: "no-store" });
                     apiData = await res.json();
                 } catch(e) {
-                    const proxyRes = await fetch(VIDEO_PROXY + encodeURIComponent(window.location.origin + apiMainUrl));
+                    const proxyRes = await fetch(VIDEO_PROXY + encodeURIComponent(apiMainUrl));
                     apiData = await proxyRes.json();
                 }
 
                 let originalMatches = Array.isArray(apiData) ? apiData : (apiData?.context || apiData?.matches || []);
                 
-                // (၂) Selection JSON ကို ဖတ်မယ်
                 const selectionRes = await fetch('selection.json?_t=' + Date.now(), { cache: "no-store" });
                 const selArray = await selectionRes.json() || [];
                 
@@ -154,7 +154,6 @@
                     return;
                 }
 
-                // (၃) Smart Mapping Logic ကို ကျစ်လျစ်အောင် ချုံ့ထားခြင်း
                 allMatches = selArray.map(sel => {
                     const matchedDetail = originalMatches.find(m => {
                         const mH = String(m.home_name || "").toLowerCase().replace(/\s+/g, '');
@@ -165,7 +164,7 @@
                     let timeMs = Number(sel.match_time || matchedDetail?.match_time || Date.now());
                     if (timeMs.toString().length <= 10) timeMs *= 1000;
 
-                    let mergedLinks = (sel.links || []).map((l, i) => ({ name: l.name || `LINK ${i+1}`, url: l.url })).filter(l => l.url);
+                    let mergedLinks = (sel.links || []).map((l, i) => ({ name: l.name || `BAMARTHAN LIVE`, url: l.url })).filter(l => l.url);
                     
                     if (matchedDetail?.links) {
                         matchedDetail.links.forEach(ml => {
@@ -178,7 +177,7 @@
                     return {
                         league: matchedDetail?.league || sel.league || "FOOTBALL MATCH",
                         match_time: timeMs / 1000,
-                        home_name: sel.home_name || "Home Team",
+                        home_name: sel.home_name || matchedDetail?.home_name || "Home Team",
                         away_name: sel.away_name || matchedDetail?.away_name || "Away Team",
                         home_img: matchedDetail?.home_img || sel.home_img || "",
                         away_img: matchedDetail?.away_img || sel.away_img || "",
@@ -288,7 +287,13 @@
         function openExternal(url, title) {
             if(!url) return;
             let finalUrl = (url.includes('miy.live') || url.includes('niuerr.live') || url.includes('niur.live')) ? VIDEO_PROXY + encodeURIComponent(url) : url;
-            window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
+            
+            // Web view/Browser ဖြစ်လို့ Android စစ်ပြီးမှ Intent ပေးခေါ်ပြီး PC/iOS ဆိုရင် တိုက်ရိုက် Tab အသစ်နဲ့ ဖွင့်ပေးမှာဖြစ်ပါတယ်
+            if(/Android/i.test(navigator.userAgent)) {
+                window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
+            } else {
+                window.open(finalUrl, '_blank');
+            }
         }
 
         document.getElementById('theme-toggle').onclick = () => {
