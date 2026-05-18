@@ -4,7 +4,7 @@
     "links": [
       {
         "name": "China Server 1 (No VPN)",
-        "url": "https://example.com/live/stream1.m3u8"
+        "url": "https://fmpb.sla.homes/bcdn_token=CoOfivktGFn7XEGkjoCK4mBpVRaceZ7PO7HphS6TEGA&token_path=%2Fsla%2F&expires=1779120125/sla/1-6a0ae0970ee804a47e402f2d.m3u8"
       },
       {
         "name": "Main Server 2",
