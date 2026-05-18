@@ -3,36 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="referrer" content="no-referrer" />
-    <title>BAMARTHAN LIVE</title>
+    <title>S4ITMM FOOTBALL LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: { extend: { colors: { primary: '#facc15', darkBg: '#0f172a', darkCard: '#1e293b' } } }
         }
     </script>
+
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
         .ad-color-run {
             padding: 2px; border-radius: 16px;
             background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
             background-size: 600% 600%; animation: colorRun 4s linear infinite;
         }
         @keyframes colorRun { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
-        .match-card { border-radius: 24px; padding: 20px; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 16px; transition: all 0.3s ease; }
+        .ad-color-run img { border-radius: 14px; }
+        .ad-color-run button { border-radius: 14px; background: #1e293b; color: white; width: 100%; height: 100%; }
+
+        .match-card {
+            border-radius: 24px; padding: 20px;
+            border: 1px solid rgba(0,0,0,0.05); margin-bottom: 16px; transition: all 0.3s ease;
+        }
         .dark .match-card { background-color: #1a2436; border-color: rgba(255,255,255,0.05); }
         .light .match-card { background-color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .live-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-        .stable-player-app { width: 100%; height: 100%; object-fit: contain; background: #000; }
-        .play-row { display: grid; grid-template-cols: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .btn-play { padding: 12px 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+        .live-dot {
+            width: 8px; height: 8px; background: #ef4444; border-radius: 50%;
+            display: inline-block; animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        .artplayer-app { width: 100%; height: 100%; }
+        .play-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; align-items: stretch; }
+        .btn-play { 
+            padding: 12px 8px; font-size: 10px; font-weight: 800; 
+            text-transform: uppercase; display: flex; align-items: center; 
+            justify-content: center; gap: 6px; transition: 0.2s;
+        }
         .btn-app { border-radius: 16px; background: rgba(250,204,21,0.1); color: #facc15; border: 1px solid rgba(250,204,21,0.2); }
         .btn-app.active { background: #facc15; color: #000; }
         .no-select { user-select: none; }
+
+        /* BamarThan Live button style */
+        .btn-bamarthan {
+            border-radius: 16px;
+            background: rgba(239,68,68,0.12);
+            color: #ef4444;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+        .btn-bamarthan.active { background: #ef4444; color: #fff; }
+
+        /* Selection section separator */
+        .selection-section {
+            border-top: 1px solid rgba(250,204,21,0.15);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+        .selection-label {
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #ef4444;
+            margin-bottom: 8px;
+            padding-left: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300 no-select">
@@ -40,23 +87,28 @@
     <div id="sidebar-container"></div>
 
     <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-        <button id="menu-btn" class="text-primary text-2xl w-10 text-left"><i class="fas fa-bars-staggered"></i></button>
+        <button id="menu-btn" class="text-primary text-2xl w-10 text-left">
+            <i class="fas fa-bars-staggered"></i>
+        </button>
         <div class="flex flex-col items-center">
-            <span class="text-primary font-black text-xl tracking-tighter leading-none">BAMARTHAN</span>
-            <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">LIVE</span>
+            <span class="text-primary font-black text-xl tracking-tighter leading-none">Bamarthan</span>
+            <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Football VN</span>
         </div>
         <div class="w-10 text-right">
             <button id="theme-toggle" class="text-xl text-slate-600 dark:text-primary">
-                <i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i>
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:block"></i>
             </button>
         </div>
     </header>
 
     <main id="list-view" class="p-4 pt-20">
-        <div class="mb-5 bg-red-600/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-4">
-            <div class="bg-red-500 p-3 rounded-xl shadow-lg shadow-red-500/20"><i class="fas fa-shield-halved text-white text-lg"></i></div>
+        <div class="mb-5 bg-red-600/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
+            <div class="bg-red-500 p-3 rounded-xl shadow-lg shadow-red-500/20">
+                <i class="fas fa-shield-halved text-white text-lg"></i>
+            </div>
             <div>
-                <p class="text-[11px] font-black dark:text-red-400 text-red-600 leading-snug uppercase">
+                <p class="text-[11px] font-black dark:text-red-400 text-red-600 leading-snug uppercase tracking-tight">
                     မြန်မာအချို့နေရာများတွင် VPN လိုအပ်နိုင်ပါသည်။ <br>
                     VPN လုံးဝမလိုသော <span class="text-primary">CHINA SERVER</span> မှလည်း ကြည့်နိုင်ပါသည်။
                 </p>
@@ -64,32 +116,26 @@
         </div>
 
         <div class="mb-6">
-            <a href="https://m-sport-download.static.hf.space" class="block active:scale-95 transition-all">
-                <div class="ad-color-run p-[2px]" style="border-radius:20px;">
-                    <div class="bg-slate-900/95 w-full py-3 px-4 rounded-[18px] flex flex-col items-center justify-center text-center gap-1">
-                        <span class="text-xs font-black text-primary uppercase tracking-wider flex items-center gap-1">
-                            <i class="fas fa-download animate-bounce"></i> FOTMOV TV ကိုဒေါင်းပါ
-                        </span>
-                        <p class="text-[10px] font-bold text-white/90">ပိုမိုစုံလင်တဲ့ ဘောလုံးပွဲများနှင့် မြန်မာစာတန်းထိုးများကြည့်ရန်</p>
-                    </div>
+            <a href="https://nextjs-mobile-one.vercel.app/iwbet/ad.html">
+                <div class="ad-color-run shadow-lg" style="padding:3px; border-radius:20px;">
+                    <img src="https://nextjs-mobile-one.vercel.app/ad.gif" class="w-full h-auto block bg-black" style="border-radius:17px;">
                 </div>
             </a>
         </div>
 
-        <div class="grid grid-cols-3 gap-2 mb-6">
-            <a href="/adults/index.html" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black text-center flex items-center justify-center active:scale-95 transition-all">အောကား</a>
-            <a href="movies..html" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black text-center flex items-center justify-center active:scale-95 transition-all">ရုပ်ရှင်</a>
-            <button onclick="fetchMatches()" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black text-primary flex items-center justify-center gap-1.5 active:scale-90 transition-all">
-                <i class="fas fa-sync-alt"></i> Refresh
-            </button>
+        <div class="grid grid-cols-4 gap-2 mb-6">
+            <button onclick="filterMatches('all', this)" id="btn-all" class="filter-btn bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase ring-primary border-primary ring-2 transition-all">All</button>
+            <button onclick="filterMatches('live', this)" class="filter-btn bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase text-red-500 transition-all">Live</button>
+            <button onclick="filterMatches('main', this)" class="filter-btn bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase text-blue-500 transition-all">Main</button>
+            <button onclick="fetchMatches()" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase text-primary active:scale-90 transition-all"><i class="fas fa-sync-alt"></i></button>
         </div>
 
         <div id="movie-grid"></div>
     </main>
 
     <main id="detail-view" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-darkBg hidden flex-col overflow-y-auto">
-        <div class="relative w-full aspect-video bg-black">
-            <video id="main-player" class="stable-player-app" controls autoplay playsinline webkit-playsinline></video>
+        <div class="relative w-full aspect-video bg-black shadow-2xl">
+            <div id="artplayer" class="artplayer-app"></div>
             <button onclick="handleBackAction()" class="absolute top-4 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -97,100 +143,70 @@
         <div class="p-6">
             <div class="mb-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-center gap-3">
                 <i class="fas fa-circle-exclamation text-yellow-500 text-sm"></i>
-                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ သို့မဟုတ် External ဖြင့်ဖွင့်ပါ။</p>
+                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။</p>
             </div>
-            <div id="error-msg" class="hidden mb-4 bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-500 text-[10px] font-bold uppercase">
-                ဗီဒီယိုဖွင့်ရန် အခက်အခဲရှိနေပါသည်။ External ဖြင့် ကြိုးစားကြည့်ပါ။
-            </div>
+            
             <div id="match-detail-container"></div>
         </div>
     </main>
 
-    <script src="../sidebar.js?v=1.6"></script>
-    <script src="selectmatch.js?v=1.6"></script>
+    <script src="../sidebar.js"></script>
 
     <script>
         let allMatches = [];
+        let art = null;
         const PROXY_IMG = "https://wsrv.nl/?url=";
         const VIDEO_PROXY = "https://my-proxy-wt0l.onrender.com/proxy?url=";
         const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
+        const BAMARTHAN_PLAYER = "https://m-sport-download.static.hf.space/Xnxxplayer.html?url=";
 
-        window.onpopstate = () => {
+        // selection.json ကို fetch ပြီး home_name နှင့် links ကို ရယူမည်
+        let selectionData = [];
+        async function fetchSelection() {
+            try {
+                const res = await fetch('selection.json?_t=' + Date.now());
+                selectionData = await res.json();
+            } catch(e) {
+                selectionData = [];
+            }
+        }
+
+        // match ၏ home_name နှင့် selection.json ထဲမှ home_name တူသော entry ကို ရှာမည်
+        function getSelectionLinks(homeName) {
+            if (!selectionData || selectionData.length === 0) return null;
+            const found = selectionData.find(s =>
+                s.home_name && homeName &&
+                s.home_name.trim().toLowerCase() === homeName.trim().toLowerCase()
+            );
+            return found ? (found.links || []) : null;
+        }
+
+        window.onpopstate = function() {
             if (document.getElementById('detail-view').style.display !== 'none' || !document.getElementById('detail-view').classList.contains('hidden')) {
                 closeDetail();
             }
         };
 
-        function handleBackAction() { window.history.back(); }
+        function handleBackAction() {
+            window.history.back();
+        }
         
         function getImg(url) {
-            return (url && url.trim() !== "") ? `${PROXY_IMG}${encodeURIComponent(url)}&w=100&h=100&fit=contain` : DEFAULT_LOGO;
+            if(!url) return DEFAULT_LOGO;
+            return `${PROXY_IMG}${encodeURIComponent(url)}&w=100&h=100&fit=contain`;
         }
 
         async function fetchMatches() {
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
-            
             try {
-                let apiData = null;
-                // Absolute URL ပြန်ပြင်ဆင်ထားသည်
-                const apiMainUrl = 'https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now();
-                
-                try {
-                    const res = await fetch(apiMainUrl, { cache: "no-store" });
-                    apiData = await res.json();
-                } catch(e) {
-                    const proxyRes = await fetch(VIDEO_PROXY + encodeURIComponent(apiMainUrl));
-                    apiData = await proxyRes.json();
-                }
-
-                let originalMatches = Array.isArray(apiData) ? apiData : (apiData?.context || apiData?.matches || []);
-                
-                const selectionRes = await fetch('selection.json?_t=' + Date.now(), { cache: "no-store" });
-                const selArray = await selectionRes.json() || [];
-                
-                if (!Array.isArray(selArray) || selArray.length === 0) {
-                    grid.innerHTML = `<div class="text-center py-10 opacity-70"><p class="text-[11px] font-bold uppercase">ပွဲစဉ်များ မရှိသေးပါ (selection.json လွတ်နေပါသည်)</p></div>`;
-                    return;
-                }
-
-                allMatches = selArray.map(sel => {
-                    const matchedDetail = originalMatches.find(m => {
-                        const mH = String(m.home_name || "").toLowerCase().replace(/\s+/g, '');
-                        const sH = String(sel.home_name || "").toLowerCase().replace(/\s+/g, '');
-                        return mH && sH && (mH === sH || mH.includes(sH) || sH.includes(mH) || mH.substring(0,3) === sH.substring(0,3));
-                    });
-
-                    let timeMs = Number(sel.match_time || matchedDetail?.match_time || Date.now());
-                    if (timeMs.toString().length <= 10) timeMs *= 1000;
-
-                    let mergedLinks = (sel.links || []).map((l, i) => ({ name: l.name || `BAMARTHAN LIVE`, url: l.url })).filter(l => l.url);
-                    
-                    if (matchedDetail?.links) {
-                        matchedDetail.links.forEach(ml => {
-                            if (ml?.url && !mergedLinks.some(l => l.url.trim() === ml.url.trim())) {
-                                mergedLinks.push({ name: ml.name || "Main Live Stream", url: ml.url });
-                            }
-                        });
-                    }
-
-                    return {
-                        league: matchedDetail?.league || sel.league || "FOOTBALL MATCH",
-                        match_time: timeMs / 1000,
-                        home_name: sel.home_name || matchedDetail?.home_name || "Home Team",
-                        away_name: sel.away_name || matchedDetail?.away_name || "Away Team",
-                        home_img: matchedDetail?.home_img || sel.home_img || "",
-                        away_img: matchedDetail?.away_img || sel.away_img || "",
-                        match_status: sel.match_status === true || sel.match_status === "true",
-                        links: mergedLinks
-                    };
-                });
-
-                renderMatches(allMatches);
-            } catch (e) { 
-                console.error(e);
-                grid.innerHTML = `<div class='bg-red-500/10 border border-red-500/20 p-6 rounded-2xl text-center mt-4'><p class="text-red-500 font-black text-xs uppercase">ဒေတာဖတ်၍ မရပါ!</p></div>`; 
-            }
+                // selection.json ကိုပါ တပြိုင်နက် fetch မည်
+                await fetchSelection();
+                const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
+                const data = await res.json();
+                allMatches = data.context || [];
+                filterMatches('all', document.getElementById('btn-all'));
+            } catch (e) { grid.innerHTML = "<p class='text-center opacity-50 py-10'>No Connection</p>"; }
         }
 
         function renderMatches(data) {
@@ -204,20 +220,20 @@
                 const card = document.createElement('div');
                 card.className = "match-card cursor-pointer active:scale-95 transition-all";
                 card.innerHTML = `
-                    <div class="text-center mb-4"><span class="text-blue-500 dark:text-blue-400 text-[10px] font-black uppercase block truncate px-4">${m.league}</span></div>
+                    <div class="text-center mb-4"><span class="text-blue-500 dark:text-blue-400 text-[10px] font-black uppercase block truncate px-4 tracking-wider">${m.league}</span></div>
                     <div class="flex items-center justify-between">
                         <div class="flex flex-col items-center w-[35%]">
                             <img src="${getImg(m.home_img)}" class="w-12 h-12 object-contain mb-3" onerror="this.src='${DEFAULT_LOGO}'">
-                            <span class="text-[10px] font-bold text-center leading-tight uppercase dark:text-white/90 truncate w-full">${m.home_name}</span>
+                            <span class="text-[10px] font-bold text-center leading-tight uppercase dark:text-white/90">${m.home_name}</span>
                         </div>
                         <div class="flex flex-col items-center w-[30%]">
                             <span class="text-[10px] opacity-50 mb-1">${dStr}</span>
                             <span class="text-base font-black dark:text-white">${tStr}</span>
-                            ${m.match_status ? '<div class="mt-2 flex items-center gap-1 text-red-500 text-[9px] font-black uppercase"><span class="live-dot"></span> LIVE</div>' : ''}
+                            ${m.match_status ? '<div class="mt-2 flex items-center gap-1 text-red-500 text-[9px] font-black uppercase"><span class="live-dot"></span> LIVE NOW</div>' : ''}
                         </div>
                         <div class="flex flex-col items-center w-[35%]">
                             <img src="${getImg(m.away_img)}" class="w-12 h-12 object-contain mb-3" onerror="this.src='${DEFAULT_LOGO}'">
-                            <span class="text-[10px] font-bold text-center leading-tight uppercase dark:text-white/90 truncate w-full">${m.away_name}</span>
+                            <span class="text-[10px] font-bold text-center leading-tight uppercase dark:text-white/90">${m.away_name}</span>
                         </div>
                     </div>
                 `;
@@ -231,69 +247,180 @@
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('detail-view').style.display = 'flex';
             document.getElementById('detail-view').classList.remove('hidden');
-            document.getElementById('error-msg').classList.add('hidden');
             
             const container = document.getElementById('match-detail-container');
             const links = match.links || [];
 
+            // ===== selection.json မှ links ရှာမည် =====
+            const selLinks = getSelectionLinks(match.home_name);
+            const hasSelection = selLinks && selLinks.length > 0;
+
+            // ===== မူလ links section =====
             let linksContent = links.length === 0 ? 
-                `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 text-center mt-4"><p class="text-yellow-500 text-[11px] font-bold uppercase">ပွဲစဉ်လိုင်းများ မရှိသေးပါ၊၊</p></div>` : 
+                `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 text-center mt-4">
+                    <i class="fas fa-clock text-yellow-500 text-2xl mb-3"></i>
+                    <p class="text-yellow-500 text-[11px] font-bold leading-relaxed uppercase">ပွဲစဉ်တင်ရန် အချိန်နီးကပ်မှ လိုင်းများ တက်လာပါမည်။</p>
+                </div>` : 
                 links.map((l, i) => `
                     <div class="flex flex-col mb-4">
-                        <span class="text-[10px] font-bold opacity-40 uppercase mb-2 pl-1">${l.name}</span>
+                        <span class="text-[10px] font-bold opacity-40 uppercase mb-2 tracking-widest pl-1">${l.name}</span>
                         <div class="play-row">
-                            <button onclick="playStream('${l.url}', this)" class="btn-play btn-app ${i === 0 ? 'active' : ''}"><i class="fas fa-play"></i> Web Play</button>
-                            <div class="ad-color-run"><button onclick="openExternal('${l.url}', '${match.home_name} vs ${match.away_name}')" class="btn-play"><i class="fas fa-external-link-alt"></i> External</button></div>
+                            <button onclick="playStream('${escUrl(l.url)}', this)" class="btn-play btn-app ${i === 0 && !hasSelection ? 'active' : ''}">
+                                <i class="fas fa-play"></i> App Play
+                            </button>
+                            <div class="ad-color-run">
+                                <button onclick="openExternal('${escUrl(l.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play">
+                                    <i class="fas fa-external-link-alt"></i> External
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `).join('');
+
+            // ===== selection.json section (ရှိမှသာ ပြမည်) =====
+            let selectionContent = '';
+            if (hasSelection) {
+                const selRows = selLinks.map((sl, si) => `
+                    <div class="flex flex-col mb-4">
+                        <span class="text-[10px] font-bold opacity-40 uppercase mb-2 tracking-widest pl-1">${sl.name}</span>
+                        <div class="play-row">
+                            <button onclick="playBamarThan('${escUrl(sl.url)}', this)" class="btn-play btn-bamarthan ${si === 0 ? 'active' : ''}">
+                                <i class="fas fa-tv"></i> BamarThan Live
+                            </button>
+                            <div class="ad-color-run">
+                                <button onclick="openNetworkPlayer('${escUrl(sl.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play">
+                                    <i class="fas fa-external-link-alt"></i> External
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                selectionContent = `
+                    <div class="selection-section">
+                        <div class="selection-label">
+                            <span class="live-dot"></span>
+                            BamarThan Streams
+                        </div>
+                        ${selRows}
+                    </div>
+                `;
+            }
 
             container.innerHTML = `
                 <div class="text-center mb-6">
                     <h2 class="text-lg font-black uppercase dark:text-white">${match.home_name} VS ${match.away_name}</h2>
                     <p class="text-primary text-[10px] font-bold mt-1 uppercase">${match.league}</p>
                 </div>
-                <div class="space-y-2">${linksContent}</div>
+                <div class="space-y-2">
+                    ${selectionContent}
+                    ${linksContent}
+                </div>
             `;
-            if(links.length > 0) playStream(links[0].url);
+
+            // Auto-play: selection.json ရှိရင် BamarThan ပထမ URL, မရှိရင် မူလ ပထမ URL
+            if (hasSelection) {
+                playBamarThan(selLinks[0].url);
+            } else if (links.length > 0) {
+                playStream(links[0].url);
+            }
         }
 
+        // URL ကို attribute ထဲ safe ဖြစ်အောင် encode မည်
+        function escUrl(url) {
+            return url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+        function escStr(str) {
+            return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        // မူလ App Play (ArtPlayer)
         function playStream(url, btn) {
             if(btn) {
                 document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
             }
-            const video = document.getElementById('main-player');
-            document.getElementById('error-msg').classList.add('hidden');
 
-            let finalUrl = (url.includes('niuerr.live') || url.includes('niur.live')) ? VIDEO_PROXY + encodeURIComponent(url) : url;
-
-            if (finalUrl) {
-                video.src = finalUrl;
-                video.load();
-                video.onerror = () => { document.getElementById('error-msg').classList.remove('hidden'); };
-                video.play().catch(e => console.log("Autoplay blocked"));
+            let finalUrl = url;
+            if (url.includes('niuerr.live')) {
+                finalUrl = VIDEO_PROXY + encodeURIComponent(url);
             }
+
+            if (art) art.destroy();
+            art = new Artplayer({
+                container: '#artplayer',
+                url: finalUrl,
+                autoplay: true,
+                autoSize: true,
+                fullscreen: true,
+                fullscreenWeb: true,
+                pip: true,
+                theme: '#facc15',
+                type: 'm3u8',
+                customType: {
+                    m3u8: function (video, url) {
+                        if (Hls.isSupported()) {
+                            const hls = new Hls();
+                            hls.loadSource(url);
+                            hls.attachMedia(video);
+                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                            video.src = url;
+                        }
+                    },
+                },
+            });
+        }
+
+        // BamarThan Live Player — iframe ဖြင့် player ထဲ load မည်
+        function playBamarThan(url, btn) {
+            if(btn) {
+                document.querySelectorAll('.btn-bamarthan').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+
+            if (art) art.destroy();
+
+            // ArtPlayer container ကို iframe ဖြင့် အစားထိုးမည်
+            const container = document.getElementById('artplayer');
+            container.innerHTML = `<iframe
+                src="${BAMARTHAN_PLAYER}${encodeURIComponent(url)}"
+                style="width:100%;height:100%;border:none;background:#000;"
+                allowfullscreen
+                allow="autoplay; fullscreen"
+            ></iframe>`;
+        }
+
+        // External — Network Streaming Video Player ဖြင့် ဖွင့်မည်
+        function openNetworkPlayer(url, title) {
+            // Android intent: network streaming player (MX Player / VLC style)
+            const encoded = encodeURIComponent(url);
+            // Try MX Player first, fallback to VLC
+            const intent = `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;S.title=${encodeURIComponent(title)};end`;
+            window.location.href = intent;
+        }
+
+        // မူလ External (leone player)
+        function openExternal(url, title) {
+            let finalUrl = url;
+            if (url.includes('miy.live')) {
+                finalUrl = VIDEO_PROXY + encodeURIComponent(url);
+            }
+            window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
         }
 
         function closeDetail() {
-            const video = document.getElementById('main-player');
-            if (video) { video.pause(); video.src = ""; }
+            if (art) art.destroy();
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('detail-view').classList.add('hidden');
             document.getElementById('list-view').classList.remove('hidden');
         }
 
-        function openExternal(url, title) {
-            if(!url) return;
-            let finalUrl = (url.includes('miy.live') || url.includes('niuerr.live') || url.includes('niur.live')) ? VIDEO_PROXY + encodeURIComponent(url) : url;
-            
-            // Web view/Browser ဖြစ်လို့ Android စစ်ပြီးမှ Intent ပေးခေါ်ပြီး PC/iOS ဆိုရင် တိုက်ရိုက် Tab အသစ်နဲ့ ဖွင့်ပေးမှာဖြစ်ပါတယ်
-            if(/Android/i.test(navigator.userAgent)) {
-                window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
-            } else {
-                window.open(finalUrl, '_blank');
-            }
+        function filterMatches(type, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('ring-2', 'ring-primary', 'border-primary'));
+            if(btn) btn.classList.add('ring-2', 'ring-primary', 'border-primary');
+            if(type === 'live') renderMatches(allMatches.filter(m => m.match_status));
+            else if(type === 'main') renderMatches(allMatches.filter(m => m.league.toLowerCase().includes('d1') || m.league.toLowerCase().includes('premier')));
+            else renderMatches(allMatches);
         }
 
         document.getElementById('theme-toggle').onclick = () => {
@@ -302,6 +429,6 @@
         };
 
         window.onload = () => fetchMatches();
-    </script>                           
+    </script>
 </body>
 </html>
