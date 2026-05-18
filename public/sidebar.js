@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </a>
             <hr class="opacity-10 my-2">
             
-            <a href="https://bamarthan.vercel.app/ဗားရှင်းဒေါင်းရန််းဒေါင်းရန်/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+            <a href="https://bamarthan.vercel.app/Adults/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
                 <i class="fas fa-eye-slash w-5 text-center"></i>Adults (18+)
             </a>
             <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
