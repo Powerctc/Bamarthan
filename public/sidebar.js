@@ -29,9 +29,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 <i class="fas fa-eye-slash w-5 text-center"></i>Adults (18+)
             </a>
             <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
-                <i class="fas fa-tv w-5 text-center"></i>တီဗွီ ဗားရှင်းဒေါင်းရန်
+                <i class="fas fa-tv w-5 text-center"></i> Aop ဒေါင်းရန်
             </a>
-            <a href="https://fotlivemovies.vercel.app//About.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+            <a href="https://bamarthan.vercel.app/About.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-circle-info w-5 text-center"></i>About App
             </a>
         </nav>
