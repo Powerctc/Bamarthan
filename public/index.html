@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer" />
     <title>BAMARTHAN LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
     
     <script>
         tailwind.config = {
@@ -42,7 +41,7 @@
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        .artplayer-app { width: 100%; height: 100%; }
+        .stable-player-app { width: 100%; height: 100%; object-fit: contain; }
         .play-row { display: grid; grid-template-cols: 1fr 1fr; gap: 10px; margin-bottom: 12px; align-items: stretch; }
         .btn-play { 
             padding: 12px 8px; font-size: 10px; font-weight: 800; 
@@ -115,7 +114,7 @@
 
     <main id="detail-view" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-darkBg hidden flex-col overflow-y-auto">
         <div class="relative w-full aspect-video bg-black shadow-2xl">
-            <div id="artplayer" class="artplayer-app"></div>
+            <video id="main-player" class="stable-player-app" controls autoplay playsinline webkit-playsinline></video>
             <button onclick="handleBackAction()" class="absolute top-4 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -123,7 +122,10 @@
         <div class="p-6">
             <div class="mb-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-center gap-3">
                 <i class="fas fa-circle-exclamation text-yellow-500 text-sm"></i>
-                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။</p>
+                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ သို့မဟုတ် External ဖြင့်ဖွင့်ပါ။</p>
+            </div>
+            <div id="error-msg" class="hidden mb-4 bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-red-500 text-[10px] font-bold uppercase">
+                ဗီဒီယိုဖွင့်ရန် အခက်အခဲရှိနေပါသည်။ External ဖြင့် ကြိုးစားကြည့်ပါ။
             </div>
             
             <div id="match-detail-container"></div>
@@ -135,7 +137,6 @@
 
      <script>
         let allMatches = [];
-        let art = null;
         const PROXY_IMG = "https://wsrv.nl/?url=";
         const VIDEO_PROXY = "https://my-proxy-wt0l.onrender.com/proxy?url=";
         const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
@@ -153,24 +154,6 @@
         function getImg(url) {
             if(!url) return DEFAULT_LOGO;
             return `${PROXY_IMG}${encodeURIComponent(url)}&w=100&h=100&fit=contain`;
-        }
-
-        // *** Token ပါသော M3U8 လင့်ခ်များကို ပုံစံမှန်ပြောင်းပေးမည့် စနစ် ***
-        function formatM3u8Url(url) {
-            if (!url) return url;
-            if (url.includes('bcdn_token=') && url.includes('.m3u8') && !url.split('.m3u8')[1].includes('bcdn_token')) {
-                try {
-                    const urlObj = new URL(url);
-                    const searchParams = urlObj.search;
-                    let cleanUrl = url.split('?')[0]; 
-                    if (cleanUrl.includes('.m3u8')) {
-                        return cleanUrl + searchParams;
-                    }
-                } catch (e) {
-                    console.error("URL Parsing Error:", e);
-                }
-            }
-            return url;
         }
 
         async function fetchMatches() {
@@ -191,13 +174,11 @@
                         m.home_name.toLowerCase().trim() === sel.home_name.toLowerCase().trim()
                     );
 
-                    // အချိန်မှန်အောင် တွက်ချက်ခြင်း
                     let matchTimeMs = matchedDetail ? matchedDetail.match_time : Math.floor(now / 1000);
                     if (matchTimeMs.toString().length === 10) {
                         matchTimeMs = matchTimeMs * 1000;
                     }
 
-                    // Auto Live Logic (ပွဲစပြီး ၁၅၀ မိနစ်အတွင်းဆိုလျှင် Auto Live ပြမည်)
                     const isLiveAuto = now >= matchTimeMs && now <= (matchTimeMs + (150 * 60 * 1000));
 
                     let finalStatus = isLiveAuto;
@@ -207,17 +188,28 @@
                         finalStatus = now >= matchTimeMs ? matchedDetail.match_status : false;
                     }
 
-                    // *** လင့်ခ်များကို ပေါင်းစပ်ထုတ်ယူခြင်း အပိုင်း ***
-                    // ၁။ ပထမဆုံး selection.json ထဲက လင့်ခ်များကို ယူမည်
-                    let mergedLinks = [...(sel.links || [])];
+                    // *** လင့်ခ်များကို ခွဲခြားအမည်ပေးခြင်းနှင့် ပေါင်းစပ်ခြင်းစနစ် ***
+                    let mergedLinks = [];
                     
-                    // ၂။ ကျန်တဲ့လင့်ခ်များကို မူလ Main JSON ထဲကနေ ထပ်တိုးပေါင်းထည့်မည်
+                    // ၁။ selection.json က လာတဲ့ပထမဆုံးလင့်ခ်တွေကို အမည် "BAMARTHAN LIVE" ပေးမယ်
+                    if (sel.links && sel.links.length > 0) {
+                        sel.links.forEach((l, index) => {
+                            mergedLinks.push({
+                                name: index === 0 ? "BAMARTHAN LIVE" : l.name, // ပထမဆုံးလင့်ခ်ကို နာမည်ပြောင်းခြင်း
+                                url: l.url
+                            });
+                        });
+                    }
+                    
+                    // ၂။ မူလ Main JSON ကလင့်ခ်တွေကို မူလနာမည်အတိုင်း နောက်ကနေ ပေါင်းထည့်မယ်
                     if (matchedDetail && matchedDetail.links) {
                         matchedDetail.links.forEach(mainLink => {
-                            // လက်ရှိလင့်ခ်ထဲမှာ URL တူတာမရှိမှသာ ထပ်ပေါင်းထည့်ရန် စစ်ဆေးခြင်း
                             const isExist = mergedLinks.some(l => l.url.trim() === mainLink.url.trim());
                             if (!isExist) {
-                                mergedLinks.push(mainLink);
+                                mergedLinks.push({
+                                    name: mainLink.name || "Main Live Stream", // မူလအတိုင်း ထားရှိခြင်း
+                                    url: mainLink.url
+                                });
                             }
                         });
                     }
@@ -230,7 +222,7 @@
                         home_img: matchedDetail ? matchedDetail.home_img : "",
                         away_img: matchedDetail ? matchedDetail.away_img : "",
                         match_status: finalStatus,
-                        links: mergedLinks // ပေါင်းစပ်ပြီးသား လင့်ခ်များကို သုံးမည်
+                        links: mergedLinks
                     };
                 });
 
@@ -284,6 +276,7 @@
             document.getElementById('list-view').classList.add('hidden');
             document.getElementById('detail-view').style.display = 'flex';
             document.getElementById('detail-view').classList.remove('hidden');
+            document.getElementById('error-msg').classList.add('hidden');
             
             const container = document.getElementById('match-detail-container');
             const links = match.links || [];
@@ -319,50 +312,42 @@
             if(links.length > 0) playStream(links[0].url);
         }
 
+        // *** Stable HTML5 Play Engine ***
         function playStream(url, btn) {
             if(btn) {
                 document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
             }
 
-            // URL လင့်ခ်အမှန် ဖြစ်အောင် ပြင်ဆင်ခြင်း
-            let finalUrl = formatM3u8Url(url);
+            const video = document.getElementById('main-player');
+            const errorMsg = document.getElementById('error-msg');
+            errorMsg.classList.add('hidden');
 
-            if (finalUrl.includes('niuerr.live')) {
-                finalUrl = VIDEO_PROXY + encodeURIComponent(finalUrl);
+            let finalUrl = url;
+            if (url.includes('niuerr.live')) {
+                finalUrl = VIDEO_PROXY + encodeURIComponent(url);
             }
 
-            if (art) art.destroy();
-            art = new Artplayer({
-                container: '#artplayer',
-                url: finalUrl,
-                autoplay: true,
-                autoSize: true,
-                fullscreen: true,
-                fullscreenWeb: true,
-                pip: true,
-                theme: '#facc15',
-                type: 'm3u8',
-                customType: {
-                    m3u8: function (video, url) {
-                        if (Hls.isSupported()) {
-                            const hls = new Hls({
-                                xhrSetup: function (xhr, url) {
-                                    xhr.withCredentials = false;
-                                }
-                            });
-                            hls.loadSource(url);
-                            hls.attachMedia(video);
-                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                            video.src = url;
-                        }
-                    },
-                },
-            });
+            if (finalUrl) {
+                video.src = finalUrl;
+                video.load();
+
+                video.onerror = function() {
+                    errorMsg.classList.remove('hidden');
+                };
+
+                video.play().catch(function(error) {
+                    console.log("Autoplay blocked. Click stream controls manually.");
+                });
+            }
         }
 
         function closeDetail() {
-            if (art) art.destroy();
+            const video = document.getElementById('main-player');
+            if (video) {
+                video.pause();
+                video.src = "";
+            }
             document.getElementById('detail-view').style.display = 'none';
             document.getElementById('detail-view').classList.add('hidden');
             document.getElementById('list-view').classList.remove('hidden');
@@ -370,11 +355,9 @@
 
         function openExternal(url, title) {
             if(!url) return;
-            
-            let finalUrl = formatM3u8Url(url);
-
-            if (finalUrl.includes('miy.live')) {
-                finalUrl = VIDEO_PROXY + encodeURIComponent(finalUrl);
+            let finalUrl = url;
+            if (url.includes('miy.live') || url.includes('niuerr.live')) {
+                finalUrl = VIDEO_PROXY + encodeURIComponent(url);
             }
             window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
         }
@@ -385,6 +368,6 @@
         };
 
         window.onload = () => fetchMatches();
-     </script>   
-    </body>
+     </script>                           
+</body>
 </html>
