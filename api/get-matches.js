@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   // ၁။ ခွင့်ပြုမယ့် မိမိ Website Domain ကို ဒီမှာ ပြောင်းထည့်ပါ (Slash '/' မပါရပါ)
   // ဥပမာ - 'https://yourwebsite.com' သို့မဟုတ် ပရောဂျက်စမ်းနေစဉ်အတွင်း 'http://localhost:3000'
-  const allowedOrigin = 'https://yourwebsite.com'; 
+  const allowedOrigin = 'https://fotlivemovies.vercel.app'; 
 
   const origin = req.headers.origin || req.headers.referer;
 
