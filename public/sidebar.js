@@ -7,10 +7,10 @@ document.addEventListener("DOMContentLoaded", function() {
             <button id="close-menu" class="text-slate-400 p-2"><i class="fas fa-times text-xl"></i></button>
         </div>
         <nav class="p-4 space-y-1">
-            <a href="https://fotlivemovies.vercel.app/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+            <a href="https://bamarthan.vercel.app/" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-home w-5 text-center"></i>မြန်မာသံ⚽လိုက်ဖ်
             </a>
-            <a href="https://fotlivemovies.vercel.app/series/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+            <a href="https://bamarthan.vercel.app/series/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-film text-primary w-5 text-center"></i>ဇာတ်လမ်းတွဲ
             </a>
             <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </a>
             <hr class="opacity-10 my-2">
             
-            <a href="https://fotlivemovies.vercel.app/adults/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+            <a href="https://bamarthan.vercel.app/ဗားရှင်းဒေါင်းရန််းဒေါင်းရန်/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
                 <i class="fas fa-eye-slash w-5 text-center"></i>Adults (18+)
             </a>
             <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
