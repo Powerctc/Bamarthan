@@ -151,8 +151,8 @@
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
             try {
-                // ၁။ မူလ Match Details API ကိုခေါ်ယူခြင်း
-                const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
+                // ၁။ မူလ Match Details API api
+                const res = await fetch('/api/get-matches.js?_t=' + Date.now());
                 const data = await res.json();
                 const originalMatches = data.context || [];
 
