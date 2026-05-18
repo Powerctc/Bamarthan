@@ -132,8 +132,8 @@
         </div>
     </main>
 
-    <script src="../sidebar.js?v=1.4"></script>
-    <script src="selectmatch.js?v=1.4"></script>
+    <script src="../sidebar.js?v=1.5"></script>
+    <script src="selectmatch.js?v=1.5"></script>
 
      <script>
         let allMatches = [];
@@ -168,11 +168,19 @@
                 const selectionData = await selectionRes.json();
 
                 allMatches = selectionData.map(sel => {
-                    // *** စာလုံးအကြီးအသေး/Space မတူသော်လည်း တိုက်စစ်နိုင်စေရန် ပြင်ဆင်ထားသော Logic ***
+                    // *** 🚀 SMART FUZZY MATCHING SYSTEM (အမည်ကြိုက်သလိုပြင်လည်း Logo ရှာပေးမည့်စနစ်) ***
                     const matchedDetail = originalMatches.find(m => {
-                        const mainHome = (m.home_name || "").toLowerCase().replace(/\s+/g, '').trim();
-                        const selHome = (sel.home_name || "").toLowerCase().replace(/\s+/g, '').trim();
-                        return mainHome === selHome;
+                        const mHome = (m.home_name || "").toLowerCase().replace(/\s+/g, '').trim();
+                        const sHome = (sel.home_name || "").toLowerCase().replace(/\s+/g, '').trim();
+                        
+                        // ၁။ အမည် အပြည့်အစုံတူရင်
+                        if (mHome === sHome) return true;
+                        // ၂။ ရှေ့ ၃ လုံးချင်းတူရင် (ဥပမာ- Man Utd နဲ့ Manchester)
+                        if (mHome.substring(0, 3) === sHome.substring(0, 3)) return true;
+                        // ၃။ တစ်ဖက်ဖက်က စာလုံး အချင်းချင်းထဲ ပါဝင်နေရင် (ဥပမာ- Real Madrid ထဲမှာ Madrid ပါနေရင်)
+                        if (mHome.includes(sHome) || sHome.includes(mHome)) return true;
+                        
+                        return false;
                     });
 
                     let matchTimeMs = Date.now();
@@ -186,15 +194,14 @@
                         matchTimeMs = matchTimeMs * 1000;
                     }
 
-                    // Live Indicator ပေါ်/မပေါ် သတ်မှတ်ချက် (JSON က true လို့ သေချာပေးထားမှသာ ပြပါမည်)
+                    // Live Indicator Status
                     let finalStatus = false;
                     if (sel.match_status === true || sel.match_status === "true") {
                         finalStatus = true;
                     }
 
-                    // လင့်ခ်များ ပေါင်းစပ်ခြင်းနှင့် ခလုတ်အမည်သတ်မှတ်ခြင်း
+                    // လင့်ခ်များ ပေါင်းစပ်ခြင်း
                     let mergedLinks = [];
-                    
                     if (sel.links && sel.links.length > 0) {
                         sel.links.forEach((l, index) => {
                             mergedLinks.push({
@@ -216,14 +223,16 @@
                         });
                     }
 
-                    // အကယ်၍ API ထဲမှာ ပွဲစဉ်မတွေ့ခဲ့ရင်လည်း Logo ပျောက်မသွားအောင် selection.json က data ကိုပါ တွဲယူမည့်စနစ်
+                    // *** 🛡️ LOGO PROTECTOR SYSTEM ***
+                    // အမည်တွေပြင်လိုက်လို့ မူလ API မှာ ရှာမတွေ့တော့ရင်တောင် selection.json ထဲက ဥစ္စာကို သုံးမယ်။ 
+                    // မရှိရင်လည်း လက်ရှိအသုံးပြုနေတဲ့ default Live Logo တွေကို သံလိုက်လို ဆွဲကပ်ထားပေးမယ်။
                     return {
-                        league: matchedDetail ? matchedDetail.league : (sel.league || "PREMIER LEAGUE"),
+                        league: matchedDetail ? matchedDetail.league : (sel.league || "FOOTBALL MATCH"),
                         match_time: matchTimeMs / 1000,
                         home_name: sel.home_name,
-                        away_name: matchedDetail ? matchedDetail.away_name : (sel.away_name || "Away Team"),
-                        home_img: matchedDetail ? matchedDetail.home_img : (sel.home_img || ""),
-                        away_img: matchedDetail ? matchedDetail.away_img : (sel.away_img || ""),
+                        away_name: sel.away_name ? sel.away_name : (matchedDetail ? matchedDetail.away_name : "Away Team"),
+                        home_img: sel.home_img ? sel.home_img : (matchedDetail ? matchedDetail.home_img : ""),
+                        away_img: sel.away_img ? sel.away_img : (matchedDetail ? matchedDetail.away_img : ""),
                         match_status: finalStatus,
                         links: mergedLinks
                     };
@@ -361,15 +370,4 @@
             if (url.includes('miy.live') || url.includes('niuerr.live')) {
                 finalUrl = VIDEO_PROXY + encodeURIComponent(url);
             }
-            window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
-        }
-
-        document.getElementById('theme-toggle').onclick = () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            document.documentElement.classList.toggle('light', !isDark);
-        };
-
-        window.onload = () => fetchMatches();
-     </script>                           
-</body>
-</html>
+            window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.tit
