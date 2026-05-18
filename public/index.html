@@ -132,8 +132,8 @@
         </div>
     </main>
 
-    <script src="../sidebar.js?v=1.3"></script>
-    <script src="selectmatch.js?v=1.3"></script>
+    <script src="../sidebar.js?v=1.4"></script>
+    <script src="selectmatch.js?v=1.4"></script>
 
      <script>
         let allMatches = [];
@@ -160,7 +160,6 @@
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
             try {
-                // Browser မှ data အဟောင်းသိမ်းမထားနိုင်ရန် ?_t= အပြင် ပိုမိုပြင်းထန်သော cache: "no-store" ပါ ထည့်သွင်းထားသည်
                 const res = await fetch('/api/get-matches.js?_t=' + Date.now(), { cache: "no-store" });
                 const data = await res.json();
                 const originalMatches = data.context || [];
@@ -169,17 +168,25 @@
                 const selectionData = await selectionRes.json();
 
                 allMatches = selectionData.map(sel => {
-                    const matchedDetail = originalMatches.find(m => 
-                        m.home_name.toLowerCase().trim() === sel.home_name.toLowerCase().trim()
-                    );
+                    // *** စာလုံးအကြီးအသေး/Space မတူသော်လည်း တိုက်စစ်နိုင်စေရန် ပြင်ဆင်ထားသော Logic ***
+                    const matchedDetail = originalMatches.find(m => {
+                        const mainHome = (m.home_name || "").toLowerCase().replace(/\s+/g, '').trim();
+                        const selHome = (sel.home_name || "").toLowerCase().replace(/\s+/g, '').trim();
+                        return mainHome === selHome;
+                    });
 
-                    let matchTimeMs = matchedDetail ? matchedDetail.match_time : Math.floor(Date.now() / 1000);
+                    let matchTimeMs = Date.now();
+                    if (sel.match_time) {
+                        matchTimeMs = sel.match_time;
+                    } else if (matchedDetail && matchedDetail.match_time) {
+                        matchTimeMs = matchedDetail.match_time;
+                    }
+                    
                     if (matchTimeMs.toString().length === 10) {
                         matchTimeMs = matchTimeMs * 1000;
                     }
 
-                    // *** Absolute Live Logic ***
-                    // Auto တွက်ချက်ခြင်းကို လုံးဝဖြုတ်လိုက်ပြီး selection.json ထဲ၌ true လို့ ပေးထားမှသာ Live ပြသမည်
+                    // Live Indicator ပေါ်/မပေါ် သတ်မှတ်ချက် (JSON က true လို့ သေချာပေးထားမှသာ ပြပါမည်)
                     let finalStatus = false;
                     if (sel.match_status === true || sel.match_status === "true") {
                         finalStatus = true;
@@ -209,14 +216,15 @@
                         });
                     }
 
+                    // အကယ်၍ API ထဲမှာ ပွဲစဉ်မတွေ့ခဲ့ရင်လည်း Logo ပျောက်မသွားအောင် selection.json က data ကိုပါ တွဲယူမည့်စနစ်
                     return {
-                        league: matchedDetail ? matchedDetail.league : "Unknown League",
+                        league: matchedDetail ? matchedDetail.league : (sel.league || "PREMIER LEAGUE"),
                         match_time: matchTimeMs / 1000,
                         home_name: sel.home_name,
-                        away_name: matchedDetail ? matchedDetail.away_name : "Away Team",
-                        home_img: matchedDetail ? matchedDetail.home_img : "",
-                        away_img: matchedDetail ? matchedDetail.away_img : "",
-                        match_status: finalStatus, // JSON က ခွင့်ပြုမှသာ true ဖြစ်မည်
+                        away_name: matchedDetail ? matchedDetail.away_name : (sel.away_name || "Away Team"),
+                        home_img: matchedDetail ? matchedDetail.home_img : (sel.home_img || ""),
+                        away_img: matchedDetail ? matchedDetail.away_img : (sel.away_img || ""),
+                        match_status: finalStatus,
                         links: mergedLinks
                     };
                 });
