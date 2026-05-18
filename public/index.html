@@ -135,7 +135,7 @@
     <script src="../sidebar.js"></script>
     <script src="selectmatch.js"></script>
 
-    <script>
+     <script>
         let allMatches = [];
         let art = null;
         const PROXY_IMG = "https://wsrv.nl/?url=";
@@ -272,85 +272,56 @@
         }
 
         function playStream(url, btn) {
-        function formatM3u8Url(url) {
-    if (!url) return url;
-    
-    // အကယ်၍ token က အလယ်မှာ ရောက်နေပြီး အဆုံးမှာ .m3u8 ဖြစ်နေခဲ့ရင် Format ပြန်ပြင်မယ်
-    if (url.includes('bcdn_token=') && url.includes('.m3u8') && !url.split('.m3u8')[1].includes('bcdn_token')) {
-        try {
-            // URL ကို အပိုင်းလိုက် ခွဲထုတ်ခြင်း
-            const urlObj = new URL(url);
-            const searchParams = urlObj.search; // ?bcdn_token=... အပိုင်းကို ယူမယ်
-            
-            // မူလ url ကနေ query string ကို ဖယ်လိုက်မယ်
-            let cleanUrl = url.split('?')[0]; 
-            
-            // ဒုတိယပိုင်း /sla/... လမ်းကြောင်းနဲ့ .m3u8 ကို ရှာပြီး token ကို အနောက်ဆုံး ပို့မယ်
-            if (cleanUrl.includes('.m3u8')) {
-                return cleanUrl + searchParams;
+            if(btn) {
+                document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
             }
-        } catch (e) {
-            console.error("URL Parsing Error:", e);
-        }
-    }
-    return url;
-}
 
-function playStream(url, btn) {
-    if(btn) {
-        document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
+            let finalUrl = url;
+            if (url.includes('niuerr.live')) {
+                finalUrl = VIDEO_PROXY + encodeURIComponent(url);
+            }
 
-    // ၁။ URL ကို ကောင်းအောင် အရင် Format လုပ်မယ်
-    let finalUrl = formatM3u8Url(url);
-
-    if (finalUrl.includes('niuerr.live')) {
-        finalUrl = VIDEO_PROXY + encodeURIComponent(finalUrl);
-    }
-
-    if (art) art.destroy();
-    art = new Artplayer({
-        container: '#artplayer',
-        url: finalUrl,
-        autoplay: true,
-        autoSize: true,
-        fullscreen: true,
-        fullscreenWeb: true,
-        pip: true,
-        theme: '#facc15',
-        type: 'm3u8',
-        customType: {
-            m3u8: function (video, url) {
-                if (Hls.isSupported()) {
-                    const hls = new Hls({
-                        // လုံခြုံရေး Token ပါတဲ့ လင့်ခ်တွေ ပိုမိုငြိမ်သက်စွာ ပွင့်ဖို့ Option ထည့်သွင်းခြင်း
-                        xhrSetup: function (xhr, url) {
-                            xhr.withCredentials = false;
+            if (art) art.destroy();
+            art = new Artplayer({
+                container: '#artplayer',
+                url: finalUrl,
+                autoplay: true,
+                autoSize: true,
+                fullscreen: true,
+                fullscreenWeb: true,
+                pip: true,
+                theme: '#facc15',
+                type: 'm3u8',
+                customType: {
+                    m3u8: function (video, url) {
+                        if (Hls.isSupported()) {
+                            const hls = new Hls();
+                            hls.loadSource(url);
+                            hls.attachMedia(video);
+                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                            video.src = url;
                         }
-                    });
-                    hls.loadSource(url);
-                    hls.attachMedia(video);
-                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                    video.src = url;
-                }
-            },
-        },
-    });
-}
+                    },
+                },
+            });
+        }
 
-function openExternal(url, title) {
-    if(!url) return;
-    
-    //External မဖွင့်ခင်မှာလည်း URL ကို အမှန်ပြင်မယ်
-    let finalUrl = formatM3u8Url(url);
+        function closeDetail() {
+            if (art) art.destroy();
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('detail-view').classList.add('hidden');
+            document.getElementById('list-view').classList.remove('hidden');
+        }
 
-    if (finalUrl.includes('miy.live')) {
-        finalUrl = VIDEO_PROXY + encodeURIComponent(finalUrl);
-    }
-    window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
-}
-
+        function openExternal(url, title) {
+            if(!url) return;
+            let finalUrl = url;
+            if (url.includes('miy.live')) {
+                finalUrl = VIDEO_PROXY + encodeURIComponent(url);
+            }
+            window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
+        }
 
         document.getElementById('theme-toggle').onclick = () => {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -358,6 +329,6 @@ function openExternal(url, title) {
         };
 
         window.onload = () => fetchMatches();
-    </script>
+     </script>                           
 </body>
 </html>
