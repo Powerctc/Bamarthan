@@ -356,7 +356,7 @@
         function openExternal(url, title) {
             if(!url) return;
             let finalUrl = url;
-            if (url.includes('miy.live') || url.includes('niuerr.live')) {
+            if (url.includes('bmar.live') || url.includes('niuerr.live')) {
                 finalUrl = VIDEO_PROXY + encodeURIComponent(url);
             }
             window.location.href = `intent:${finalUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
