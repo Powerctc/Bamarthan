@@ -395,7 +395,7 @@
             // Android intent: network streaming player (MX Player / VLC style)
             const encoded = encodeURIComponent(url);
             // Try MX Player first, fallback to VLC
-            const intent = `intent:${url}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;S.title=${encodeURIComponent(title)};end`;
+            const intent = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
             window.location.href = intent;
         }
 
