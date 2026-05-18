@@ -158,39 +158,62 @@
         }
 
         async function fetchMatches() {
-            const grid = document.getElementById('movie-grid');
-            grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
-            try {
-                const res = await fetch('/api/get-matches.js?_t=' + Date.now());
-                const data = await res.json();
-                const originalMatches = data.context || [];
+    const grid = document.getElementById('movie-grid');
+    grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
+    try {
+        const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
+        const data = await res.json();
+        const originalMatches = data.context || [];
 
-                const selectionRes = await fetch('selection.json?_t=' + Date.now());
-                const selectionData = await selectionRes.json();
+        const selectionRes = await fetch('selection.json?_t=' + Date.now());
+        const selectionData = await selectionRes.json();
 
-                allMatches = selectionData.map(sel => {
-                    const matchedDetail = originalMatches.find(m => 
-                        m.home_name.toLowerCase().trim() === sel.home_name.toLowerCase().trim()
-                    );
+        const now = Date.now(); // လက်ရှိအချိန် မိနစ်/စက္ကန့်အမှန်ကိုယူမယ်
 
-                    return {
-                        league: matchedDetail ? matchedDetail.league : "Unknown League",
-                        match_time: matchedDetail ? matchedDetail.match_time : Math.floor(Date.now() / 1000),
-                        home_name: sel.home_name,
-                        away_name: matchedDetail ? matchedDetail.away_name : "Away Team",
-                        home_img: matchedDetail ? matchedDetail.home_img : "",
-                        away_img: matchedDetail ? matchedDetail.away_img : "",
-                        match_status: sel.match_status !== undefined ? sel.match_status : (matchedDetail ? matchedDetail.match_status : false),
-                        links: sel.links || [] 
-                    };
-                });
+        allMatches = selectionData.map(sel => {
+            const matchedDetail = originalMatches.find(m => 
+                m.home_name.toLowerCase().trim() === sel.home_name.toLowerCase().trim()
+            );
 
-                renderMatches(allMatches);
-            } catch (e) { 
-                console.error(e);
-                grid.innerHTML = "<p class='text-center opacity-50 py-10'>No Connection</p>"; 
+            // ၁။ အချိန်မှန်အောင် အရင်တွက်ချက်မယ်
+            let matchTimeMs = matchedDetail ? matchedDetail.match_time : Math.floor(now / 1000);
+            if (matchTimeMs.toString().length === 10) {
+                matchTimeMs = matchTimeMs * 1000;
             }
-        }
+
+            // ၂။ *** Auto Live Logic ***
+            // လက်ရှိအချိန်ဟာ ပွဲစမယ့်အချိန်ထက်ကြီးပြီး ပွဲစပြီး ၂ နာရီခွဲ (၁၅၀ မိနစ်) အတွင်းဆိုမှ True ပြမယ်
+            const isLiveAuto = now >= matchTimeMs && now <= (matchTimeMs + (150 * 60 * 1000));
+
+            // ၃။ selection.json ထဲမှာ true သို့မဟုတ် false တိုက်ရိုက်သတ်မှတ်ထားရင် အဲဒါကိုဦးစားပေးမယ်
+            // ဘာမှမထည့်ထားရင်တော့ အပေါ်က Auto အချိန်စနစ်နဲ့ပဲ အလုပ်လုပ်သွားမယ်
+            let finalStatus = isLiveAuto;
+            if (sel.match_status !== undefined) {
+                finalStatus = sel.match_status;
+            } else if (matchedDetail && matchedDetail.match_status !== undefined) {
+                // မူလ API က status ကိုယူသုံးချင်သော်လည်း အချိန်မရောက်သေးရင် Force False လုပ်မယ်
+                finalStatus = now >= matchTimeMs ? matchedDetail.match_status : false;
+            }
+
+            return {
+                league: matchedDetail ? matchedDetail.league : "Unknown League",
+                match_time: matchTimeMs / 1000, 
+                home_name: sel.home_name,
+                away_name: matchedDetail ? matchedDetail.away_name : "Away Team",
+                home_img: matchedDetail ? matchedDetail.home_img : "",
+                away_img: matchedDetail ? matchedDetail.away_img : "",
+                match_status: finalStatus, // စစ်ထုတ်ပြီးသား Status အမှန်ကို သုံးရန်
+                links: sel.links || [] 
+            };
+        });
+
+        renderMatches(allMatches);
+    } catch (e) { 
+        console.error(e);
+        grid.innerHTML = "<p class='text-center opacity-50 py-10'>No Connection</p>"; 
+    }
+}
+
 
         function renderMatches(data) {
             const grid = document.getElementById('movie-grid');
