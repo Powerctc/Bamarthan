@@ -151,31 +151,31 @@
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
             try {
-                // ၁။ မူလ Match Details ပါတဲ့ API ကို လှမ်းခေါ်မယ်
+                // ၁။ မူလ Match Details API ကိုခေါ်ယူခြင်း
                 const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
                 const data = await res.json();
                 const originalMatches = data.context || [];
 
-                // ၂။ ရွေးချယ်ထားတဲ့ ပွဲစဉ်တွေနဲ့ Streaming URL ပါမယ့် selection.json ကို လှမ်းခေါ်မယ်
+                // ၂။ ရွေးချယ်ထားတဲ့ ပွဲစဉ်တွေပါဝင်မယ့် selection.json ကိုခေါ်ယူခြင်း
                 const selectionRes = await fetch('selection.json?_t=' + Date.now());
                 const selectionData = await selectionRes.json();
 
-                // ၃။ originalMatches ထဲကနေ Detail ရှာပြီး selectionData ထဲက ပွဲတွေကိုပဲ စစ်ထုတ်ပြသမယ်
+                // ၃။ *** Home Team နာမည်တစ်ခုတည်းဖြင့်သာ နှိုင်းယှဉ်စစ်ထုတ်ယူမည့်အပိုင်း ***
                 allMatches = selectionData.map(sel => {
                     const matchedDetail = originalMatches.find(m => 
-                        m.home_name.toLowerCase().trim() === sel.home_name.toLowerCase().trim() &&
-                        m.away_name.toLowerCase().trim() === sel.away_name.toLowerCase().trim()
+                        m.home_name.toLowerCase().trim() === sel.home_name.toLowerCase().trim()
                     );
 
                     return {
-                        league: matchedDetail ? matchedDetail.league : (sel.league || "Unknown League"),
-                        match_time: matchedDetail ? matchedDetail.match_time : (sel.match_time || Math.floor(Date.now() / 1000)),
+                        league: matchedDetail ? matchedDetail.league : "Unknown League",
+                        match_time: matchedDetail ? matchedDetail.match_time : Math.floor(Date.now() / 1000),
                         home_name: sel.home_name,
-                        away_name: sel.away_name,
+                        // Away Team အမည်ကို မူလ API မှ အော်တိုဆွဲယူခြင်း၊ မတွေ့ပါက "Away Team" ဟုပြခြင်း
+                        away_name: matchedDetail ? matchedDetail.away_name : "Away Team",
                         home_img: matchedDetail ? matchedDetail.home_img : "",
                         away_img: matchedDetail ? matchedDetail.away_img : "",
                         match_status: sel.match_status !== undefined ? sel.match_status : (matchedDetail ? matchedDetail.match_status : false),
-                        links: sel.links || [] // ယူအာအယ်လ်ကို selection.json ထဲကပဲ တိုက်ရိုက်သုံးမယ်
+                        links: sel.links || [] 
                     };
                 });
 
