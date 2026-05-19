@@ -160,7 +160,6 @@
         const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
         const BAMARTHAN_PLAYER = "https://m-sport-download.static.hf.space/Xnxxplayer.html?url=";
 
-        // selection.json ကို fetch ပြီး home_name နှင့် links ကို ရယူမည်
         let selectionData = [];
         async function fetchSelection() {
             try {
@@ -171,7 +170,6 @@
             }
         }
 
-        // match ၏ home_name နှင့် selection.json ထဲမှ home_name တူသော entry ကို ရှာမည်
         function getSelectionLinks(homeName) {
             if (!selectionData || selectionData.length === 0) return null;
             const found = selectionData.find(s =>
@@ -200,7 +198,6 @@
             const grid = document.getElementById('movie-grid');
             grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
             try {
-                // selection.json ကိုပါ တပြိုင်နက် fetch မည်
                 await fetchSelection();
                 const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
                 const data = await res.json();
@@ -217,6 +214,15 @@
                 const tStr = matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 const dStr = matchDate.toLocaleDateString([], {month: 'short', day: '2-digit'});
 
+                // ===== Selection Links ရှိမရှိ စစ်ဆေးပြီး Flash Text သတ်မှတ်ခြင်း =====
+                const selLinks = getSelectionLinks(m.home_name);
+                const hasSelection = selLinks && selLinks.length > 0;
+                const bamarThanBadge = hasSelection ? `
+                    <div class="mt-1.5 text-[9px] font-black text-red-500 animate-pulse bg-red-500/10 px-2 py-0.5 rounded-md border border-red-500/20 whitespace-nowrap tracking-tighter">
+                        မြန်မာအသံ Live
+                    </div>
+                ` : '';
+
                 const card = document.createElement('div');
                 card.className = "match-card cursor-pointer active:scale-95 transition-all";
                 card.innerHTML = `
@@ -230,6 +236,7 @@
                             <span class="text-[10px] opacity-50 mb-1">${dStr}</span>
                             <span class="text-base font-black dark:text-white">${tStr}</span>
                             ${m.match_status ? '<div class="mt-2 flex items-center gap-1 text-red-500 text-[9px] font-black uppercase"><span class="live-dot"></span> LIVE NOW</div>' : ''}
+                            ${bamarThanBadge}
                         </div>
                         <div class="flex flex-col items-center w-[35%]">
                             <img src="${getImg(m.away_img)}" class="w-12 h-12 object-contain mb-3" onerror="this.src='${DEFAULT_LOGO}'">
@@ -251,11 +258,9 @@
             const container = document.getElementById('match-detail-container');
             const links = match.links || [];
 
-            // ===== selection.json မှ links ရှာမည် =====
             const selLinks = getSelectionLinks(match.home_name);
             const hasSelection = selLinks && selLinks.length > 0;
 
-            // ===== မူလ links section =====
             let linksContent = links.length === 0 ? 
                 `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 text-center mt-4">
                     <i class="fas fa-clock text-yellow-500 text-2xl mb-3"></i>
@@ -277,7 +282,6 @@
                     </div>
                 `).join('');
 
-            // ===== selection.json section (ရှိမှသာ ပြမည်) =====
             let selectionContent = '';
             if (hasSelection) {
                 const selRows = selLinks.map((sl, si) => `
@@ -318,7 +322,6 @@
                 </div>
             `;
 
-            // Auto-play: selection.json ရှိရင် BamarThan ပထမ URL, မရှိရင် မူလ ပထမ URL
             if (hasSelection) {
                 playBamarThan(selLinks[0].url);
             } else if (links.length > 0) {
@@ -326,7 +329,6 @@
             }
         }
 
-        // URL ကို attribute ထဲ safe ဖြစ်အောင် encode မည်
         function escUrl(url) {
             return url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
@@ -334,7 +336,6 @@
             return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         }
 
-        // မူလ App Play (ArtPlayer)
         function playStream(url, btn) {
             if(btn) {
                 document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active'));
@@ -371,7 +372,6 @@
             });
         }
 
-        // BamarThan Live Player — iframe ဖြင့် player ထဲ load မည်
         function playBamarThan(url, btn) {
             if(btn) {
                 document.querySelectorAll('.btn-bamarthan').forEach(b => b.classList.remove('active'));
@@ -380,7 +380,6 @@
 
             if (art) art.destroy();
 
-            // ArtPlayer container ကို iframe ဖြင့် အစားထိုးမည်
             const container = document.getElementById('artplayer');
             container.innerHTML = `<iframe
                 src="${BAMARTHAN_PLAYER}${encodeURIComponent(url)}"
@@ -390,16 +389,11 @@
             ></iframe>`;
         }
 
-        // External — Network Streaming Video Player ဖြင့် ဖွင့်မည်
         function openNetworkPlayer(url, title) {
-            // Android intent: network streaming player (MX Player / VLC style)
-            const encoded = encodeURIComponent(url);
-            // Try MX Player first, fallback to VLC
             const intent = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`;
             window.location.href = intent;
         }
 
-        // မူလ External (leone player)
         function openExternal(url, title) {
             let finalUrl = url;
             if (url.includes('miy.live')) {
@@ -432,3 +426,4 @@
     </script>
 </body>
 </html>
+     
