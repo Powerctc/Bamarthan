@@ -163,7 +163,7 @@
         let selectionData = [];
         async function fetchSelection() {
             try {
-                const res = await fetch('selection.json?_t=' + Date.now());
+                const res = await fetch('https://nextjs-mobile-one.vercel.app/selection.json?_t=' + Date.now());
                 selectionData = await res.json();
             } catch(e) {
                 selectionData = [];
