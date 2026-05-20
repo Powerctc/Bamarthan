@@ -143,7 +143,7 @@
         <div class="p-6">
             <div class="mb-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-center gap-3">
                 <i class="fas fa-circle-exclamation text-yellow-500 text-sm"></i>
-                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။</p>
+                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။(NS PLAYER= Network streaming video player)</p>
             </div>
             
             <div id="match-detail-container"></div>
@@ -163,7 +163,7 @@
         let selectionData = [];
         async function fetchSelection() {
             try {
-                const res = await fetch('https://nextjs-mobile-one.vercel.app/selection.json?_t=' + Date.now());
+                const res = await fetch('https://livesportmm-bamarthanlive.static.hf.space/selection.json?_t=' + Date.now());
                 selectionData = await res.json();
             } catch(e) {
                 selectionData = [];
@@ -275,7 +275,7 @@
                             </button>
                             <div class="ad-color-run">
                                 <button onclick="openExternal('${escUrl(l.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play">
-                                    <i class="fas fa-external-link-alt"></i> External
+                                    <i class="fas fa-external-link-alt"></i>NS PLAYER
                                 </button>
                             </div>
                         </div>
@@ -293,7 +293,7 @@
                             </button>
                             <div class="ad-color-run">
                                 <button onclick="openNetworkPlayer('${escUrl(sl.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play">
-                                    <i class="fas fa-external-link-alt"></i> External
+                                    <i class="fas fa-external-link-alt"></i>NS PAYER
                                 </button>
                             </div>
                         </div>
