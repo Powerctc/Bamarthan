@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <a href="https://bamarthan.vercel.app/" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-home w-5 text-center"></i>မြန်မာသံ⚽လိုက်ဖ်
             </a>
-            <a href="https://bamarthan.vercel.app/movies.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+            <a href="https://bamarthan.vercel.app/movies..html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
                 <i class="fas fa-film text-primary w-5 text-center"></i>မြန်မာစာတန်းထိုး
             </a>
             <a href="https://bamarthan.vercel.app/series/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
