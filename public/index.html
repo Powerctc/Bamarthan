@@ -573,27 +573,34 @@
 
         // Fetch User ID and Expired date from Approved Users
         async function fetchUserInfo() {
-            updateUserInfoBar();
-            try {
-                const res = await fetch(APPROVED_USERS_URL + '?_t=' + Date.now());
-                const data = await res.json();
-                const savedPhone = localStorage.getItem('userPhone') || localStorage.getItem('phone') || localStorage.getItem('Phone');
-                const userRecord = findApprovedUserRecord(data, savedPhone);
+    // အရင်ကအတိုင်း zetflix_device_id_web ကို သုံးပါ
+    const id = localStorage.getItem('zetflix_device_id_web') || "GUEST-USER";
+    const idEl = document.getElementById('top-user-id');
+    const expEl = document.getElementById('top-user-expired');
 
-                if (userRecord) {
-                    currentUserId = userRecord.userId || userRecord.user_id || userRecord.id || userRecord.uid || savedPhone || currentUserId;
-                    currentUserExpired = userRecord.expired || userRecord.expire || userRecord.expiry || userRecord.expires_at || userRecord.expired_at || userRecord.endDate || userRecord.end_date || userRecord.valid_until || 'N/A';
-                    localStorage.setItem('currentUserId', currentUserId);
-                    localStorage.setItem('currentUserExpired', currentUserExpired);
-                } else if (savedPhone) {
-                    currentUserId = savedPhone;
-                    localStorage.setItem('currentUserId', currentUserId);
-                }
-            } catch(e) {
-                console.log("Error fetching user info:", e);
-            }
-            updateUserInfoBar();
+    // UI မှာ ID ကို အရင်ပြထားပါ
+    idEl.textContent = id;
+    expEl.textContent = "Loading...";
+
+    try {
+        const res = await fetch(`${APPROVED_USERS_URL}?t=${Date.now()}`);
+        const users = await res.json();
+        
+        // JSON ထဲက id နဲ့ LocalStorage က id ကို တိုက်စစ်ခြင်း
+        const user = users.find(u => String(u.id) === String(id));
+
+        if (user) {
+            // expires ဆိုတဲ့ field ကို ခွဲထုတ်ပြီးပြသခြင်း
+            expEl.textContent = user.expires ? user.expires.split('T')[0] : "Active Member";
+        } else {
+            expEl.textContent = "Active Member";
         }
+    } catch (e) {
+        console.error("User Info Fetch Error:", e);
+        expEl.textContent = "Active Member";
+    }
+}
+
 
         // Initialize chat from localStorage
         function initializeChat() {
