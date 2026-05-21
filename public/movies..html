@@ -253,7 +253,7 @@ function openExternal(url, title) {
 }
 
 async function checkUserDisplay() {
-    const id = localStorage.getItem('zetflix_device_id_mob') || "GUEST-USER";
+    const id = localStorage.getItem('zetflix_device_id_web') || "GUEST-USER";
     document.getElementById('u-id').textContent = id;
     const uExp = document.getElementById('u-exp');
     try {
