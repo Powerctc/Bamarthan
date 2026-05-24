@@ -7,7 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+    
+    <!-- Plyr Player CSS & JS (Artplayer အစား ပြောင်းလဲထည့်သွင်းမှု) -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     
     <script>
         tailwind.config = {
@@ -19,6 +22,15 @@
     <style>
         * { -webkit-tap-highlight-color: transparent; outline: none; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* Plyr theme color customization */
+        :root {
+            --plyr-color-main: #facc15;
+        }
+        .plyr--video {
+            height: 100%;
+            width: 100%;
+        }
         
         .ad-color-run {
             padding: 2px; border-radius: 16px;
@@ -42,7 +54,6 @@
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        .artplayer-app { width: 100%; height: 100%; }
         .play-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; align-items: stretch; }
         .btn-play { 
             padding: 12px 8px; font-size: 10px; font-weight: 800; 
@@ -53,34 +64,6 @@
         .btn-app.active { background: #facc15; color: #000; }
         .no-select { user-select: none; }
 
-        /* BamarThan Live button style */
-        .btn-bamarthan {
-            border-radius: 16px;
-            background: rgba(239,68,68,0.12);
-            color: #ef4444;
-            border: 1px solid rgba(239,68,68,0.3);
-        }
-        .btn-bamarthan.active { background: #ef4444; color: #fff; }
-
-        /* Selection section separator */
-        .selection-section {
-            border-top: 1px solid rgba(250,204,21,0.15);
-            padding-top: 12px;
-            margin-top: 4px;
-        }
-        .selection-label {
-            font-size: 9px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #ef4444;
-            margin-bottom: 8px;
-            padding-left: 4px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
         /* Chat Box Styles */
         .chat-box-container {
             position: fixed;
@@ -89,7 +72,6 @@
             width: 320px;
             height: 480px;
             background: white;
-            dark:background: #1e293b;
             border-radius: 16px;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             display: flex;
@@ -98,306 +80,85 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
+        .dark .chat-box-container { background: #1e293b; }
 
-        .chat-box-container.minimized {
-            height: 60px;
-            width: 60px;
-        }
-
+        .chat-box-container.minimized { height: 60px; width: 60px; }
         .chat-header {
             background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%);
-            color: #000;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 13px;
-            cursor: pointer;
+            color: #000; padding: 12px 16px; display: flex;
+            justify-content: space-between; align-items: center;
+            font-weight: bold; font-size: 13px; cursor: pointer;
         }
-
-        .chat-header-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .chat-header-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
+        .chat-header-title { display: flex; align-items: center; gap: 8px; }
+        .chat-header-buttons { display: flex; gap: 8px; }
         .chat-header-btn {
-            background: rgba(0,0,0,0.1);
-            border: none;
-            color: #000;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            transition: 0.2s;
+            background: rgba(0,0,0,0.1); border: none; color: #000;
+            width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 12px; transition: 0.2s;
         }
-
-        .chat-header-btn:hover {
-            background: rgba(0,0,0,0.2);
-        }
+        .chat-header-btn:hover { background: rgba(0,0,0,0.2); }
 
         .chat-notice {
-            background: #fffbeb;
-            color: #92400e;
-            padding: 8px 12px;
-            font-size: 10px;
-            font-weight: 600;
-            border-bottom: 1px solid #fef3c7;
-            text-align: center;
+            background: #fffbeb; color: #92400e; padding: 8px 12px; font-size: 10px;
+            font-weight: 600; border-bottom: 1px solid #fef3c7; text-align: center;
         }
+        .dark .chat-notice { background: #451a03; color: #fef3c7; border-bottom-color: #78350f; }
 
-        .dark .chat-notice {
-            background: #451a03;
-            color: #fef3c7;
-            border-bottom-color: #78350f;
-        }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 12px; background: #f8f9fa; }
+        .dark .chat-messages { background: #0f172a; }
 
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            background: #f8f9fa;
-            dark:background: #0f172a;
-        }
+        .chat-message { margin-bottom: 12px; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .dark .chat-messages {
-            background: #0f172a;
-        }
+        .chat-message.own { display: flex; justify-content: flex-end; }
+        .chat-message-bubble { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 12px; line-height: 1.4; word-wrap: break-word; }
+        .chat-message.own .chat-message-bubble { background: #facc15; color: #000; border-bottom-right-radius: 4px; }
+        .chat-message.other .chat-message-bubble { background: white; color: #000; border-bottom-left-radius: 4px; border: 1px solid #e5e7eb; }
+        .dark .chat-message.other .chat-message-bubble { background: #1a2436; color: #fff; border-color: rgba(255,255,255,0.1); }
 
-        .chat-message {
-            margin-bottom: 12px;
-            animation: slideIn 0.3s ease;
-        }
+        .chat-message-name { font-size: 11px; margin-bottom: 4px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+        .chat-user-id-badge { font-size: 10px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 6px; font-family: monospace; color: #facc15; font-weight: 900; }
+        .dark .chat-user-id-badge { background: rgba(255,255,255,0.1); }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .chat-message.own {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .chat-message-bubble {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .chat-message.own .chat-message-bubble {
-            background: #facc15;
-            color: #000;
-            border-bottom-right-radius: 4px;
-        }
-
-        .chat-message.other .chat-message-bubble {
-            background: white;
-            color: #000;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .dark .chat-message.other .chat-message-bubble {
-            background: #1a2436;
-            color: #fff;
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .chat-message-name {
-            font-size: 10px;
-            opacity: 0.6;
-            margin-bottom: 4px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .chat-user-id-badge {
-            font-size: 8px;
-            background: rgba(0,0,0,0.05);
-            padding: 1px 4px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        .dark .chat-user-id-badge {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .chat-input-area {
-            padding: 12px;
-            border-top: 1px solid #e5e7eb;
-            background: white;
-            dark:background: #1e293b;
-            display: flex;
-            gap: 8px;
-        }
-
-        .dark .chat-input-area {
-            background: #1e293b;
-            border-top-color: rgba(255,255,255,0.1);
-        }
+        .chat-input-area { padding: 12px; border-top: 1px solid #e5e7eb; background: white; display: flex; gap: 8px; }
+        .dark .chat-input-area { background: #1e293b; border-top-color: rgba(255,255,255,0.1); }
 
         .chat-input {
-            flex: 1;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 12px;
-            background: white;
-            color: #000;
-            outline: none;
-            transition: 0.2s;
+            flex: 1; border: 1px solid #e5e7eb; border-radius: 8px;
+            padding: 8px 12px; font-size: 12px; background: white; color: #000; outline: none; transition: 0.2s;
         }
-
-        .dark .chat-input {
-            background: #0f172a;
-            color: #fff;
-            border-color: rgba(255,255,255,0.1);
-        }
-
-        .chat-input:focus {
-            border-color: #facc15;
-            box-shadow: 0 0 0 2px rgba(250,204,21,0.1);
-        }
+        .dark .chat-input { background: #0f172a; color: #fff; border-color: rgba(255,255,255,0.1); }
+        .chat-input:focus { border-color: #facc15; box-shadow: 0 0 0 2px rgba(250,204,21,0.1); }
 
         .chat-send-btn {
-            background: #facc15;
-            border: none;
-            color: #000;
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            transition: 0.2s;
+            background: #facc15; border: none; color: #000; width: 36px; height: 36px;
+            border-radius: 8px; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; font-size: 14px; font-weight: bold; transition: 0.2s;
         }
-
-        .chat-send-btn:hover {
-            background: #f59e0b;
-            transform: scale(1.05);
-        }
-
-        .chat-send-btn:active {
-            transform: scale(0.95);
-        }
+        .chat-send-btn:hover { background: #f59e0b; transform: scale(1.05); }
+        .chat-send-btn:active { transform: scale(0.95); }
 
         .chat-toggle-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%);
-            border: none;
-            border-radius: 50%;
-            color: #000;
-            font-size: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 16px rgba(250,204,21,0.3);
-            z-index: 75;
-            transition: all 0.3s ease;
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); border: none;
+            border-radius: 50%; color: #000; font-size: 24px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(250,204,21,0.3); z-index: 75; transition: all 0.3s ease;
         }
+        .chat-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(250,204,21,0.4); }
+        .chat-toggle-btn:active { transform: scale(0.95); }
+        .chat-toggle-btn.hidden { display: none; }
 
-        .chat-toggle-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(250,204,21,0.4);
-        }
-
-        .chat-toggle-btn:active {
-            transform: scale(0.95);
-        }
-
-        .chat-toggle-btn.hidden {
-            display: none;
-        }
-
-        .chat-empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            opacity: 0.5;
-            text-align: center;
-            padding: 20px;
-            font-size: 12px;
-        }
-
-        .chat-user-badge {
-            display: inline-block;
-            background: #facc15;
-            color: #000;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 9px;
-            font-weight: bold;
-            margin-left: 4px;
-        }
+        .chat-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 0.5; text-align: center; padding: 20px; font-size: 12px; }
+        .chat-user-badge { display: inline-block; background: #000; color: #facc15; padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: bold; margin-left: 4px; }
 
         .user-info-top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 28px;
-            z-index: 95;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 0 10px;
-            background: #020617;
-            color: #facc15;
-            border-bottom: 1px solid rgba(250,204,21,0.25);
-            font-size: 10px;
-            font-weight: 900;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-            white-space: nowrap;
+            position: fixed; top: 0; left: 0; right: 0; height: 28px; z-index: 95;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 0 10px; background: #020617; color: #facc15; border-bottom: 1px solid rgba(250,204,21,0.25);
+            font-size: 10px; font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap;
         }
-
-        .user-info-top-bar .user-info-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            min-width: 0;
-        }
-
-        .user-info-top-bar .user-info-value {
-            color: #ffffff;
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        .user-info-top-bar .user-info-item { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
+        .user-info-top-bar .user-info-value { color: #ffffff; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300 no-select">
@@ -459,7 +220,8 @@
 
     <main id="detail-view" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-darkBg hidden flex-col overflow-y-auto">
         <div class="relative w-full aspect-video bg-black shadow-2xl">
-            <div id="artplayer" class="artplayer-app"></div>
+            <!-- Plyr HTML5 Video Tag integration instead of Artplayer div -->
+            <video id="player" playsinline controls class="w-full h-full object-cover"></video>
             <button onclick="handleBackAction()" class="absolute top-10 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
                 <i class="fas fa-chevron-left"></i>
             </button>
@@ -503,19 +265,12 @@
         <div class="chat-messages" id="chat-messages">
             <div class="chat-empty-state">
                 <i class="fas fa-comments" style="font-size: 32px; margin-bottom: 8px;"></i>
-                <p>စကားပြောမည်ဆိုလျှင် အမည်ထည့်သွင်းပြီး စာသားရေးပါ။</p>
+                <p>စကားပြောရန် စာရိုက်ပါ...</p>
             </div>
         </div>
 
+        <!-- Chat Input area with Username completely removed -->
         <div class="chat-input-area">
-            <input 
-                type="text" 
-                id="chat-username" 
-                class="chat-input" 
-                placeholder="အမည်" 
-                maxlength="20"
-                style="max-width: 80px;"
-            >
             <input 
                 type="text" 
                 id="chat-message-input" 
@@ -536,11 +291,12 @@
     const APPROVED_USERS_URL = `${HF_BASE_URL}/Web/approved_users.json`;
     
     let allMatches = [];
-    let art = null;
+    let player = null;      // Plyr Instance
+    let hlsInstance = null; // Hls Instance
+    
     const PROXY_IMG = "https://wsrv.nl/?url=";
     const VIDEO_PROXY = "https://my-proxy-wt0l.onrender.com/proxy?url=";
     const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
-    const BAMARTHAN_PLAYER = "https://m-sport-download.static.hf.space/Xnxxplayer.html?url=";
 
     // Chat Box Variables
     let chatMessages = [];
@@ -556,7 +312,6 @@
         if (expiredEl) expiredEl.textContent = currentUserExpired || 'N/A';
     }
 
-    // --- Fixed User Info Logic ---
     async function fetchUserInfo() {
         const id = localStorage.getItem('zetflix_device_id_web') || "GUEST-USER";
         updateUserInfoBar();
@@ -615,6 +370,7 @@
         }
     }
 
+    // Close chat
     function closeChatBox(event) {
         event.stopPropagation();
         document.getElementById('chat-box').classList.add('hidden');
@@ -635,7 +391,7 @@
         }
     }
 
-    // --- Updated Send Message (No Username Input) ---
+ // Send chat using currentUserId as Username
     function sendChatMessage() {
         const messageInput = document.getElementById('chat-message-input');
         const message = messageInput.value.trim();
@@ -645,7 +401,7 @@
         const chatMessage = {
             id: Date.now(),
             userId: currentUserId,
-            username: currentUserId, // ID ကိုပဲ username အဖြစ်သုံးသည်
+            username: currentUserId, 
             message: message,
             timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
             isOwn: true
@@ -684,7 +440,7 @@
             <div class="chat-message ${msg.isOwn ? 'own' : 'other'}">
                 <div>
                     <div class="chat-message-name" style="${msg.isOwn ? 'justify-content: flex-end;' : ''}">
-                        <span class="chat-user-id-badge">ID: ${msg.userId}</span>
+                        <span class="chat-user-id-badge"><i class="fas fa-user text-[9px] mr-1"></i> ${msg.userId}</span>
                     </div>
                     <div class="chat-message-bubble">${escapeHtml(msg.message)}</div>
                     <div style="font-size: 9px; opacity: 0.5; margin-top: 2px; ${msg.isOwn ? 'text-right' : 'text-left'}">${msg.timestamp}</div>
@@ -698,21 +454,6 @@
         return text.replace(/[&<>"']/g, m => map[m]);
     }
 
-    // Match Logic
-    let selectionData = [];
-    async function fetchSelection() {
-        try {
-            const res = await fetch('https://livesportmm-bamarthanlive.static.hf.space/selection.json?_t=' + Date.now());
-            selectionData = await res.json();
-        } catch(e) { selectionData = []; }
-    }
-
-    function getSelectionLinks(homeName) {
-        if (!selectionData || selectionData.length === 0) return null;
-        const found = selectionData.find(s => s.home_name && homeName && s.home_name.trim().toLowerCase() === homeName.trim().toLowerCase());
-        return found ? (found.links || []) : null;
-    }
-
     window.onpopstate = () => { if (document.getElementById('detail-view').style.display !== 'none') closeDetail(); };
     function handleBackAction() { window.history.back(); }
     function getImg(url) { return url ? `${PROXY_IMG}${encodeURIComponent(url)}&w=100&h=100&fit=contain` : DEFAULT_LOGO; }
@@ -721,7 +462,7 @@
         const grid = document.getElementById('movie-grid');
         grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
         try {
-            await fetchSelection();
+            // Selection.json Fetch ဖယ်ထုတ်လိုက်ပါပြီ
             const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
             const data = await res.json();
             allMatches = data.context || [];
@@ -736,8 +477,6 @@
             const matchDate = new Date(m.match_time * 1000);
             const tStr = matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             const dStr = matchDate.toLocaleDateString([], {month: 'short', day: '2-digit'});
-            const selLinks = getSelectionLinks(m.home_name);
-            const bamarThanBadge = (selLinks && selLinks.length > 0) ? `<div class="mt-1.5 text-[9px] font-black text-red-500 animate-pulse bg-red-500/10 px-2 py-0.5 rounded-md border border-red-500/20 whitespace-nowrap tracking-tighter">မြန်မာအသံ Live</div>` : '';
 
             const card = document.createElement('div');
             card.className = "match-card cursor-pointer active:scale-95 transition-all";
@@ -752,7 +491,6 @@
                         <span class="text-[10px] opacity-50 mb-1">${dStr}</span>
                         <span class="text-base font-black dark:text-white">${tStr}</span>
                         ${m.match_status ? '<div class="mt-2 flex items-center gap-1 text-red-500 text-[9px] font-black uppercase"><span class="live-dot"></span> LIVE NOW</div>' : ''}
-                        ${bamarThanBadge}
                     </div>
                     <div class="flex flex-col items-center w-[35%]">
                         <img src="${getImg(m.away_img)}" class="w-12 h-12 object-contain mb-3" onerror="this.src='${DEFAULT_LOGO}'">
@@ -774,55 +512,60 @@
         
         const container = document.getElementById('match-detail-container');
         const links = match.links || [];
-        const selLinks = getSelectionLinks(match.home_name);
-        const hasSelection = selLinks && selLinks.length > 0;
 
+        // App Play နှင့် NS Player Link များသီးသန့်စီစစ်မှု
         let linksContent = links.length === 0 ? `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 text-center mt-4"><p class="text-yellow-500 text-[11px] font-bold uppercase">ပွဲစဉ်အချိန်နီးမှ လိုင်းများပေါ်ပါမည်။</p></div>` : 
             links.map((l, i) => `
                 <div class="flex flex-col mb-4">
                     <span class="text-[10px] font-bold opacity-40 uppercase mb-2 tracking-widest pl-1">${l.name}</span>
                     <div class="play-row">
-                        <button onclick="playStream('${escUrl(l.url)}', this)" class="btn-play btn-app ${i === 0 && !hasSelection ? 'active' : ''}"><i class="fas fa-play"></i> App Play</button>
+                        <button onclick="playStream('${escUrl(l.url)}', this)" class="btn-play btn-app ${i === 0 ? 'active' : ''}"><i class="fas fa-play"></i> App Play</button>
                         <div class="ad-color-run"><button onclick="openNetworkPlayer('${escUrl(l.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play"><i class="fas fa-external-link-alt"></i>NS PLAYER</button></div>
                     </div>
                 </div>
             `).join('');
 
-        let selectionContent = hasSelection ? `
-            <div class="selection-section">
-                <div class="selection-label"><span class="live-dot"></span> BamarThan Streams</div>
-                ${selLinks.map((sl, si) => `
-                    <div class="flex flex-col mb-4">
-                        <span class="text-[10px] font-bold opacity-40 uppercase mb-2 tracking-widest pl-1">${sl.name}</span>
-                        <div class="play-row">
-                            <button onclick="playBamarThan('${escUrl(sl.url)}', this)" class="btn-play btn-bamarthan ${si === 0 ? 'active' : ''}"><i class="fas fa-tv"></i> BamarThan Live</button>
-                            <div class="ad-color-run"><button onclick="openNetworkPlayer('${escUrl(sl.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play"><i class="fas fa-external-link-alt"></i>NS PLAYER</button></div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>` : '';
-
-        container.innerHTML = `<div class="text-center mb-6"><h2 class="text-lg font-black uppercase dark:text-white">${match.home_name} VS ${match.away_name}</h2><p class="text-primary text-[10px] font-bold mt-1 uppercase">${match.league}</p></div><div class="space-y-2">${selectionContent}${linksContent}</div>`;
-        if (hasSelection) playBamarThan(selLinks[0].url); else if (links.length > 0) playStream(links[0].url);
+        container.innerHTML = `<div class="text-center mb-6"><h2 class="text-lg font-black uppercase dark:text-white">${match.home_name} VS ${match.away_name}</h2><p class="text-primary text-[10px] font-bold mt-1 uppercase">${match.league}</p></div><div class="space-y-2">${linksContent}</div>`;
+        
+        if (links.length > 0) playStream(links[0].url);
     }
 
     function escUrl(url) { return url.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
     function escStr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
+    // Plyr Player ဖြင့် HLS (.m3u8) Stream မောင်းနှင်မှုစနစ်
     function playStream(url, btn) {
         if(btn) { document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
         let finalUrl = url.includes('niuerr.live') ? VIDEO_PROXY + encodeURIComponent(url) : url;
-        if (art) art.destroy();
-        art = new Artplayer({
-            container: '#artplayer', url: finalUrl, autoplay: true, autoSize: true, fullscreen: true, fullscreenWeb: true, pip: true, theme: '#facc15', type: 'm3u8',
-            customType: { m3u8: function (video, url) { if (Hls.isSupported()) { const hls = new Hls(); hls.loadSource(url); hls.attachMedia(video); } else if (video.canPlayType('application/vnd.apple.mpegurl')) video.src = url; } }
+        
+        const video = document.getElementById('player');
+        
+        // ဉီးစွာလက်ရှိပတ်နေသော player များကို သန့်ရှင်းရေးလုပ်သည်
+        if (player) {
+            player.destroy();
+            player = null;
+        }
+        if (hlsInstance) {
+            hlsInstance.destroy();
+            hlsInstance = null;
+        }
+        
+        // Hls.js ဖြင့် Plyr ကို ချိတ်ဆက်မောင်းနှင်ခြင်း
+        if (Hls.isSupported()) {
+            hlsInstance = new Hls();
+            hlsInstance.loadSource(finalUrl);
+            hlsInstance.attachMedia(video);
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = finalUrl;
+        }
+        
+        // Plyr Initialization
+        player = new Plyr(video, {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
+            clickable: true
         });
-    }
-
-    function playBamarThan(url, btn) {
-        if(btn) { document.querySelectorAll('.btn-bamarthan').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-        if (art) art.destroy();
-        document.getElementById('artplayer').innerHTML = `<iframe src="${BAMARTHAN_PLAYER}${encodeURIComponent(url)}" style="width:100%;height:100%;border:none;background:#000;" allowfullscreen allow="autoplay; fullscreen"></iframe>`;
+        
+        video.play().catch(err => console.log("Autoplay context init:", err));
     }
 
     function openNetworkPlayer(url, title) { window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`; }
@@ -854,8 +597,18 @@
         document.getElementById('detail-view').classList.add('hidden');
         document.getElementById('list-view').classList.remove('hidden');
         hideChatCompletely();
+        
+        // Detail ပိတ်လိုက်လျှင် ဖွင့်ထားသော Plyr ကိုအပြီးသတ်ရပ်နားမည်
+        if (player) {
+            player.destroy();
+            player = null;
+        }
+        if (hlsInstance) {
+            hlsInstance.destroy();
+            hlsInstance = null;
+        }
     }
-                                </script>
+</script>
     
 </body>
 </html>
