@@ -120,7 +120,7 @@ export default function Page() {
           <a href="https://bamarthan.vercel.app/" className="block text-center text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
             Go straight to Free Trial
           </a>
-          <a href="/home.html" className="block text-center text-amber-400 border border-amber-500/20 bg-amber-500/5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+          <a href="/index.html" className="block text-center text-amber-400 border border-amber-500/20 bg-amber-500/5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
             Load Static HTML (Old TV)
           </a>
         </div>
