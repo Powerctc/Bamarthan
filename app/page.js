@@ -114,12 +114,22 @@ export default function Page() {
         <div className="w-12 h-12 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin mb-6"></div>
         <h2 className="text-xl font-bold tracking-widest uppercase">FOTMOV WEB</h2>
         <p className="text-slate-500 text-[10px] mt-2 uppercase tracking-widest">Checking Permission...</p>
+        
+        {/* Loading ကြာနေလျှင် တန်းသွားနိုင်ရန် လင့်ခ်များကို အောက်ခြေတွင် ပြပေးထားမည် */}
+        <div className="mt-12 space-y-3 max-w-xs w-full">
+          <a href="https://bamarthan.vercel.app/" className="block text-center text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+            Go straight to Free Trial
+          </a>
+          <a href="/home.html" className="block text-center text-amber-400 border border-amber-500/20 bg-amber-500/5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">
+            Load Static HTML (Old TV)
+          </a>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4 space-y-6">
       <div className="w-full max-w-lg bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-12 shadow-2xl relative">
         {status === 'approved' ? (
           <div className="text-center">
@@ -152,16 +162,58 @@ export default function Page() {
               <span className="text-slate-500 text-[10px] uppercase font-black tracking-widest block mb-2">Instance ID (Web)</span>
               <p className="text-sky-400 font-mono text-xs break-all bg-sky-500/5 p-3 rounded-xl border border-sky-500/20">{deviceID}</p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
               <button onClick={handleCopy} className={`py-4 rounded-2xl font-bold transition-all text-xs uppercase ${copied ? 'bg-emerald-600 text-white' : 'bg-white/5 text-white border border-white/10'}`}>
                 {copied ? "Copied!" : "Copy ID"}
               </button>
               <button onClick={() => window.location.reload()} className="bg-sky-600 hover:bg-sky-500 text-white font-bold py-4 rounded-2xl transition-all text-xs uppercase shadow-lg shadow-sky-900/20">Retry</button>
             </div>
+
+            {/* NEW: Expired / Denied ဖြစ်တဲ့အခါ ကတ်ပြားထဲမှာ တိုက်ရိုက်ပေါ်မယ့် Free Trial Button */}
+            <div className="pt-4 border-t border-white/5">
+              <a
+                href="https://bamarthan.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 rounded-2xl transition-all text-xs uppercase tracking-wider shadow-lg shadow-emerald-900/20"
+              >
+                စက်အနိမ့်ဆုံးများနှင့်Free trail သုံးရန်
+              </a>
+            </div>
           </div>
         )}
       </div>
+
+      {/* NEW: Outer Dedicated Sections for Old TVs and Phones */}
+      <div className="w-full max-w-lg space-y-4">
+        {/* Free Trial Container */}
+        <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-[2rem] p-6 text-center">
+          <h4 className="text-emerald-400 font-bold text-sm mb-1">စက်အလွန်နိမ့်သူများနှင့် Free Trial ဗားရှင်း</h4>
+          <p className="text-slate-400 text-xs mb-4">စက်ဗားရှင်းနိမ့်လွန်း၍ App မပွင့်ပါက အောက်ပါလင့်ခ်ကို သုံးပါ</p>
+          <a
+            href="https://bamarthan.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all text-xs uppercase tracking-wide"
+          >
+            Open Free Trial (Lightweight)
+          </a>
+        </div>
+
+        {/* Old HTML Version Container */}
+        <div className="bg-amber-500/5 border border-amber-500/10 rounded-[2rem] p-6 text-center">
+          <h4 className="text-amber-400 font-bold text-sm mb-1">ဒီစာမျက်နှာမှာ id မပေါ်ပါက သို့မဟုတ် လေးနေပါက</h4>
+          <p className="text-slate-400 text-xs mb-4">Click below to load a simpler version for old TVs & Phones</p>
+          <a
+            href="/home.html"
+            className="inline-flex items-center justify-center w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-xl transition-all text-xs uppercase tracking-wide"
+          >
+            Go to HTML Version (Old Devices)
+          </a>
+        </div>
+      </div>
     </div>
   )
-          }
+    }
          
