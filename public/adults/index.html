@@ -1,140 +1,197 @@
 <!DOCTYPE html>
-<html lang="my">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Detail Card</title>
-    <style>
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>XXX Burmese - Stream Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0f172a] text-[#f8fafc] font-sans min-height-screen flex flex-col selection:bg-blue-500 selection:text-white">
 
-        .movie-card {
-            background: #1e293b;
-            border-radius: 16px;
-            overflow: hidden;
-            width: 350px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-        }
+  <div class="bg-gradient-to-r from-[#1e3a8a] to-[#0f172a] p-5 text-center text-2xl font-black tracking-wide shadow-xl border-b border-slate-800">
+    Xxx Burmese
+  </div>
 
-        .movie-card:hover {
-            transform: translateY(-5px);
-        }
+  <div class="container mx-auto max-w-4xl px-4 pt-4">
+    <div class="grid grid-cols-3 gap-3">
+      
 
-        .movie-poster {
-            width: 100%;
-            height: none;
-            object-fit: cover;
-            border-bottom: 3px solid #3b82f6;
-        }
+     
+    </div>
+  </div>
 
-        .movie-content {
-            padding: 20px;
-        }
+  <div class="container mx-auto max-w-4xl p-4 flex-grow">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="movieGrid">
+      </div>
+  </div>
 
-        .movie-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 0 0 10px 0;
-            color: #fff;
-        }
+  <div class="fixed inset-0 bg-black/80 flex items-end sm:items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-50 p-0 sm:p-4" id="playerModalOverlay" onclick="closeModal()">
+    <div class="bg-[#1e293b] w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-6 shadow-2xl transform translate-y-full sm:translate-y-0 sm:scale-95 transition-all duration-300" id="playerModal" onclick="event.stopPropagation()">
+      
+      <div class="text-sm font-bold text-slate-400 mb-4 text-center border-b border-slate-700 pb-3" id="selectedMovieTitle">
+        Choose Video Player
+      </div>
+      
+      <div class="space-y-3">
+        <div class="flex items-center bg-[#334155] hover:bg-[#475569] p-3.5 rounded-xl cursor-pointer active:scale-[0.99] transition-all" onclick="openExternalPlayer('mx')">
+          <div class="w-7 h-7 bg-blue-600 rounded-lg shadow-md mr-4 flex items-center justify-center text-xs font-black">MX</div>
+          <div class="font-semibold text-sm">MX Player ဖြင့်ကြည့်မည်</div>
+        </div>
+        
+        <div class="flex items-center bg-[#334155] hover:bg-[#475569] p-3.5 rounded-xl cursor-pointer active:scale-[0.99] transition-all" onclick="openExternalPlayer('vlc')">
+          <div class="w-7 h-7 bg-amber-600 rounded-lg shadow-md mr-4 flex items-center justify-center text-xs font-black">VLC</div>
+          <div class="font-semibold text-sm">VLC Player ဖြင့်ကြည့်မည်</div>
+        </div>
 
-        .movie-meta {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-        }
+        <div class="flex items-center bg-[#334155] hover:bg-[#475569] p-3.5 rounded-xl cursor-pointer active:scale-[0.99] transition-all" onclick="openExternalPlayer('playit')">
+          <div class="w-7 h-7 bg-emerald-600 rounded-lg shadow-md mr-4 flex items-center justify-center text-xs font-black">PI</div>
+          <div class="font-semibold text-sm">PlayIt Player ဖြင့်ကြည့်မည်</div>
+        </div>
 
-        .badge {
-            background: #334155;
-            padding: 4px 10px;
-            border-radius: 6px;
-            color: #3b82f6;
-            font-weight: 600;
-        }
+        <div class="flex items-center bg-[#334155] hover:bg-[#475569] p-3.5 rounded-xl cursor-pointer active:scale-[0.99] transition-all" onclick="openExternalPlayer('browser')">
+          <div class="w-7 h-7 bg-indigo-600 rounded-lg shadow-md mr-4 flex items-center justify-center text-xs font-black">WEB</div>
+          <div class="font-semibold text-sm">Browser Player ဖြင့် တိုက်ရိုက်ကြည့်မည်</div>
+        </div>
 
-        .btn-watch {
-            display: block;
-            background: #3b82f6;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
+        <div class="flex items-center bg-[#334155]/60 hover:bg-[#475569] p-3.5 rounded-xl cursor-pointer active:scale-[0.99] transition-all border border-dashed border-slate-600" onclick="copyStreamLink()">
+          <div class="w-7 h-7 bg-slate-600 rounded-lg shadow-md mr-4 flex items-center justify-center text-xs font-black">URL</div>
+          <div class="font-semibold text-sm text-slate-300">Stream Link ကို Copy ကူးမည်</div>
+        </div>
+      </div>
 
-        .btn-watch:hover {
-            background: #2563eb;
-        }
-         /* --- Running Color Banner --- */
+      <button class="w-full mt-5 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition-all active:scale-[0.98]" onclick="closeModal()">
+        ပိတ်မည်
+      </button>
+    </div>
+  </div>
 
-    .banner-container {
+  <script>
+  const movieData = [
+    {"name":"အမှုတ်ကောင်းတဲ့ ဗဲရဲရဲ့ အပြုအစု","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00019z.webp","video_url":"https://video.mgzaw.com/videos/en-m00019z/master.m3u8"},
+    {"name":"DJ မလေး chichi ရဲ့ ဗဲနဲ့ဆွဲတဲ့ကား","poster":"https://mgzaw.com/wp-content/uploads/2026/05/asia-m00022z.webp","video_url":"https://video.mgzaw.com/videos/asia-m00022z/master.m3u8"},
+    {"name":"Toilet ထဲမှာဘဲကို ရှယ်မှုတ်ပေးတဲ့ စော်လေး","poster":"https://mgzaw.com/wp-content/uploads/2026/05/asia-m00021z.webp","video_url":"https://video.mgzaw.com/videos/asia-m00021z/master.m3u8"},
+    {"name":"အလုပ်ကိစ္စ နဲ့ခရီးတူတူသွားတဲ့ best friend နဲ့ မြင်းစီး","poster":"https://mgzaw.com/wp-content/uploads/2026/05/asia-m00020z.webp","video_url":"https://video.mgzaw.com/videos/asia-m00020z/master.m3u8"},
+    {"name":"အဖုတ် ဖြူဖြူဖွေးဖွေးလေးပေါ်ကို အရည်ပန်း","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00018z.webp","video_url":"https://video.mgzaw.com/videos/en-m00018z/master.m3u8"},
+    {"name":"အနီးကပ် ရိုက်ပြထားတဲ့ ရှယ်အကြည်ဇာတ်ကား","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00017z.webp","video_url":"https://video.mgzaw.com/videos/en-m00017z/master.m3u8"},
+    {"name":"Threesome ဆွဲကြတဲ့ အတွဲ စော်လေးက ရှယ်မိုက်","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00016z.webp","video_url":"https://video.mgzaw.com/videos/en-m00016z/master.m3u8"},
+    {"name":"နှစ်ချီဆက်တိုက် အရည်တွေရွှဲပြီးပန်းထွက်လာတဲ့အထိ အပေါ်ကနေ တက်ဆောင့်တဲ့ စော်လေး","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00015z.webp","video_url":"https://video.mgzaw.com/videos/en-m00015z/master.m3u8"},
+    {"name":"ဗဲမျက်နှာအပေါ်ကို တက်ထိုင်ပြီး အရည်ပန်းထည့်ပေးတဲ့စော်","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00014z.webp","video_url":"https://video.mgzaw.com/videos/en-m00014z/master.m3u8"},
+    {"name":"စော်လေးကို အပြီးအပြင် မှုတ်ပေးတဲ့ ဗဲ","poster":"https://mgzaw.com/wp-content/uploads/2026/05/en-m00013z-1.webp","video_url":"https://video.mgzaw.com/videos/en-m00013z/master.m3u8"}
+  ];
 
-      position: relative;
+// 🍿 ၁။ Movie Grid ထဲသို့ ဒေတာများကို မူရင်းလင့်ခ်အတိုင်း တိုက်ရိုက်ဆွဲထည့်ခြင်း
+function renderMovies() {
+  const grid = document.getElementById("movieGrid");
+  grid.innerHTML = ""; // အဟောင်းတွေကို ရှင်းထုတ်မည်
+  
+  movieData.forEach(movie => {
+    const card = document.createElement("div");
+    card.className = "bg-[#1e293b] rounded-2xl overflow-hidden shadow-lg transition-transform duration-200 active:scale-95 cursor-pointer border border-slate-800/60 group";
+    card.onclick = () => selectMovie(movie.name, movie.video_url);
+    
+    card.innerHTML = `
+      <div class="relative w-full pt-[135%] bg-slate-900 overflow-hidden">
+        <img class="absolute top-0 left-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="${movie.poster}" alt="${movie.name}" loading="lazy">
+      </div>
+      <div class="p-3">
+        <div class="text-sm font-semibold leading-snug h-10 line-clamp-2 text-slate-200 group-hover:text-blue-400 transition-colors">${movie.name}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
 
-      margin-bottom: 30px;
 
-      padding: 3px;
+  // 📱 ၂။ Modal Controllers
+  function selectMovie(title, url) {
+    currentSelectedUrl = url;
+    document.getElementById("selectedMovieTitle").innerText = title;
+    
+    const overlay = document.getElementById("playerModalOverlay");
+    const modal = document.getElementById("playerModal");
+    
+    overlay.classList.remove("pointer-events-none", "opacity-0");
+    overlay.classList.add("opacity-100");
+    modal.classList.remove("translate-y-full", "sm:scale-95");
+    modal.classList.add("translate-y-0", "sm:scale-100");
+  }
 
-      border-radius: 18px;
+  function closeModal() {
+    const overlay = document.getElementById("playerModalOverlay");
+    const modal = document.getElementById("playerModal");
+    
+    overlay.classList.add("pointer-events-none", "opacity-0");
+    overlay.classList.remove("opacity-100");
+    modal.classList.add("translate-y-full", "sm:scale-95");
+    modal.classList.remove("translate-y-0", "sm:scale-100");
+  }
 
-      background: linear-gradient(270deg, #ff0000, #ffff00, #00ff00, #0000ff, #ff00ff, #ff0000);
+  // 🛠️ ၃။ Cross-Platform External Player Logic (Android, iOS, Windows/Mac)
+  function openExternalPlayer(playerType) {
+    if (!currentSelectedUrl) return;
+    
+    // User ရဲ့ Device အမျိုးအစားကို စစ်ဆေးခြင်း
+    const ua = navigator.userAgent.toLowerCase();
+    const isAndroid = /android/.test(ua);
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+    
+    let launchUrl = "";
 
-      background-size: 600%;
-
-      animation: colorRun 5s linear infinite;
-
-      overflow: hidden;
-
+    if (isAndroid) {
+      /* Android Intent System */
+      if (playerType === 'mx') {
+        launchUrl = `intent:${currentSelectedUrl}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;end;`;
+      } else if (playerType === 'vlc') {
+        launchUrl = `intent:${currentSelectedUrl}#Intent;package=org.videolan.vlc;type=video/*;end;`;
+      } else if (playerType === 'playit') {
+        launchUrl = `intent:${currentSelectedUrl}#Intent;package=com.gravity.studio.db.playit;type=video/*;end;`;
+      } else {
+        launchUrl = currentSelectedUrl; // Browser Native Play
+      }
+    } else if (isIOS) {
+      /* iOS Custom URL Schemes */
+      // iOS အတွက် http:// သို့မဟုတ် https:// ကို ဖယ်ထုတ်ပြီး Scheme ဆောက်ရပါသည်
+      const cleanUrl = currentSelectedUrl.replace(/^https?:\/\//, '');
+      
+      if (playerType === 'vlc') {
+        launchUrl = `vlc://${cleanUrl}`;
+      } else if (playerType === 'mx') {
+        launchUrl = `mxplayer://${currentSelectedUrl}`;
+      } else if (playerType === 'playit') {
+        // iOS PlayIt က URL Scheme မတည်ငြိမ်သဖြင့် VLC သို့မဟုတ် Web သို့ လမ်းကြောင်းလွှဲပေးခြင်း
+        launchUrl = `vlc://${cleanUrl}`;
+      } else {
+        launchUrl = currentSelectedUrl;
+      }
+    } else {
+      /* Windows / Mac / Desktop PC */
+      if (playerType === 'vlc') {
+        launchUrl = `vlc://${currentSelectedUrl}`; // PC မှာ VLC Web Protocol အလုပ်လုပ်လျှင် ခေါ်မည်
+      } else {
+        launchUrl = currentSelectedUrl; // Web Browser Player ဖြင့် တန်းပွင့်မည်
+      }
     }
 
-    @keyframes colorRun { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+    // 🚀 သတ်မှတ်ထားသော ပလေယာဆီသို့ ဗီဒီယိုလင့်ခ် ပို့လွှတ်ခြင်း
+    if (launchUrl) {
+      window.open(launchUrl, '_blank');
+    }
+    closeModal();
+  }
 
-    .banner-inner { background: var(--bg-dark); border-radius: 15px; overflow: hidden; }
+  // 📋 ၄။ Copy Link Fallback
+  function copyStreamLink() {
+    if (!currentSelectedUrl) return;
+    navigator.clipboard.writeText(currentSelectedUrl).then(() => {
+      alert("Streaming Link ကို Copy ကူးယူပြီးပါပြီ။ PC သို့မဟုတ် iOS Player များတွင် Paste လုပ်ပြီး ကြည့်နိုင်ပါသည်။");
+    }).catch(err => {
+      alert("လင့်ခ်: " + currentSelectedUrl);
+    });
+    closeModal();
+  }
 
-    .banner-inner img { width: 100%; display: block; object-fit: cover; max-height: 220px; }
-    
-    </style>
-</head>
-<body>
-
-    <div class="movie-card">
-        <img src="https://javmyanmar.com/wp-content/uploads/2026/04/cemd783pl.webp" alt="Fc2ppv Poster" class="movie-poster">
-        
-        <div class="movie-content">
-            <h2 class="movie-title">CEMD-783</h2>
-            
-            <div class="movie-meta">
-                <span class="badge">2026</span>
-                <span class="badge">MM Sub</span>
-            </div>
-
-            <a href="https://m-sport-download.static.hf.space/Xnxxplayer.html?url=https://video.mgzaw.com/videos/jp-m00008z/master.m3u8" class="btn-watch">
-                ယခုကြည့်မည်
-            </a>
-        <br>
-<div class="banner-container">
-
-      <div class="banner-inner">
-
-        <a href="https://m-sport-download.static.hf.space/" target="_blank">🎥ပိုမိုကြည့်ရှု့ရန်ဒေါင်းပါ
-
-          <img alt="Banner" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjk4GfoDCjC4PUepdmoM5h1K9zrFBRQun9bRwx0ezVXh49vWOSRrtLGZRVE7dVAo59SYWkQ6TET6qggaGdTLIOq6BOLEg7Y_g9lGPnfjb_kHHqLwfFgsztFIXZyRRpAbwiAW7nQ0E0iFNlcQaImYPheedfSE2hGTxTJNNut-Wm45qRVi-kbiwRIHY3BTEo/s320/sports.gif" />
-
-        </a>
-
-      </div></div></div>
-    </div>
+  // Run initial build
+  renderMovies();
+  </script>
 </body>
 </html>
