@@ -1,77 +1,105 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S4ITMM FOOTBALL LIVE</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>S4ITMM TV - Direct Player Fixed</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Web, PC & iOS Player Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+  <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: #0f172a; color: white; overflow-x: hidden; }
+
+    :root { --plyr-color-main: #ef4444; }
+
+    /* MOBILE NAVIGATION HEADER (ဖုန်းမှာပဲ ပေါ်မည့် အညွှန်းဘား) */
+    .mobile-nav-bar {
+      display: none; position: fixed; top: 0; left: 0; right: 0; height: 55px;
+      background-color: #1e293b; border-bottom: 1px solid #334155;
+      align-items: center; padding: 0 15px; z-index: 1002;
+    }
+    .menu-toggle-btn {
+      background: #ef4444; color: white; border: none; padding: 8px 12px;
+      border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* SIDEBAR (Original TV/PC Layout) */
+    .sidebar { position: fixed; top: 0; left: 0; width: 192px; height: 100vh; background-color: #1e293b; z-index: 1001; border-right: 1px solid #334155; transition: left 0.3s ease; }
+    .sidebar-header { padding: 25px 15px; border-bottom: 1px solid #334155; text-align: center; color: #ef4444; font-weight: 900; font-size: 18px; }
+    .nav-item { display: flex; align-items: center; padding: 15px 20px; color: #94a3b8; text-decoration: none; font-size: 13px; outline: none; border-left: 4px solid transparent; font-weight: bold; text-transform: uppercase; }
+    .nav-item:focus { background-color: rgba(239, 68, 68, 0.1); border-left-color: #ef4444; color: white; }
+    .nav-item.active { background-color: #ef4444; color: white; }
+
+    /* MAIN CONTENT */
+    .main-content { margin-left: 192px; min-height: 100vh; padding: 25px; transition: all 0.3s ease; }
+    .page-title { font-size: 24px; font-weight: 900; color: #ef4444; margin-bottom: 20px; border-left: 5px solid #ef4444; padding-left: 15px; }
+
+    /* BUTTONS */
+    .btn-group { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+    .btn { background: #1e293b; color: #94a3b8; border: 3px solid transparent; padding: 12px; border-radius: 8px; cursor: pointer; outline: none; font-weight: bold; flex: 1; min-width: 140px; text-align: center; font-size: 12px; text-transform: uppercase; }
+    .btn:focus { background: #ef4444; border-color: #fbbf24; color: white; transform: scale(1.05); }
+    .btn.active { background: #ef4444; color: white; border-color: #fbbf24; }
+    .btn.premium-lock { opacity: 0.6; border-color: rgba(239, 68, 68, 0.2); }
+
+    /* MATCH CARDS */
+    .match-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px; }
+    .match-card { background: #1e293b; border-radius: 12px; padding: 15px; border: 3px solid transparent; outline: none; cursor: pointer; }
+    .match-card:focus { border-color: #3b82f6; transform: scale(1.05); background: #334155; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    .league-tag { font-size: 12px; color: #60a5fa; display: block; text-align: center; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; }
+    .match-date-info { font-size: 11px; color: #94a3b8; display: block; text-align: center; margin-bottom: 10px; }
+    .match-flex { display: flex; justify-content: space-between; align-items: center; }
+    .team-box { width: 35%; text-align: center; }
+    .team-box img { width: 60px; height: 60px; background: white; border-radius: 50%; padding: 5px; object-fit: contain; margin-bottom: 8px; }
+    .team-name { font-size: 13px; font-weight: bold; color: #f1f5f9; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .center-box { text-align: center; width: 30%; }
+    .match-time { color: #fbbf24; font-size: 16px; font-weight: 900; }
     
-    <style>
-        /* CSS Variables for Core Colors & Universal Cross-Platform Themes */
-        :root {
-            --primary: #facc15;
-            --bg-color: #f8fafc;
-            --text-color: #0f172a;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --danger-bg: rgba(239, 68, 68, 0.1);
-            --danger-border: rgba(239, 68, 68, 0.2);
-            --danger-text: #dc2626;
-            --warning-bg: rgba(245, 158, 11, 0.1);
-            --warning-border: rgba(245, 158, 11, 0.2);
-            --warning-text: #d97706;
-        }
-        html.dark {
-            --bg-color: #0f172a;
-            --text-color: #f8fafc;
-            --card-bg: #1e293b;
-            --border-color: #334155;
-            --danger-text: #f87171;
-            --warning-text: #fbbf24;
-        }
+    .live-indicator { background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; animation: blink 1s infinite; display: inline-block; margin-top: 5px; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.3s, color 0.3s;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+    /* DETAIL PAGE */
+    #detailOverlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0f172a; z-index: 5000; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; padding: 20px 10px; }
+    .detail-card { width: 100%; height: 100%; max-width: 900px; padding: 20px; display: flex; flex-direction: column; }
+    
+    .video-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; margin-bottom: 20px; display: none; border: 1px solid #334155; }
+    .video-box video { width: 100%; height: 100%; object-fit: contain; }
 
-        /* Plyr layout overrides */
-        :root { --plyr-color-main: #facc15; }
-        .plyr--video { height: 100%; width: 100%; }
+    .detail-teams { display: flex; justify-content: space-around; align-items: center; margin-bottom: 30px; }
+    .detail-team { text-align: center; width: 45%; }
+    .detail-team img { width: 120px; height: 120px; background: white; border-radius: 50%; padding: 10px; margin-bottom: 15px; object-fit: contain; }
+    .detail-team h3 { font-size: 20px; font-weight: bold; }
 
-        /* Navigation Header CSS */
-        .main-header {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 16px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .menu-btn { background: none; border: none; color: var(--primary); font-size: 24px; width: 40px; text-align: left; cursor: pointer; }
-        .logo-center { display: flex; flex-col; flex-direction: column; align-items: center; }
-        .logo-main { color: var(--primary); font-weight: 900; font-size: 20px; letter-spacing: -1px; line-height: 1; }
-        .logo-sub { font-size: 8px; font-weight: bold; opacity: 0.7; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
-        .theme-btn-wrapper { width: 40px; text-align: right; }
-        .theme-toggle-btn { background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; }
+    .links-area { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px; scrollbar-width: none; }
+    
+    .link-row { display: flex; gap: 10px; width: 100%; }
+    .stream-btn { 
+      flex: 1; background: #1e293b; color: white; padding: 15px; border-radius: 10px; 
+      font-weight: bold; outline: none; border: 3px solid transparent; cursor: pointer;
+      display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 13px; text-transform: uppercase;
+    }
+    .stream-btn:focus { border-color: #fbbf24; background: #2563eb; transform: scale(1.02); }
+    .stream-btn.web-btn { color: #facc15; border-color: rgba(250,204,21,0.1); }
 
-        /* Main List Layout */
-        .content-container { padding: 16px; padding-top: 80px; }
+    .back-btn { width: 100%; margin-top: 20px; padding: 18px; background: transparent; color: #94a3b8; border: 2px solid #334155; border-radius: 12px; font-weight: bold; outline: none; cursor: pointer; }
+    .back-btn:focus { background: #334155; color: white; border-color: #fbbf24; }
 
-        /* Alert Notification Box */
-        .alert-box {
+    /* RESPONSIVE SMARTPHONE MEDIA QUERIES (ဖုန်းအတွက် အထူးပြင်ဆင်ချက်) */
+    @media (max-width: 768px) {
+      .mobile-nav-bar { display: flex; }
+      .sidebar { left: -192px; top: 55px; height: calc(100vh - 55px); }
+      .sidebar.open { left: 0; }
+      .main-content { margin-left: 0; padding: 15px; padding-top: 75px; }
+    }
+    .alert-box {
             margin-bottom: 20px; padding: 16px; border-radius: 16px;
             display: flex; align-items: center; gap: 16px;
             background-color: var(--danger-bg); border: 1px solid var(--danger-border);
@@ -88,119 +116,55 @@
         @keyframes colorRun { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
         .ad-color-run img { border-radius: 14px; width: 100%; height: auto; display: block; background-color: #000; }
         .ad-color-run button { border-radius: 14px; background: #1e293b; color: white; width: 100%; height: 100%; border: none; cursor: pointer; }
-
-        /* Filter Tab Row */
-        .filter-row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 24px; }
-        .filter-btn {
-            flex: 1; background-color: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 12px 4px; border-radius: 12px; font-size: 10px; font-weight: 900;
-            text-transform: uppercase; color: var(--text-color); cursor: pointer; transition: all 0.2s;
-        }
-        .filter-btn.active-filter { border: 2px solid var(--primary); box-shadow: 0 0 0 2px rgba(250,204,21,0.2); }
-        .filter-btn.text-red { color: #ef4444; }
-        .filter-btn.text-blue { color: #3b82f6; }
-        .filter-btn.text-primary { color: var(--primary); }
-
-        /* Match Card Element CSS */
-        .match-card {
-            border-radius: 24px; padding: 20px; margin-bottom: 16px;
-            border: 1px solid var(--border-color); background-color: var(--card-bg);
-            transition: all 0.3s ease; cursor: pointer;
-        }
-        .match-card:active { transform: scale(0.97); }
-        .match-league-wrap { text-align: center; margin-bottom: 16px; }
-        .match-league-text { color: #3b82f6; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-        .match-teams-flex { display: flex; justify-content: space-between; align-items: center; }
-        .match-team-side { width: 35%; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .match-team-logo { width: 48px; height: 48px; object-fit: contain; margin-bottom: 12px; }
-        .match-team-name { font-size: 10px; font-weight: bold; text-transform: uppercase; line-height: 1.3; }
-        .match-info-center { width: 30%; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .match-date { font-size: 10px; opacity: 0.5; margin-bottom: 4px; }
-        .match-time { font-size: 16px; font-weight: 900; }
-        .match-live-badge { margin-top: 8px; display: flex; align-items: center; gap: 4px; color: #ef4444; font-size: 9px; font-weight: 900; text-transform: uppercase; }
-
-        .live-dot {
-            width: 8px; height: 8px; background: #ef4444; border-radius: 50%;
-            display: inline-block; animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        /* Detail Modal View Screen */
-        .detail-modal {
-            position: fixed; inset: 0; top:0; left:0; width:100%; height:100%; z-index: 60;
-            background-color: var(--bg-color); display: none; flex-direction: column; overflow-y: auto;
-        }
         
-        /* Aspect Ratio Container Solution for Retro/Old TVs */
-        .video-box-container { position: relative; width: 100%; padding-top: 56.25%; background-color: #000; }
-        .video-box-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
-        
-        .btn-back {
-            position: absolute; top: 24px; left: 16px; z-index: 22; width: 40px; height: 40px;
-            background-color: rgba(0,0,0,0.5); border-radius: 50%; display: flex; justify-content: center;
-            align-items: center; color: var(--primary); border: 1px solid rgba(255,255,255,0.15); cursor: pointer;
-        }
-        .detail-body-padding { padding: 24px; }
-        
-        .warning-box {
-            margin-bottom: 16px; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px;
-            background-color: var(--warning-bg); border: 1px solid var(--warning-border);
-        }
-        .warning-text { font-size: 9px; font-weight: bold; color: var(--warning-text); text-transform: uppercase; margin: 0; }
-
-        /* Links Render Styling */
-        .detail-header-center { text-align: center; margin-bottom: 24px; }
-        .detail-match-title { font-size: 18px; font-weight: 900; text-transform: uppercase; margin: 0; }
-        .detail-league-sub { color: var(--primary); font-size: 10px; font-weight: bold; margin-top: 4px; text-transform: uppercase; }
-        
-        .link-group-wrapper { margin-bottom: 16px; display: flex; flex-direction: column; }
-        .link-label-title { font-size: 10px; font-weight: bold; opacity: 0.4; text-transform: uppercase; margin-bottom: 8px; tracking-spacing: 1px; padding-left: 4px; }
-        
-        .play-row { display: flex; gap: 10px; margin-bottom: 12px; }
-        .btn-play { 
-            flex: 1; padding: 12px 8px; font-size: 10px; font-weight: 800; 
-            text-transform: uppercase; display: flex; align-items: center; 
-            justify-content: center; gap: 6px; transition: 0.2s; border: none; cursor: pointer;
-        }
-        .btn-app { border-radius: 16px; background: rgba(250,204,21,0.1); color: #facc15; border: 1px solid rgba(250,204,21,0.2); }
-        .btn-app.active { background: #facc15; color: #000; }
-        
-        .no-links-box { padding: 24px; text-align: center; border-radius: 16px; background-color: var(--warning-bg); border: 1px solid var(--warning-border); margin-top: 16px; }
-        .no-links-text { color: var(--warning-text); font-size: 11px; font-weight: bold; text-transform: uppercase; margin: 0; }
-
-        /* Utility visibility rules */
-        .hidden { display: none !important; }
-        html.dark .dark-hidden { display: none !important; }
-        html:not(.dark) .light-hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .py-20 { padding-top: 80px; padding-bottom: 80px; }
-        .opacity-30 { opacity: 0.3; }
-        .animate-pulse { animation: pulseAnim 1.5s infinite ease-in-out; }
-        @keyframes pulseAnim { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
-    </style>
+  </style>
 </head>
 <body>
-    
-    <div id="sidebar-container"></div>
 
-    <header class="main-header">
-        <button id="menu-btn" class="menu-btn">
-            <i class="fas fa-bars-staggered"></i>
-        </button>
-        <div class="logo-center">
-            <span class="logo-main">Bamarthan</span>
-            <span class="logo-sub">Football VN</span>
-        </div>
-        <div class="theme-btn-wrapper">
-            <button id="theme-toggle" class="theme-toggle-btn">
-                <i class="fas fa-moon dark-hidden"></i>
-                <i class="fas fa-sun light-hidden"></i>
-            </button>
-        </div>
-    </header>
+  <!-- PHONE VIEW BAR WITH CLICK GUIDE (ဖုန်းတွင်ပေါ်မည့် နှိပ်ရန်အညွှန်းဘား) -->
+  <div class="mobile-nav-bar">
+    <button class="menu-toggle-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i>&nbsp; MENU (ဖွင့်ရန်နှိပ်ပါ)</button>
+    <span style="margin-left:auto; font-weight:900; font-size:14px; color:#ef4444;">FOTMOV TV</span>
+  </div>
 
-    <main id="list-view" class="content-container">
-        <div class="alert-box">
+  <!-- SIDEBAR MENU -->
+  <div id="sidebarMenu" class="sidebar">
+    <div class="sidebar-header">FOTMOV TV PRO</div>
+    <a href="https://bamarthan.vercel.app/" class="nav-item active flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-home w-5 text-center"></i>မြန်မာသံ⚽လိုက်ဖ်
+            </a>
+            <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-futbol text-blue-500 w-5 text-center"></i>Live
+            4 SERVER</a>
+            <a href="https://bamarthan.vercel.app/movies..html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-film text-primary w-5 text-center"></i>မြန်မာစာတန်းထိုး
+            </a>
+            <a href="https://bamarthan.vercel.app/series/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-film text-primary w-5 text-center"></i>ဇာတ်လမ်းတွဲ
+            </a>
+            
+            
+            <a href="https://m-sport-download.static.hf.space/Vpnkey.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-hand-fist text-blue-500 w-5 text-center"></i>Hiddifykey 
+            </a>
+            <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-satellite-dish text-red-500 w-5 text-center"></i>မြန်မာတီဗွီ
+            </a>
+            <hr class="opacity-10 my-2">
+            
+            <a href="https://bamarthan.vercel.app/adults/index.html" class="nav-item flex items-center gap-3 p-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all">
+                <i class="fas fa-eye-slash w-5 text-center"></i>Adults (18+)
+            </a>
+            <a href="https://m-sport-download.static.hf.space" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-tv w-5 text-center"></i> App ဒေါင်းရန်
+            </a>
+            <a href="https://bamarthan.vercel.app/About.html" class="nav-item flex items-center gap-3 p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-slate-600 dark:text-slate-300">
+                <i class="fas fa-circle-info w-5 text-center"></i>About App
+            </a>
+  </div>
+
+  <div class="main-content">
+   <div class="alert-box">
             <div class="alert-icon-wrap">
                 <i class="fas fa-shield-halved"></i>
             </div>
@@ -217,194 +181,255 @@
                 </div>
             </a>
         </div>
-
-        <div class="filter-row">
-            <button onclick="filterMatches('all', this)" id="btn-all" class="filter-btn active-filter">All</button>
-            <button onclick="filterMatches('live', this)" class="filter-btn text-red">Live</button>
-            <button onclick="filterMatches('main', this)" class="filter-btn text-blue">Main</button>
-            <button onclick="fetchMatches()" class="filter-btn text-primary"><i class="fas fa-sync-alt"></i></button>
-        </div>
-
-        <div id="movie-grid"></div>
-    </main>
-
-    <main id="detail-view" class="detail-modal">
-        <div class="video-box-container">
-            <video id="player" playsinline webkit-playsinline controls></video>
-            <button onclick="handleBackAction()" class="btn-back">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
-        <div class="detail-body-padding">
-            <div class="warning-box">
-                <i class="fas fa-circle-exclamation" style="color: #eab308;"></i>
-                <p class="warning-text">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။(NS PLAYER= Network streaming video player)</p>
-            </div>
-            
-            <div id="match-detail-container"></div>
-        </div>
-    </main>
-
-    <script src="../sidebar.js"></script>
-<script>
-    let allMatches = [];
-    let player = null;      
-    let hlsInstance = null; 
     
-    const PROXY_IMG = "https://wsrv.nl/?url=";
-    const VIDEO_PROXY = "https://my-proxy-wt0l.onrender.com/proxy?url=";
-    const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
+    <div class="btn-group">
+      <button id="btn-all" class="btn nav-btn active" onclick="App.setView('all')" tabindex="2">ALL MATCHES</button>
+      <button id="btn-live" class="btn nav-btn" onclick="App.setView('live')" tabindex="2">LIVE NOW</button>
+      <button id="btn-main" class="btn nav-btn" onclick="App.setView('main')" tabindex="2">MAIN LEAGUES</button>
+      <button id="btn-refresh" class="btn nav-btn" onclick="App.fetchMatches()" tabindex="2"><i class="fas fa-sync-alt"></i> REFRESH</button>
+    </div>
+    <div id="loading" style="text-align:center; padding:50px; color:#60a5fa;"><i class="fas fa-circle-notch fa-spin fa-3x"></i></div>
+    <div id="matchContainer" class="match-container"></div>
+  </div>
 
-    window.onpopstate = () => { if (document.getElementById('detail-view').style.display === 'flex') closeDetail(); };
-    function handleBackAction() { window.history.back(); }
-    function getImg(url) { return url ? `${PROXY_IMG}${encodeURIComponent(url)}&w=100&h=100&fit=contain` : DEFAULT_LOGO; }
+  <div id="detailOverlay">
+    <div class="detail-card">
+      
+      <!-- Embedded Play HTML5 Player for iOS, Web & PC Browsers -->
+      <div id="videoContainer" class="video-box">
+         <video id="player" playsinline webkit-playsinline controls></video>
+      </div>
 
-    async function fetchMatches() {
-        const grid = document.getElementById('movie-grid');
-        grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse" style="font-weight:bold; font-size:12px; text-transform:uppercase;">Updating Matches...</div>';
-        try {
-            const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
-            const data = await res.json();
-            allMatches = data.context || [];
-            filterMatches('all', document.getElementById('btn-all'));
-        } catch (e) { grid.innerHTML = "<p class='text-center' style='opacity:0.5; padding:40px 0;'>No Connection</p>"; }
+      <div class="detail-teams">
+        <div class="detail-team"><img id="det-h-img" src=""><h3 id="det-h-name"></h3></div>
+        <div style="font-size: 32px; font-weight: 900; color: #ef4444;">VS</div>
+        <div class="detail-team"><img id="det-a-img" src=""><h3 id="det-a-name"></h3></div>
+      </div>
+      <div id="stream-links" class="links-area"></div>
+      <button id="back-btn" class="back-btn" onclick="window.history.back()">BACK TO LIST</button>
+    </div>
+  </div>
+
+  <script>
+    const IMG_PROXY = "https://wsrv.nl/?url=";
+
+    // Mobile Menu Control Logic
+    function toggleMobileMenu() {
+      document.getElementById('sidebarMenu').classList.toggle('open');
     }
 
-    function renderMatches(data) {
-        const grid = document.getElementById('movie-grid');
-        grid.innerHTML = '';
-        data.forEach(m => {
-            const matchDate = new Date(m.match_time * 1000);
-            const tStr = matchDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const dStr = matchDate.toLocaleDateString([], {month: 'short', day: '2-digit'});
+    // Premium Notice Box Function
+    function showPremiumAlert(serverName) {
+      alert(serverName + " အား ကြည့်ရှုရန် Premium အကောင့် ဝယ်ယူရန် လိုအပ်ပါသည်။");
+    }
 
-            const card = document.createElement('div');
-            card.className = "match-card";
-            card.innerHTML = `
-                <div class="match-league-wrap"><span class="match-league-text">${m.league}</span></div>
-                <div class="match-teams-flex">
-                    <div class="match-team-side">
-                        <img src="${getImg(m.home_img)}" class="match-team-logo" onerror="this.src='${DEFAULT_LOGO}'">
-                        <span class="match-team-name">${m.home_name}</span>
-                    </div>
-                    <div class="match-info-center">
-                        <span class="match-date">${dStr}</span>
-                        <span class="match-time">${tStr}</span>
-                        ${m.match_status ? '<div class="match-live-badge"><span class="live-dot"></span> LIVE NOW</div>' : ''}
-                    </div>
-                    <div class="match-team-side">
-                        <img src="${getImg(m.away_img)}" class="match-team-logo" onerror="this.src='${DEFAULT_LOGO}'">
-                        <span class="match-team-name">${m.away_name}</span>
-                    </div>
-                </div>
-            `;
-            card.onclick = () => openDetail(m);
-            grid.appendChild(card);
+    var App = {
+      url: "https://nextjs-tv-one.vercel.app/api/get-matches.js",
+      allMatches: [],
+      view: 'all',
+      mainLeagues: ['PREMIER LEAGUE', 'CHAMPIONS LEAGUE', 'UCL', 'LA LIGA', 'SERIE A', 'BUNDESLIGA', 'LIGUE 1', 'WORLD CUP', 'EURO', 'K LEAGUE'],
+      lastFocusedId: null,
+      isDetailOpen: false,
+      plyrInstance: null,
+      hlsInstance: null,
+
+      init: function() { this.fetchMatches(); },
+      
+      getProxyImg: function(url) {
+        if (!url) return 'https://placehold.co/100?text=LOGO';
+        let cleanUrl = url.trim();
+        if (cleanUrl.startsWith('//')) cleanUrl = 'https:' + cleanUrl;
+        return IMG_PROXY + encodeURIComponent(cleanUrl) + "&w=100&h=100&fit=contain";
+      },
+
+      fetchMatches: function() {
+        document.getElementById('loading').style.display = 'block';
+        fetch(this.url + "?t=" + Date.now()).then(r => r.json()).then(data => {
+          document.getElementById('loading').style.display = 'none';
+          this.allMatches = data.context || [];
+          this.render();
+        }).catch(err => {
+          document.getElementById('loading').style.display = 'none';
         });
-    }
+      },
 
-    function openDetail(match) {
+      setView: function(v) {
+        this.view = v;
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-'+v).classList.add('active');
+        this.render();
+        // Close menu after choice on phone devices
+        document.getElementById('sidebarMenu').classList.remove('open');
+      },
+
+      render: function() {
+        var container = document.getElementById('matchContainer');
+        container.innerHTML = '';
+        var now = moment();
+
+        var filtered = this.allMatches.filter(m => {
+          var start = moment(m.match_time * 1000);
+          if(this.view === 'live') return now.isSameOrAfter(start) && now.isBefore(start.clone().add(135, 'minutes'));
+          if(this.view === 'main') return this.mainLeagues.some(l => (m.league || '').toUpperCase().includes(l));
+          return true;
+        });
+
+        filtered.forEach((m, i) => {
+          var start = moment(m.match_time * 1000);
+          var isLive = now.isSameOrAfter(start) && now.isBefore(start.clone().add(135, 'minutes'));
+          
+          var card = document.createElement('div');
+          card.className = 'match-card';
+          card.id = 'card-' + i;
+          card.tabIndex = 10 + i;
+          card.innerHTML = `
+            <div class="league-tag">${m.league || 'Football Match'}</div>
+            <div class="match-date-info">${start.format('dddd, MMM DD, YYYY')}</div>
+            <div class="match-flex">
+              <div class="team-box"><img src="${this.getProxyImg(m.home_img)}"><div class="team-name">${m.home_name}</div></div>
+              <div class="center-box">
+                <div class="match-time">${start.format('hh:mm A')}</div>
+                ${isLive ? '<div class="live-indicator">LIVE NOW</div>' : ''}
+              </div>
+              <div class="team-box"><img src="${this.getProxyImg(m.away_img)}"><div class="team-name">${m.away_name}</div></div>
+            </div>`;
+          card.onclick = () => { this.lastFocusedId = card.id; this.openDetail(m); };
+          card.onkeydown = (e) => { if(e.keyCode === 13) { e.preventDefault(); this.lastFocusedId = card.id; this.openDetail(m); } };
+          container.appendChild(card);
+        });
+
+        if(this.lastFocusedId) {
+          setTimeout(() => {
+            var el = document.getElementById(this.lastFocusedId);
+            if(el) el.focus();
+          }, 100);
+        }
+      },
+
+      openDetail: function(match) {
+        this.isDetailOpen = true;
+        document.getElementById('detailOverlay').style.display = 'flex';
+        document.getElementById('videoContainer').style.display = 'none'; 
+        document.getElementById('det-h-img').src = this.getProxyImg(match.home_img);
+        document.getElementById('det-a-img').src = this.getProxyImg(match.away_img);
+        document.getElementById('det-h-name').innerText = match.home_name;
+        document.getElementById('det-a-name').innerText = match.away_name;
+
+        var linksDiv = document.getElementById('stream-links');
+        linksDiv.innerHTML = '';
+        
+        if (match.links) {
+          match.links.forEach((link, i) => {
+            var type = (i % 2 === 0) ? 'SD' : 'HD';
+            var num = Math.floor(i / 2) + 1;
+            
+            var row = document.createElement('div');
+            row.className = 'link-row';
+
+            // 1. Web Player Button
+            var webBtn = document.createElement('button');
+            webBtn.className = 'stream-btn web-btn';
+            webBtn.tabIndex = 100 + (i * 2);
+            webBtn.innerHTML = `<i class="fas fa-play"></i> <span>${type}${num} WEB PLAY</span>`;
+            webBtn.onclick = () => { this.playWebStream(link.url); };
+
+            // 2. NS Player Intent Button
+            var nsBtn = document.createElement('button');
+            nsBtn.className = 'stream-btn';
+            nsBtn.tabIndex = 100 + (i * 2) + 1;
+            nsBtn.innerHTML = `<i class="fas fa-external-link-alt" style="color:#fbbf24"></i> <span>${type}${num} NS PLAYER</span>`;
+            nsBtn.onclick = () => {
+                this.destroyVideo();
+                window.location.href = `intent:${link.url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(match.home_name + ' ' + type + num)};end`;
+            };
+
+            row.appendChild(webBtn);
+            row.appendChild(nsBtn);
+            linksDiv.appendChild(row);
+          });
+        }
+        
         window.history.pushState({view: 'detail'}, '');
-        document.getElementById('list-view').classList.add('hidden');
-        document.getElementById('detail-view').style.display = 'flex';
-        
-        const container = document.getElementById('match-detail-container');
-        const links = match.links || [];
+        setTimeout(() => {
+            var firstBtn = document.querySelector('.stream-btn') || document.getElementById('back-btn');
+            if(firstBtn) firstBtn.focus();
+        }, 200);
+      },
 
-        let linksContent = links.length === 0 ? `<div class="no-links-box"><p class="no-links-text">ပွဲစဉ်အချိန်နီးမှ လိုင်းများပေါ်ပါမည်။</p></div>` : 
-            links.map((l, i) => `
-                <div class="link-group-wrapper">
-                    <span class="link-label-title">${l.name}</span>
-                    <div class="play-row">
-                        <button onclick="playStream('${escUrl(l.url)}', this)" class="btn-play btn-app ${i === 0 ? 'active' : ''}"><i class="fas fa-play"></i> App Play</button>
-                        <div class="ad-color-run" style="flex:1; margin-bottom:0; padding:2px; border-radius:16px;">
-                            <button onclick="openNetworkPlayer('${escUrl(l.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play"><i class="fas fa-external-link-alt"></i>NS PLAYER</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+      playWebStream: function(url) {
+        var container = document.getElementById('videoContainer');
+        container.style.display = 'block';
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        container.innerHTML = `
-            <div class="detail-header-center">
-                <h2 class="detail-match-title">${match.home_name} VS ${match.away_name}</h2>
-                <p class="detail-league-sub">${match.league}</p>
-            </div>
-            <div style="margin-top:10px;">${linksContent}</div>
-        `;
-        
-        if (links.length > 0) playStream(links[0].url);
-    }
+        var video = document.getElementById('player');
+        this.destroyVideo();
 
-    function escUrl(url) { return url.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
-    function escStr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
-
-    function playStream(url, btn) {
-        if(btn) { document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-        let finalUrl = url.includes('niuerr.live') ? VIDEO_PROXY + encodeURIComponent(url) : url;
-        
-        const video = document.getElementById('player');
-        
-        if (player) { player.destroy(); player = null; }
-        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-        
-        const plyrConfig = {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
-            clickable: true,
-            keyboard: { focused: true, global: true } 
+        var plyrConfig = {
+          controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+          keyboard: { focused: true, global: true }
         };
 
         if (video.canPlayType('application/vnd.apple.mpegurl')) {
-            video.src = finalUrl;
-            player = new Plyr(video, plyrConfig);
+          video.src = url;
+          this.plyrInstance = new Plyr(video, plyrConfig);
         } 
         else if (Hls.isSupported()) {
-            hlsInstance = new Hls({ maxMaxBufferLength: 10, enableWorker: true, lowLatencyMode: true });
-            hlsInstance.loadSource(finalUrl);
-            hlsInstance.attachMedia(video);
-            hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() { player = new Plyr(video, plyrConfig); });
-            hlsInstance.on(Hls.Events.ERROR, function (event, data) {
-                if (data.fatal) {
-                    switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR: hlsInstance.startLoad(); break;
-                        case Hls.ErrorTypes.MEDIA_ERROR: hlsInstance.recoverMediaError(); break;
-                        default: break;
-                    }
-                }
-            });
-        } 
-        else {
-            video.src = finalUrl;
-            player = new Plyr(video, plyrConfig);
+          this.hlsInstance = new Hls({ maxMaxBufferLength: 10, lowLatencyMode: true });
+          this.hlsInstance.loadSource(url);
+          this.hlsInstance.attachMedia(video);
+          this.hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+            this.plyrInstance = new Plyr(video, plyrConfig);
+          });
+        } else {
+          video.src = url;
+          this.plyrInstance = new Plyr(video, plyrConfig);
         }
-        video.play().catch(err => console.log("Autoplay blocker bypass handler", err));
-    }
+        video.play().catch(e => console.log(e));
+      },
 
-    function openNetworkPlayer(url, title) { window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`; }
+      destroyVideo: function() {
+        if (this.plyrInstance) { this.plyrInstance.destroy(); this.plyrInstance = null; }
+        if (this.hlsInstance) { this.hlsInstance.destroy(); this.hlsInstance = null; }
+        var video = document.getElementById('player');
+        if (video) { video.src = ''; video.load(); }
+      },
 
-    function filterMatches(type, btn) {
-        if (btn) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter')); btn.classList.add('active-filter'); }
-        let filtered = allMatches;
-        if (type === 'live') filtered = allMatches.filter(m => m.match_status);
-        else if (type === 'main') filtered = allMatches.filter(m => m.is_main);
-        renderMatches(filtered);
-    }
+      closeDetail: function() {
+        if (!this.isDetailOpen) return;
+        this.isDetailOpen = false;
+        this.destroyVideo();
+        document.getElementById('detailOverlay').style.display = 'none';
+        
+        if(this.lastFocusedId) {
+          var el = document.getElementById(this.lastFocusedId);
+          if(el) {
+            el.scrollIntoView({ behavior: 'instant', block: 'center' });
+            el.focus();
+          }
+        }
+      }
+    };
 
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-        document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    });
+    window.onload = () => App.init();
+    window.onpopstate = () => App.closeDetail();
 
-    if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
+    window.onkeydown = (e) => {
+      const isDetail = App.isDetailOpen;
+      const active = document.activeElement;
 
-    window.addEventListener('load', () => { fetchMatches(); });
-
-    function closeDetail() {
-        document.getElementById('detail-view').style.display = 'none';
-        document.getElementById('list-view').classList.remove('hidden');
-        if (player) { player.destroy(); player = null; }
-        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
-    }
-</script>
-    
+      if (isDetail) {
+        const btns = Array.from(document.querySelectorAll('.stream-btn, .back-btn'));
+        const idx = btns.indexOf(active);
+        
+        if (e.keyCode === 40 && idx < btns.length - 1) { e.preventDefault(); btns[idx + 1].focus(); }
+        if (e.keyCode === 38 && idx > 0) { e.preventDefault(); btns[idx - 1].focus(); }
+        
+        if (e.keyCode === 8 || e.keyCode === 4 || e.keyCode === 27 || e.keyCode === 461 || e.keyCode === 10009) { 
+          e.preventDefault(); 
+          window.history.back(); 
+        }
+      }
+    };
+  </script>
 </body>
 </html>
