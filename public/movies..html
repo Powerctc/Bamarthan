@@ -1,371 +1,353 @@
-<html lang="en" class="dark">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FOTMOV MOBILE ULTIMATE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>FOTMOV TV - Premium</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #ef4444;
+      --bg-dark: #0f172a;
+      --sidebar-bg: #1e293b;
+      --card-bg: #1f2937;
+      --focus-color: #3b82f6;
+    }
 
-    <script>
-        tailwind.config={
-            darkMode:'class',
-            theme:{ extend:{ colors:{ primary:'#facc15', darkBg:'#0f172a', darkCard:'#1e293b' } } }
-        }
-    </script>
+    body { background-color: var(--bg-dark); color: white; margin: 0; font-family: 'Roboto', sans-serif; overflow: hidden; }
+    
+    #loading-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.9); z-index: 9999;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .spinner {
+      width: 50px; height: 50px; border: 5px solid rgba(239, 68, 68, 0.2);
+      border-top: 5px solid var(--primary); border-radius: 50%;
+      animation: spin 1s linear infinite; margin-bottom: 15px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    <style>
-        *{ -webkit-tap-highlight-color:transparent; outline:none }
-        .line-clamp-1{ display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden }
-        ::-webkit-scrollbar{ width:0; background:transparent }
-        .ad-color-run{ padding:3px; border-radius:20px; background:linear-gradient(270deg,#ff0000,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000); background-size:600% 600%; animation:colorRun 4s linear infinite }
-        @keyframes colorRun{ 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
-        .ad-color-run img{ border-radius:17px }
-        .glass-card{ background:rgba(30,41,59,.7); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.1); border-radius:24px; padding:1.5rem }
-        .artplayer-app{ width:100%; height:100% }
-        .res-btn.active{ background:#facc15!important; color:#000!important; border-color:#facc15!important; box-shadow:0 0 15px rgba(250,204,21,.4) }
-        .active-source { border-color: #facc15 !important; color: #facc15 !important; box-shadow: 0 0 10px rgba(250,204,21,0.2); }
-        .active-movie { border: 2px solid #facc15 !important; transform: scale(0.98); }
-        .no-select { user-select: none; }
-    </style>
+    /* MOBILE NAVIGATION HEADER */
+    .mobile-header {
+      display: none; position: fixed; top: 0; left: 0; right: 0; height: 60px;
+      background-color: var(--sidebar-bg); border-bottom: 1px solid #334155;
+      align-items: center; padding: 0 15px; z-index: 1002;
+    }
+    .menu-toggle-btn {
+      background: var(--primary); color: white; border: none; padding: 10px 14px;
+      border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 220px; height: 100%;
+      background-color: var(--sidebar-bg); z-index: 1000; border-right: 1px solid #334155;
+      transition: left 0.3s ease;
+    }
+    .sidebar-brand {
+      padding: 25px 20px; color: var(--primary); font-weight: 900; font-size: 18px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5); text-align: center;
+    }
+    .nav-container { height: calc(100vh - 80px); overflow-y: auto; padding: 10px 0; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    
+    .sidebar-item {
+      display: flex; align-items: center; padding: 14px 20px; color: #94a3b8;
+      text-decoration: none; outline: none; border-left: 4px solid transparent;
+      transition: 0.2s; font-size: 13px; font-weight: bold; text-transform: uppercase;
+    }
+    .sidebar-item i { width: 25px; font-size: 16px; margin-right: 12px; text-align: center; }
+    .sidebar-item:focus { background: rgba(239, 68, 68, 0.15); border-left-color: var(--primary); color: white; }
+    .sidebar-item.active { background: var(--primary); color: white; }
+
+    /* Main Content */
+    .main-content { margin-left: 220px; padding: 25px; height: 100vh; overflow-y: auto; box-sizing: border-box; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; transition: all 0.3s ease; }
+    
+    .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .title-group { display: flex; align-items: center; gap: 12px; }
+    .red-bar { width: 6px; height: 32px; background-color: var(--primary); border-radius: 4px; }
+    .title-text { font-size: 24px; font-weight: 900; margin: 0; }
+
+    /* Search Box */
+    .search-box-wrapper { margin-bottom: 20px; width: 100%; }
+    .search-input {
+      width: 100%; padding: 12px 20px; background: #1e293b; border: 2px solid transparent;
+      border-radius: 10px; color: white; font-size: 16px; outline: none; box-sizing: border-box;
+    }
+    .search-input:focus { border-color: var(--focus-color); background: #2d3e54; }
+
+    /* Sources Tab Buttons */
+    .source-container { display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap; }
+    .source-btn { padding: 10px 20px; background: #1e293b; color: #94a3b8; border: 3px solid transparent; border-radius: 8px; font-weight: bold; cursor: pointer; outline: none; font-size: 12px; text-transform: uppercase; }
+    .source-btn:focus { border-color: #fbbf24; background: var(--primary); color: white; transform: scale(1.05); }
+    .source-btn.active { background: var(--primary); color: white; border-color: #fbbf24; }
+
+    /* Responsive Grid */
+    .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-bottom: 100px; }
+    
+    .movie-card {
+      background: var(--card-bg); border-radius: 12px; padding: 8px; cursor: pointer;
+      border: 3px solid transparent; transition: 0.2s; position: relative;
+      display: flex; flex-direction: column; outline: none; 
+      height: 100%; min-height: 250px; overflow: hidden;
+    }
+    .poster-wrapper { width: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 10px; flex-shrink: 0; }
+    .movie-poster { width: 100%; height: 100%; object-fit: cover; }
+
+    .movie-card:focus { border-color: var(--focus-color); transform: scale(1.05); z-index: 50; }
+    
+    .movie-title { 
+      font-size: 13px; font-weight: bold; color: #f8fafc;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      height: 38px; line-height: 1.4; margin-bottom: 6px;
+    }
+    .movie-meta { font-size: 10.5px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
+    .movie-genre { color: #fbbf24; font-weight: bold; max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .watched-badge { position: absolute; top: 12px; right: 12px; background: var(--primary); color: white; font-size: 9px; padding: 3px 8px; border-radius: 4px; font-weight: bold; z-index: 10; }
+
+    :focus { scroll-margin: 150px; }
+
+    /* SMARTPHONE RESPONSIVE QUERIES */
+    @media (max-width: 768px) {
+      .mobile-header { display: flex; }
+      .sidebar { left: -220px; top: 60px; height: calc(100% - 60px); }
+      .sidebar.open { left: 0; }
+      .main-content { margin-left: 0; padding: 15px; padding-top: 80px; }
+      .movie-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    }
+    
+    @media (min-width: 1200px) {
+      .movie-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+  </style>
 </head>
+<body>
 
-<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300 no-select">
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <p>အချက်အလက်များ ရယူနေပါသည်...</p>
+  </div>
 
-<div id="home-view">
-    <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-        <button id="menu-btn" class="text-primary text-2xl w-10 text-left">
-            <i class="fas fa-bars-staggered"></i>
-        </button>
-        <div class="flex flex-col items-center">
-            <span class="text-primary font-black text-xl tracking-tighter leading-none">FOTMOV</span>
-            <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Ultimate Movies</span>
-        </div>
-        <div class="w-10 text-right">
-            <button id="theme-toggle" class="text-xl dark:text-primary">
-                <i class="fas fa-moon dark:hidden"></i>
-                <i class="fas fa-sun hidden dark:block"></i>
-            </button>
-        </div>
-    </header>
+  <div class="mobile-header">
+    <button class="menu-toggle-btn" onclick="toggleSidebarMenu()"><i class="fas fa-bars"></i>&nbsp; MENU (ဖွင့်ရန်နှိပ်ပါ)</button>
+    <span style="margin-left:auto; font-weight:900; font-size:14px; color:var(--primary);">FOTMOV PREMIUM</span>
+  </div>
 
-    <div id="sidebar-container"></div>
+  <div id="sidebarMenu" class="sidebar">
+    <div class="sidebar-brand">FOTMOV PREMIUM</div>
+    <nav class="nav-container" id="sidebar-nav">
+      <a href="https://bamarthan.vercel.app/" class="sidebar-item active" tabindex="1"><i class="fas fa-home"></i>HOME</a>
+      <a href="https://m-sport-download.static.hf.space" class="sidebar-item" tabindex="1"><i class="fas fa-futbol"></i>LIVE 4 SERVER</a>
+      <a href="https://bamarthan.vercel.app/movies..html" class="sidebar-item" tabindex="1"><i class="fas fa-film"></i>မြန်မာစာတန်းထိုး</a>
+      <a href="https://bamarthan.vercel.app/series/index.html" class="sidebar-item" tabindex="1"><i class="fas fa-tv"></i>ဇာတ်လမ်းတွဲ</a>
+      <a href="https://m-sport-download.static.hf.space/Vpnkey.html" class="sidebar-item" tabindex="1"><i class="fas fa-key"></i>Hiddify key</a>
+      <a href="https://m-sport-download.static.hf.space" class="sidebar-item" tabindex="1"><i class="fas fa-film"></i>မြန်မာတီဗွီ</a>
+      <hr class="opacity-10 my-2">
+      <a href="https://bamarthan.vercel.app/adults/index.html" class="sidebar-item" tabindex="1"><i class="fas fa-eye-slash"></i>Adults (18+)</a>
+      <a href="https://m-sport-download.static.hf.space" class="sidebar-item" tabindex="1"><i class="fas fa-download"></i> App ဒေါင်းရန်</a>
+      <a href="https://bamarthan.vercel.app/About.html" class="sidebar-item" tabindex="1"><i class="fas fa-circle-info"></i>About App</a>
+    </nav>
+  </div>
 
-    <div class="mt-20 px-4 grid grid-cols-2 gap-3 text-[11px]">
-        <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
-            <span class="opacity-50 uppercase font-black tracking-wider text-[9px]">Device ID</span>
-            <span id="u-id" class="text-blue-500 font-mono mt-1 truncate">...</span>
-        </div>
-        <div class="bg-white dark:bg-darkCard p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col shadow-sm">
-            <span class="opacity-50 uppercase font-black tracking-wider text-[9px]">Plan Status</span>
-            <span id="u-exp" class="text-primary font-bold mt-1">...</span>
-        </div>
+  <div class="main-content" id="main-scroll-area">
+    <div id="grid-view">
+      <div class="header-area">
+          <div class="title-group"><div class="red-bar"></div><h1 class="title-text">Ultimate Movies</h1></div>
+      </div>
+
+      <div class="search-box-wrapper">
+        <input type="text" id="search-input" class="search-input" placeholder="ဒီနေရာမှာ OK နှိပ်ပြီး ရိုက်ရှာပါ..." tabindex="2" readonly>
+      </div>
+
+      <div class="source-container">
+          <button class="source-btn" id="btn-main" onclick="switchSource('main')" tabindex="3">Server 1 (Fast)</button>
+          <button class="source-btn" id="btn-1" onclick="switchSource('1')" tabindex="3">Server 2 (Backup)</button>
+          <button class="source-btn" id="btn-2" onclick="switchSource('2')" tabindex="3">Server 3 (Static)</button>
+      </div>
+
+      <div id="movie-grid" class="movie-grid"></div>
     </div>
+  </div>
 
-    <main class="p-4">
-        <div class="mb-6">
-            <a href="http://m-sport-download.static.hf.space/">
-                <div class="ad-color-run shadow-lg">
-                    <img src="sports.gif" class="w-full h-auto block">
-                </div>
-            </a>
-        </div>
+  <script>
+    let allMovies = [];
+    let sourceMovies = []; 
+    let filteredMovies = [];
+    let currentSource = localStorage.getItem('s4itmm_saved_source') || "main";
+    let currentLimit = 12; 
+    const PAGE_SIZE = 12; 
 
-        <div class="mb-4">
-            <input type="text" id="search-bar" class="w-full bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-sm dark:text-white" placeholder="Type movie name to search...">
-        </div>
-
-        <div class="grid grid-cols-3 gap-2 mb-6">
-            <button id="src-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase transition-all">Source</button>
-            <button id="gen-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase">Genre</button>
-            <button id="yr-btn" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[10px] font-black uppercase">Year</button>
-        </div>
-
-        <div id="movie-grid" class="grid grid-cols-2 gap-4"></div>
-    </main>
-</div>
-
-<div id="detail-view" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-darkBg hidden flex-col overflow-y-auto">
-    <div class="relative w-full aspect-video bg-black shadow-2xl">
-        <div class="artplayer-app"></div>
-        <button onclick="handleBackAction()" class="absolute top-4 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-    </div>
-    <main class="flex-1 p-6">
-        <div id="detail-content" class="w-full max-w-lg mx-auto"></div>
-    </main>
-</div>
-
-<div id="overlay" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm hidden flex-col items-center justify-center p-6">
-    <div class="w-full max-w-xs bg-darkCard border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-        <div class="p-4 border-b border-white/5 flex justify-between items-center">
-            <h3 id="overlay-title" class="text-primary font-black text-xs uppercase tracking-widest">Select</h3>
-            <button onclick="closeOverlay()" class="text-white/50 px-2"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="overlay-list" class="max-h-[60vh] overflow-y-auto"></div>
-    </div>
-</div>
-
-<script src="sidebar.js"></script>
-
-<script>
-const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
-const APPROVED_USERS_URL = `${HF_BASE_URL}/Web/approved_users.json`;
-
-const movieSources = [
-    { label: "Server 1 (Fast)", value: "/api/movies" }, // JSON အစား API ကို ခေါ်ပါ
-    { label: "Server 2 (Backup)", value: "movies.json" },
-    { label: "Server 3 (Static)", value: "movies-1.json" }
-];
-
-let allMovies = [];
-let art = null;
-let activeVideoUrl = "";
-
-// --- Back Key Protection ---
-window.history.replaceState({view: 'home'}, '');
-
-window.onpopstate = function() {
-    if (document.getElementById('detail-view').style.display !== 'none' && !document.getElementById('detail-view').classList.contains('hidden')) {
-        closeDetail();
+    function toggleSidebarMenu() {
+        document.getElementById('sidebarMenu').classList.toggle('open');
     }
-};
 
-function handleBackAction() {
-    window.history.back();
-}
+    async function loadMovies() {
+        showLoading(true);
+        const sources = [
+          {key:"main", url:"/api/movies"}, 
+          {key:"1", url:"movies.json"},    
+          {key:"2", url:"movies-1.json"}   
+        ];
+        
+        allMovies = [];
+        for (const s of sources) {
+            try {
+                const res = await fetch(s.url, { cache: "no-store" });
+                if (!res.ok) throw new Error("File Missing");
+                const data = await res.json();
+                const list = Array.isArray(data) ? data : (data.movies || []);
+                list.forEach((m, idx) => {
+                    m._source = s.key;
+                    m._uid = s.key + "-" + idx;
+                    allMovies.push(m);
+                });
+            } catch (err) { console.error("Source Error (" + s.url + "):", err); }
+        }
+        
+        switchSource(currentSource);
+        showLoading(false);
+    }
 
-function forceDownload(url) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    a.click();
-}
+    function switchSource(src) {
+        currentSource = src;
+        localStorage.setItem('s4itmm_saved_source', src);
+        document.getElementById('search-input').value = '';
+        currentLimit = 12;
+        sourceMovies = allMovies.filter(m => m._source === src);
+        filteredMovies = [...sourceMovies];
+        renderGrid();
+        document.querySelectorAll('.source-btn').forEach(btn => btn.classList.toggle('active', btn.id === (src === 'main' ? 'btn-main' : 'btn-' + src)));
+        document.getElementById('sidebarMenu').classList.remove('open');
+    }
 
-function openDetail(m) {
-    window.history.pushState({view: 'detail'}, '');
-    localStorage.setItem('s4itmm_last_movie_id', m.title);
-    renderMovies(allMovies);
-    
-    document.getElementById('home-view').classList.add('hidden');
-    document.getElementById('detail-view').style.display = 'flex';
-    document.getElementById('detail-view').classList.remove('hidden');
-    
-    const urls = m.urls || [m.link || m.url].filter(Boolean);
-    activeVideoUrl = urls[0] || "";
-    renderDetail(m, urls);
-    initArtPlayer(activeVideoUrl, m.logo);
-    window.scrollTo(0, 0);
-}
+    function renderGrid() {
+        const grid = document.getElementById('movie-grid');
+        grid.innerHTML = '';
+        const watchedList = JSON.parse(localStorage.getItem('s4itmm_watched_titles')) || [];
+        const batch = filteredMovies.slice(0, currentLimit);
+        
+        if (batch.length === 0) {
+            grid.innerHTML = '<div style="grid-column: span 6; text-align:center; padding: 50px; color:#94a3b8;">ကားမရှိသေးပါ။</div>';
+            return;
+        }
 
-function initArtPlayer(url, poster) {
-    if (art) art.destroy();
-    art = new Artplayer({
-        container: '.artplayer-app',
-        url: url,
-        poster: poster,
-        autoplay: true,
-        autoSize: true,
-        setting: true,
-        pip: true,
-        playbackRate: true,
-        aspectRatio: true,
-        fullscreen: true,
-        fullscreenWeb: true,
-        lock: true,
-        theme: '#facc15'
-    });
-}
+        batch.forEach((movie) => {
+            const isWatched = watchedList.includes(movie.title);
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.id = `card-${movie._uid}`;
+            card.tabIndex = 4;
+            card.innerHTML = `
+                ${isWatched ? '<div class="watched-badge">WATCHED</div>' : ''}
+                <div class="poster-wrapper"><img src="${movie.logo}" class="movie-poster" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'"></div>
+                <div class="movie-info">
+                  <div class="movie-title">${movie.title}</div>
+                  <div class="movie-meta"><span>${movie.year || '2024'}</span><span class="movie-genre">${movie.category || movie.genre || 'Movie'}</span></div>
+                </div>`;
+            card.onclick = () => openMovie(movie);
+            grid.appendChild(card);
+        });
+    }
 
-function closeDetail() {
-    if (art) art.destroy();
-    document.getElementById('detail-view').style.display = 'none';
-    document.getElementById('detail-view').classList.add('hidden');
-    document.getElementById('home-view').classList.remove('hidden');
-}
-
-function renderDetail(movie, urls) {
-    const container = document.getElementById('detail-content');
-    const qualityLabels = ["SD", "HD", "FHD", "4K"];
-    const mainApk = "https://raw.githubusercontent.com/MultipleTech/Download-link-/d76cc3108c02439463f144316be12a4d3c770b2a/com.genuine.leone_7.7.apk";
-    const mirrorApk = "https://appteka.store/get/Y2ZZyzUvCKBD0HBMwgB8qYxtnwLev7dvX6tJvs9Lko8flu2QEj2jsB46JtvLKGDkXA_GmhuU7Texht-wBdsn/com.genuine.leone_7.7_77.apk";
-
-    container.innerHTML = `
-        <div class="glass-card w-full text-center">
-            <span class="bg-red-500/10 text-red-500 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest mb-4 inline-block animate-pulse">Now Playing</span>
-            <h2 class="dark:text-white text-xl font-black mb-2 leading-tight uppercase">${movie.title}</h2>
-            <p class="text-slate-500 text-[10px] uppercase tracking-[0.2em] mb-8">${movie.category || "Movie"} • ${movie.year || "2024"}</p>
-            
-            <p class="text-[9px] font-black opacity-30 uppercase mb-4 tracking-widest">Available Links</p>
-            <div id="res-group" class="grid grid-cols-2 gap-3 mb-8"></div>
-            
-            <div class="pt-6 border-t border-white/5 mb-8">
-                <p class="text-primary text-[11px] font-bold mb-3 uppercase tracking-wider">ပိုမိုကောင်းမွန်သောရုပ်သံဖြင့်ကြည့်ရှုရန်</p>
-                <div class="ad-color-run">
-                    <button onclick="openExternal('${activeVideoUrl}','${movie.title}')" class="w-full bg-slate-900 text-white font-black py-4 rounded-[17px] flex items-center justify-center gap-4 active:scale-95 transition-all">
-                        <i class="fas fa-play text-primary"></i>
-                        <span class="text-xs uppercase tracking-widest">Open in NS Player</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="bg-gray-900/80 rounded-2xl p-6 text-center border border-gray-800">
-                <div class="flex justify-center mb-5">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1179/1179069.png" class="w-16 h-16">
-                </div>
-                <h1 class="text-lg font-bold mb-3 text-white uppercase">Network Streaming Video Player</h1>
-                <p class="text-gray-400 text-[11px] leading-relaxed mb-6">
-                    Movies နှင့် Live Streaming များကြည့်ရန်<br>
-                    <span class="text-green-400 font-semibold">Network Streaming Video Player</span> ကို Install လုပ်ရန်လိုအပ်ပါသည်။
-                </p>
-                <div class="space-y-3">
-                    <button onclick="forceDownload('${mainApk}')" class="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 transition p-3 rounded-xl font-semibold text-black">
-                        <i class="fas fa-plus"></i> Download Player
-                    </button>
-                    <button onclick="forceDownload('${mirrorApk}')" class="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 transition p-3 rounded-xl font-semibold text-white">
-                        Mirror Download
-                    </button>
-                </div>
-                <p class="text-[9px] text-gray-500 mt-6 uppercase">Install ပြီးပါက Movies နှင့် Live Streaming များကို ကြည့်ရှုနိုင်ပါသည်</p>
-            </div>
-        </div>
-    `;
-
-    const resGroup = document.getElementById('res-group');
-    urls.forEach((url, i) => {
-        const btn = document.createElement('button');
-        btn.className = `res-btn bg-white/5 border border-white/10 text-[11px] font-black py-3 rounded-xl uppercase transition-all ${i === 0 ? 'active' : ''}`;
-        btn.innerText = qualityLabels[i] || `Link ${i + 1}`;
-        btn.onclick = () => {
-            activeVideoUrl = url;
-            document.querySelectorAll('.res-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            if (art) { art.switchUrl(url); art.play(); }
+    function openMovie(movie) {
+        markAsWatched(movie.title);
+        const movieUrls = movie.urls || [movie.link || movie.url].filter(Boolean);
+        
+        const movieData = {
+            title: movie.title,
+            logo: movie.logo,
+            desc: movie.description || movie.story || "အညွှန်း မရရှိနိုင်သေးပါ။",
+            links: movieUrls.join(',')
         };
-        resGroup.appendChild(btn);
-    });
-}
 
-function openExternal(url, title) {
-    const encodedTitle = encodeURIComponent(title);
-    window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodedTitle};end`;
-}
-
-async function checkUserDisplay() {
-    const id = localStorage.getItem('zetflix_device_id_web') || "GUEST-USER";
-    document.getElementById('u-id').textContent = id;
-    const uExp = document.getElementById('u-exp');
-    try {
-        const res = await fetch(`${APPROVED_USERS_URL}?t=${Date.now()}`);
-        const users = await res.json();
-        const user = users.find(u => u.id === id);
-        uExp.textContent = user ? user.expires.split('T')[0] : "Active Member";
-    } catch { uExp.textContent = "Active Member"; }
-}
-
-async function loadMovies(url) {
-    localStorage.setItem('s4itmm_saved_source', url);
-    updateSourceButton(url);
-    const grid = document.getElementById('movie-grid');
-    grid.innerHTML = '<div class="col-span-2 text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase text-primary">Updating...</div>';
-    
-    try {
-        const res = await fetch(`${url}?t=${Date.now()}`);
-        allMovies = await res.json();
-        renderMovies(allMovies);
-    } catch { 
-        loadMovies(movieSources[0].value); 
+        const params = new URLSearchParams(movieData).toString();
+        window.location.href = `movie_detail.html?${params}`;
     }
-}
 
-function updateSourceButton(activeUrl) {
-    const btn = document.getElementById('src-btn');
-    const source = movieSources.find(s => s.value === activeUrl);
-    if (source) {
-        btn.innerHTML = `Source <br><span class="text-[8px] text-primary">${source.label.split(' ')[1]}</span>`;
-        btn.classList.add('active-source');
+    function markAsWatched(title) {
+        let watched = JSON.parse(localStorage.getItem('s4itmm_watched_titles')) || [];
+        if (!watched.includes(title)) { watched.push(title); localStorage.setItem('s4itmm_watched_titles', JSON.stringify(watched)); }
     }
-}
 
-function renderMovies(data) {
-    const grid = document.getElementById('movie-grid');
-    const lastMovieId = localStorage.getItem('s4itmm_last_movie_id');
-    grid.innerHTML = '';
+    function handleSearch(query) {
+        const q = query.toLowerCase();
+        filteredMovies = sourceMovies.filter(m => m.title.toLowerCase().includes(q));
+        currentLimit = 12;
+        renderGrid();
+    }
+
+    const searchInput = document.getElementById('search-input');
     
-    data.forEach(m => {
-        const isActive = m.title === lastMovieId;
-        const card = document.createElement('div');
-        card.className = `group relative bg-white dark:bg-darkCard rounded-2xl overflow-hidden shadow-sm transition-all ${isActive ? 'active-movie' : 'border border-transparent'}`;
-        card.innerHTML = `
-            <div class="aspect-[3/4] overflow-hidden bg-slate-800">
-                <img src="${m.logo}" class="w-full h-full object-cover">
-                ${isActive ? '<div class="absolute top-2 right-2 bg-primary text-black text-[8px] font-bold px-2 py-1 rounded-md shadow-lg">LAST WATCHED</div>' : ''}
-            </div>
-            <div class="p-3">
-                <h3 class="text-[10px] font-bold line-clamp-1 uppercase ${isActive ? 'text-primary' : ''}">${m.title}</h3>
-                <p class="text-[9px] opacity-50 mt-1 uppercase">${m.category || "Movie"} • ${m.year || "2024"}</p>
-            </div>
-        `;
-        card.onclick = () => openDetail(m);
-        grid.appendChild(card);
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+        searchInput.removeAttribute('readonly');
+        searchInput.placeholder = "ရိုက်ရှာရန် နှိပ်ပါ...";
+    }
+
+    window.addEventListener('keydown', function(e) {
+        const active = document.activeElement;
+        
+        if (e.keyCode === 39 && active.classList.contains('sidebar-item')) {
+            e.preventDefault();
+            const target = searchInput || document.querySelector('.source-btn') || document.querySelector('.movie-card');
+            if (target) target.focus();
+        }
+
+        if (e.keyCode === 13 && active === searchInput) {
+            if (searchInput.hasAttribute('readonly')) {
+                e.preventDefault();
+                searchInput.removeAttribute('readonly');
+                searchInput.focus();
+            }
+            return;
+        }
+
+        if (e.keyCode === 37) {
+            const isContent = active.classList.contains('movie-card') || active.classList.contains('source-btn') || active === searchInput;
+            if (isContent) {
+                const rect = active.getBoundingClientRect();
+                if (rect.left < 300) { 
+                    e.preventDefault(); 
+                    if (!('ontouchstart' in window)) searchInput.setAttribute('readonly', 'true');
+                    const sb = document.querySelector('.sidebar-item.active') || document.querySelector('.sidebar-item');
+                    if (sb) sb.focus(); 
+                }
+            }
+        }
+
+        if (e.keyCode === 13 && active.classList.contains('movie-card')) active.click();
+
+        if (e.keyCode === 8 || e.keyCode === 461 || e.keyCode === 10009) {
+            if (active === searchInput && !searchInput.hasAttribute('readonly')) {
+                e.preventDefault();
+                if (!('ontouchstart' in window)) searchInput.setAttribute('readonly', 'true');
+                searchInput.blur();
+                searchInput.focus();
+            }
+        }
+        
+        if (e.keyCode === 40 && active.classList.contains('movie-card')) {
+            const grid = document.getElementById('movie-grid');
+            if (active === grid.lastElementChild || active === grid.children[grid.children.length - 3]) {
+                if (currentLimit < filteredMovies.length) { 
+                    currentLimit += PAGE_SIZE; 
+                    renderGrid(); 
+                }
+            }
+        }
     });
-}
 
-function openOverlay(title, items, callback) {
-    const overlay = document.getElementById('overlay');
-    const titleEl = document.getElementById('overlay-title');
-    const listEl = document.getElementById('overlay-list');
-    const currentSrc = localStorage.getItem('s4itmm_saved_source');
-
-    titleEl.innerText = title;
-    listEl.innerHTML = '';
-    items.forEach(item => {
-        const isSelected = item.value === currentSrc;
-        const btn = document.createElement('button');
-        btn.className = `w-full p-4 text-center text-xs font-bold border-b border-white/5 active:bg-primary uppercase text-white hover:bg-white/5 ${isSelected ? 'bg-primary/10 text-primary' : ''}`;
-        btn.innerText = item.label;
-        btn.onclick = () => { callback(item.value); closeOverlay(); };
-        listEl.appendChild(btn);
+    searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
+    searchInput.addEventListener('blur', () => { 
+        if (!('ontouchstart' in window)) searchInput.setAttribute('readonly', true); 
     });
-    overlay.classList.remove('hidden');
-    overlay.classList.add('flex');
-}
 
-function closeOverlay() {
-    const overlay = document.getElementById('overlay');
-    overlay.classList.add('hidden');
-    overlay.classList.remove('flex');
-}
-
-document.getElementById('src-btn').onclick = () => openOverlay("Server Source", movieSources, (val) => loadMovies(val));
-
-document.getElementById('gen-btn').onclick = () => {
-    const genres = [...new Set(allMovies.map(m => m.category).filter(Boolean))];
-    openOverlay("Select Genre", genres.map(g => ({label:g, value:g})), (g) => {
-        renderMovies(allMovies.filter(m => m.category === g));
-    });
-};
-
-document.getElementById('yr-btn').onclick = () => {
-    const years = [...new Set(allMovies.map(m => m.year).filter(Boolean))].sort((a,b) => b-a);
-    openOverlay("Select Year", years.map(y => ({label:y, value:y})), (y) => {
-        renderMovies(allMovies.filter(m => String(m.year) === String(y)));
-    });
-};
-
-document.getElementById('search-bar').oninput = (e) =>
-    renderMovies(allMovies.filter(m => m.title.toLowerCase().includes(e.target.value.toLowerCase())));
-
-document.getElementById('theme-toggle').onclick = () => document.documentElement.classList.toggle('dark');
-
-window.onload = () => {
-    checkUserDisplay();
-    const savedSrc = localStorage.getItem('s4itmm_saved_source') || movieSources[0].value;
-    loadMovies(savedSrc);
-};
-</script>
-
+    function showLoading(status) { document.getElementById('loading-overlay').style.display = status ? 'flex' : 'none'; }
+    
+    window.onload = () => {
+        loadMovies();
+    };
+  </script>
 </body>
-    </html>
-    
+</html>
