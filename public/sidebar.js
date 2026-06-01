@@ -50,10 +50,48 @@ document.addEventListener("DOMContentLoaded", function() {
         const sidebar = document.getElementById('sidebar');
         const backdrop = document.getElementById('backdrop');
 
+        // === [၁] "နှိပ်ပါ" Guide တပ်ဆင်ခြင်း Logic ===
+        if (menuBtn && !localStorage.getItem('menu_hint_hidden')) {
+            // တုန်ခါမှု Animation အတွက် Custom CSS ထည့်သွင်းခြင်း
+            const style = document.createElement('style');
+            style.innerHTML = `
+                @keyframes bounceHorizontal {
+                    0%, 100% { transform: translateX(0); }
+                    50% { transform: translateX(-6px); }
+                }
+                .animate-bounce-horizontal {
+                    animation: bounceHorizontal 0.8s infinite;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // "နှိပ်ပါ" အညွှန်းလွှာ HTML ဖန်တီးခြင်း
+            const hintHTML = `
+                <div id="menu-hint" class="fixed top-[16px] left-[52px] z-[50] flex items-center animate-bounce-horizontal pointer-events-none transition-all duration-300">
+                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-amber-400"></div>
+                    <div class="bg-amber-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow-lg tracking-wider whitespace-nowrap">
+                        နှိပ်ပါ
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', hintHTML);
+        }
+
         const toggle = (show) => {
             if (!sidebar || !backdrop) return;
             sidebar.style.left = show ? '0' : '-100%';
             backdrop.classList.toggle('hidden', !show);
+
+            // === [၂] ခလုတ်နှိပ်လိုက်လျှင် အညွှန်းကို ဖျောက်ပြီး ထပ်မပေါ်အောင် လုပ်ဆောင်ခြင်း ===
+            if (show) {
+                const hint = document.getElementById('menu-hint');
+                if (hint) {
+                    hint.style.opacity = '0';
+                    hint.style.transform = 'scale(0.75)';
+                    setTimeout(() => hint.remove(), 300);
+                    localStorage.setItem('menu_hint_hidden', 'true');
+                }
+            }
         };
 
         // Click Events
@@ -78,3 +116,4 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+                
