@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // "နှိပ်ပါ" အညွှန်းလွှာ HTML ဖန်တီးခြင်း
             const hintHTML = `
-                <div id="menu-hint" class="fixed top-[20px] left-[52px] z-[50] flex items-center animate-bounce-horizontal pointer-events-none transition-all duration-300">
+                <div id="menu-hint" class="fixed top-[30px] left-[52px] z-[50] flex items-center animate-bounce-horizontal pointer-events-none transition-all duration-300">
                     <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-amber-400"></div>
                     <div class="bg-amber-400 text-black text-[10px] font-black px-2 py-0.5 rounded shadow-lg tracking-wider whitespace-nowrap">
                         နှိပ်ပါ
