@@ -4,48 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>S4ITMM FOOTBALL LIVE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { primary: '#facc15', darkBg: '#0f172a', darkCard: '#1e293b' } } }
-        }
-    </script>
-
     <style>
-        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        /* CSS Variables for Core Colors & Universal Cross-Platform Themes */
+        :root {
+            --primary: #facc15;
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --danger-bg: rgba(239, 68, 68, 0.1);
+            --danger-border: rgba(239, 68, 68, 0.2);
+            --danger-text: #dc2626;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --warning-border: rgba(245, 158, 11, 0.2);
+            --warning-text: #d97706;
+        }
+        html.dark {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --danger-text: #f87171;
+            --warning-text: #fbbf24;
+        }
+
+        * { -webkit-tap-highlight-color: transparent; outline: none; box-sizing: border-box; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         
-        /* Plyr theme color customization */
-        :root {
-            --plyr-color-main: #facc15;
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .plyr--video {
-            height: 100%;
-            width: 100%;
+
+        /* Plyr layout overrides */
+        :root { --plyr-color-main: #facc15; }
+        .plyr--video { height: 100%; width: 100%; }
+
+        /* Navigation Header CSS */
+        .main-header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 50;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        
+        .menu-btn { background: none; border: none; color: var(--primary); font-size: 24px; width: 40px; text-align: left; cursor: pointer; }
+        .logo-center { display: flex; flex-col; flex-direction: column; align-items: center; }
+        .logo-main { color: var(--primary); font-weight: 900; font-size: 20px; letter-spacing: -1px; line-height: 1; }
+        .logo-sub { font-size: 8px; font-weight: bold; opacity: 0.7; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+        .theme-btn-wrapper { width: 40px; text-align: right; }
+        .theme-toggle-btn { background: none; border: none; font-size: 20px; color: var(--text-color); cursor: pointer; }
+
+        /* Main List Layout */
+        .content-container { padding: 16px; padding-top: 80px; }
+
+        /* Alert Notification Box */
+        .alert-box {
+            margin-bottom: 20px; padding: 16px; border-radius: 16px;
+            display: flex; align-items: center; gap: 16px;
+            background-color: var(--danger-bg); border: 1px solid var(--danger-border);
+        }
+        .alert-icon-wrap { background-color: #ef4444; padding: 12px; border-radius: 12px; color: #fff; display: flex; align-items: center; justify-content: center; }
+        .alert-text { font-size: 11px; font-weight: 900; color: var(--danger-text); line-height: 1.5; margin: 0; text-transform: uppercase; }
+
+        /* Rainbow Ad Animation */
         .ad-color-run {
-            padding: 2px; border-radius: 16px;
+            padding: 2px; border-radius: 16px; margin-bottom: 24px;
             background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
             background-size: 600% 600%; animation: colorRun 4s linear infinite;
         }
         @keyframes colorRun { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
-        .ad-color-run img { border-radius: 14px; }
-        .ad-color-run button { border-radius: 14px; background: #1e293b; color: white; width: 100%; height: 100%; }
+        .ad-color-run img { border-radius: 14px; width: 100%; height: auto; display: block; background-color: #000; }
+        .ad-color-run button { border-radius: 14px; background: #1e293b; color: white; width: 100%; height: 100%; border: none; cursor: pointer; }
 
-        .match-card {
-            border-radius: 24px; padding: 20px;
-            border: 1px solid rgba(0,0,0,0.05); margin-bottom: 16px; transition: all 0.3s ease;
+        /* Filter Tab Row */
+        .filter-row { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 24px; }
+        .filter-btn {
+            flex: 1; background-color: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 12px 4px; border-radius: 12px; font-size: 10px; font-weight: 900;
+            text-transform: uppercase; color: var(--text-color); cursor: pointer; transition: all 0.2s;
         }
-        .dark .match-card { background-color: #1a2436; border-color: rgba(255,255,255,0.05); }
-        .light .match-card { background-color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .filter-btn.active-filter { border: 2px solid var(--primary); box-shadow: 0 0 0 2px rgba(250,204,21,0.2); }
+        .filter-btn.text-red { color: #ef4444; }
+        .filter-btn.text-blue { color: #3b82f6; }
+        .filter-btn.text-primary { color: var(--primary); }
+
+        /* Match Card Element CSS */
+        .match-card {
+            border-radius: 24px; padding: 20px; margin-bottom: 16px;
+            border: 1px solid var(--border-color); background-color: var(--card-bg);
+            transition: all 0.3s ease; cursor: pointer;
+        }
+        .match-card:active { transform: scale(0.97); }
+        .match-league-wrap { text-align: center; margin-bottom: 16px; }
+        .match-league-text { color: #3b82f6; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .match-teams-flex { display: flex; justify-content: space-between; align-items: center; }
+        .match-team-side { width: 35%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .match-team-logo { width: 48px; height: 48px; object-fit: contain; margin-bottom: 12px; }
+        .match-team-name { font-size: 10px; font-weight: bold; text-transform: uppercase; line-height: 1.3; }
+        .match-info-center { width: 30%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .match-date { font-size: 10px; opacity: 0.5; margin-bottom: 4px; }
+        .match-time { font-size: 16px; font-weight: 900; }
+        .match-live-badge { margin-top: 8px; display: flex; align-items: center; gap: 4px; color: #ef4444; font-size: 9px; font-weight: 900; text-transform: uppercase; }
 
         .live-dot {
             width: 8px; height: 8px; background: #ef4444; border-radius: 50%;
@@ -53,79 +125,120 @@
         }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        .play-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; align-items: stretch; }
+        /* Detail Modal View Screen */
+        .detail-modal {
+            position: fixed; inset: 0; top:0; left:0; width:100%; height:100%; z-index: 60;
+            background-color: var(--bg-color); display: none; flex-direction: column; overflow-y: auto;
+        }
+        
+        /* Aspect Ratio Container Solution for Retro/Old TVs */
+        .video-box-container { position: relative; width: 100%; padding-top: 56.25%; background-color: #000; }
+        .video-box-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        
+        .btn-back {
+            position: absolute; top: 24px; left: 16px; z-index: 22; width: 40px; height: 40px;
+            background-color: rgba(0,0,0,0.5); border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; color: var(--primary); border: 1px solid rgba(255,255,255,0.15); cursor: pointer;
+        }
+        .detail-body-padding { padding: 24px; }
+        
+        .warning-box {
+            margin-bottom: 16px; padding: 12px; border-radius: 12px; display: flex; align-items: center; gap: 12px;
+            background-color: var(--warning-bg); border: 1px solid var(--warning-border);
+        }
+        .warning-text { font-size: 9px; font-weight: bold; color: var(--warning-text); text-transform: uppercase; margin: 0; }
+
+        /* Links Render Styling */
+        .detail-header-center { text-align: center; margin-bottom: 24px; }
+        .detail-match-title { font-size: 18px; font-weight: 900; text-transform: uppercase; margin: 0; }
+        .detail-league-sub { color: var(--primary); font-size: 10px; font-weight: bold; margin-top: 4px; text-transform: uppercase; }
+        
+        .link-group-wrapper { margin-bottom: 16px; display: flex; flex-direction: column; }
+        .link-label-title { font-size: 10px; font-weight: bold; opacity: 0.4; text-transform: uppercase; margin-bottom: 8px; tracking-spacing: 1px; padding-left: 4px; }
+        
+        .play-row { display: flex; gap: 10px; margin-bottom: 12px; }
         .btn-play { 
-            padding: 12px 8px; font-size: 10px; font-weight: 800; 
+            flex: 1; padding: 12px 8px; font-size: 10px; font-weight: 800; 
             text-transform: uppercase; display: flex; align-items: center; 
-            justify-content: center; gap: 6px; transition: 0.2s;
+            justify-content: center; gap: 6px; transition: 0.2s; border: none; cursor: pointer;
         }
         .btn-app { border-radius: 16px; background: rgba(250,204,21,0.1); color: #facc15; border: 1px solid rgba(250,204,21,0.2); }
         .btn-app.active { background: #facc15; color: #000; }
-        .no-select { user-select: none; }
+        
+        .no-links-box { padding: 24px; text-align: center; border-radius: 16px; background-color: var(--warning-bg); border: 1px solid var(--warning-border); margin-top: 16px; }
+        .no-links-text { color: var(--warning-text); font-size: 11px; font-weight: bold; text-transform: uppercase; margin: 0; }
+
+        /* Utility visibility rules */
+        .hidden { display: none !important; }
+        html.dark .dark-hidden { display: none !important; }
+        html:not(.dark) .light-hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .py-20 { padding-top: 80px; padding-bottom: 80px; }
+        .opacity-30 { opacity: 0.3; }
+        .animate-pulse { animation: pulseAnim 1.5s infinite ease-in-out; }
+        @keyframes pulseAnim { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300 no-select">
+<body>
     
     <div id="sidebar-container"></div>
 
-    <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
-        <button id="menu-btn" class="text-primary text-2xl w-10 text-left">
+    <header class="main-header">
+        <button id="menu-btn" class="menu-btn">
             <i class="fas fa-bars-staggered"></i>
         </button>
-        <div class="flex flex-col items-center">
-            <span class="text-primary font-black text-xl tracking-tighter leading-none">Bamarthan</span>
-            <span class="text-[8px] font-bold opacity-70 tracking-widest uppercase">Football VN</span>
+        <div class="logo-center">
+            <span class="logo-main">Bamarthan</span>
+            <span class="logo-sub">Football VN</span>
         </div>
-        <div class="w-10 text-right">
-            <button id="theme-toggle" class="text-xl text-slate-600 dark:text-primary">
-                <i class="fas fa-moon dark:hidden"></i>
-                <i class="fas fa-sun hidden dark:block"></i>
+        <div class="theme-btn-wrapper">
+            <button id="theme-toggle" class="theme-toggle-btn">
+                <i class="fas fa-moon dark-hidden"></i>
+                <i class="fas fa-sun light-hidden"></i>
             </button>
         </div>
     </header>
 
-    <main id="list-view" class="p-4 pt-20">
-        <div class="mb-5 bg-red-600/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
-            <div class="bg-red-500 p-3 rounded-xl shadow-lg shadow-red-500/20">
-                <i class="fas fa-shield-halved text-white text-lg"></i>
+    <main id="list-view" class="content-container">
+        <div class="alert-box">
+            <div class="alert-icon-wrap">
+                <i class="fas fa-shield-halved"></i>
             </div>
-            <div>
-                <p class="text-[11px] font-black dark:text-red-400 text-red-600 leading-snug uppercase tracking-tight">
-                    မြန်မာအချို့နေရာများတွင် VPN လိုအပ်နိုင်ပါသည်။ <br>မြန်မာသံ Football live ကြည့်ရန် နှင့်
-                   စုံလင်တဲ့အစီစဉ်များကြည့်ရန် <span class="text-primary">APP ‌ဒေါင်းယူ၍</span>  ကြည့်နိုင်ပါသည်။
-                </p>
-            </div>
+            <p class="alert-text">
+                မြန်မာအချို့နေရာများတွင် VPN လိုအပ်နိုင်ပါသည်။ <br>မြန်မာသံ Football live ကြည့်ရန် နှင့်
+               စုံလင်တဲ့အစီစဉ်များကြည့်ရန် <span style="color: var(--primary);">APP ‌ဒေါင်းယူ၍</span> ကြည့်နိုင်ပါသည်။
+            </p>
         </div>
 
-        <div class="mb-6">
+        <div style="margin-bottom: 24px;">
             <a href="https://m-sport-download.static.hf.space/">
-                <div class="ad-color-run shadow-lg" style="padding:3px; border-radius:20px;">
-                    <img src="https://bamarthan.vercel.app/downapk.gif" class="w-full h-auto block bg-black" style="border-radius:17px;">
+                <div class="ad-color-run">
+                    <img src="https://bamarthan.vercel.app/downapk.gif" alt="Download APK">
                 </div>
             </a>
         </div>
 
-        <div class="grid grid-cols-4 gap-2 mb-6">
-            <button onclick="filterMatches('all', this)" id="btn-all" class="filter-btn bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase ring-primary border-primary ring-2 transition-all">All</button>
-            <button onclick="filterMatches('live', this)" class="filter-btn bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase text-red-500 transition-all">Live</button>
-            <button onclick="filterMatches('main', this)" class="filter-btn bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase text-blue-500 transition-all">Main</button>
-            <button onclick="fetchMatches()" class="bg-white dark:bg-darkCard border border-slate-200 dark:border-slate-800 py-3 rounded-xl text-[9px] font-black uppercase text-primary active:scale-90 transition-all"><i class="fas fa-sync-alt"></i></button>
+        <div class="filter-row">
+            <button onclick="filterMatches('all', this)" id="btn-all" class="filter-btn active-filter">All</button>
+            <button onclick="filterMatches('live', this)" class="filter-btn text-red">Live</button>
+            <button onclick="filterMatches('main', this)" class="filter-btn text-blue">Main</button>
+            <button onclick="fetchMatches()" class="filter-btn text-primary"><i class="fas fa-sync-alt"></i></button>
         </div>
 
         <div id="movie-grid"></div>
     </main>
 
-    <main id="detail-view" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-darkBg hidden flex-col overflow-y-auto">
-        <div class="relative w-full aspect-video bg-black shadow-2xl">
-            <video id="player" playsinline webkit-playsinline controls class="w-full h-full object-cover"></video>
-            <button onclick="handleBackAction()" class="absolute top-6 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
+    <main id="detail-view" class="detail-modal">
+        <div class="video-box-container">
+            <video id="player" playsinline webkit-playsinline controls></video>
+            <button onclick="handleBackAction()" class="btn-back">
                 <i class="fas fa-chevron-left"></i>
             </button>
         </div>
-        <div class="p-6">
-            <div class="mb-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-3 flex items-center gap-3">
-                <i class="fas fa-circle-exclamation text-yellow-500 text-sm"></i>
-                <p class="text-[9px] font-bold text-yellow-600 dark:text-yellow-500 uppercase">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။(NS PLAYER= Network streaming video player)</p>
+        <div class="detail-body-padding">
+            <div class="warning-box">
+                <i class="fas fa-circle-exclamation" style="color: #eab308;"></i>
+                <p class="warning-text">လိုင်းမပွင့်ပါက VPN သုံးပေးပါ။(NS PLAYER= Network streaming video player)</p>
             </div>
             
             <div id="match-detail-container"></div>
@@ -135,26 +248,26 @@
     <script src="../sidebar.js"></script>
 <script>
     let allMatches = [];
-    let player = null;      // Plyr Instance
-    let hlsInstance = null; // Hls Instance
+    let player = null;      
+    let hlsInstance = null; 
     
     const PROXY_IMG = "https://wsrv.nl/?url=";
     const VIDEO_PROXY = "https://my-proxy-wt0l.onrender.com/proxy?url=";
     const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
 
-    window.onpopstate = () => { if (document.getElementById('detail-view').style.display !== 'none') closeDetail(); };
+    window.onpopstate = () => { if (document.getElementById('detail-view').style.display === 'flex') closeDetail(); };
     function handleBackAction() { window.history.back(); }
     function getImg(url) { return url ? `${PROXY_IMG}${encodeURIComponent(url)}&w=100&h=100&fit=contain` : DEFAULT_LOGO; }
 
     async function fetchMatches() {
         const grid = document.getElementById('movie-grid');
-        grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
+        grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse" style="font-weight:bold; font-size:12px; text-transform:uppercase;">Updating Matches...</div>';
         try {
             const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
             const data = await res.json();
             allMatches = data.context || [];
             filterMatches('all', document.getElementById('btn-all'));
-        } catch (e) { grid.innerHTML = "<p class='text-center opacity-50 py-10'>No Connection</p>"; }
+        } catch (e) { grid.innerHTML = "<p class='text-center' style='opacity:0.5; padding:40px 0;'>No Connection</p>"; }
     }
 
     function renderMatches(data) {
@@ -166,22 +279,22 @@
             const dStr = matchDate.toLocaleDateString([], {month: 'short', day: '2-digit'});
 
             const card = document.createElement('div');
-            card.className = "match-card cursor-pointer active:scale-95 transition-all";
+            card.className = "match-card";
             card.innerHTML = `
-                <div class="text-center mb-4"><span class="text-blue-500 dark:text-blue-400 text-[10px] font-black uppercase block truncate px-4 tracking-wider">${m.league}</span></div>
-                <div class="flex items-center justify-between">
-                    <div class="flex flex-col items-center w-[35%]">
-                        <img src="${getImg(m.home_img)}" class="w-12 h-12 object-contain mb-3" onerror="this.src='${DEFAULT_LOGO}'">
-                        <span class="text-[10px] font-bold text-center leading-tight uppercase dark:text-white/90">${m.home_name}</span>
+                <div class="match-league-wrap"><span class="match-league-text">${m.league}</span></div>
+                <div class="match-teams-flex">
+                    <div class="match-team-side">
+                        <img src="${getImg(m.home_img)}" class="match-team-logo" onerror="this.src='${DEFAULT_LOGO}'">
+                        <span class="match-team-name">${m.home_name}</span>
                     </div>
-                    <div class="flex flex-col items-center w-[30%]">
-                        <span class="text-[10px] opacity-50 mb-1">${dStr}</span>
-                        <span class="text-base font-black dark:text-white">${tStr}</span>
-                        ${m.match_status ? '<div class="mt-2 flex items-center gap-1 text-red-500 text-[9px] font-black uppercase"><span class="live-dot"></span> LIVE NOW</div>' : ''}
+                    <div class="match-info-center">
+                        <span class="match-date">${dStr}</span>
+                        <span class="match-time">${tStr}</span>
+                        ${m.match_status ? '<div class="match-live-badge"><span class="live-dot"></span> LIVE NOW</div>' : ''}
                     </div>
-                    <div class="flex flex-col items-center w-[35%]">
-                        <img src="${getImg(m.away_img)}" class="w-12 h-12 object-contain mb-3" onerror="this.src='${DEFAULT_LOGO}'">
-                        <span class="text-[10px] font-bold text-center leading-tight uppercase dark:text-white/90">${m.away_name}</span>
+                    <div class="match-team-side">
+                        <img src="${getImg(m.away_img)}" class="match-team-logo" onerror="this.src='${DEFAULT_LOGO}'">
+                        <span class="match-team-name">${m.away_name}</span>
                     </div>
                 </div>
             `;
@@ -194,23 +307,30 @@
         window.history.pushState({view: 'detail'}, '');
         document.getElementById('list-view').classList.add('hidden');
         document.getElementById('detail-view').style.display = 'flex';
-        document.getElementById('detail-view').classList.remove('hidden');
         
         const container = document.getElementById('match-detail-container');
         const links = match.links || [];
 
-        let linksContent = links.length === 0 ? `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 text-center mt-4"><p class="text-yellow-500 text-[11px] font-bold uppercase">ပွဲစဉ်အချိန်နီးမှ လိုင်းများပေါ်ပါမည်။</p></div>` : 
+        let linksContent = links.length === 0 ? `<div class="no-links-box"><p class="no-links-text">ပွဲစဉ်အချိန်နီးမှ လိုင်းများပေါ်ပါမည်။</p></div>` : 
             links.map((l, i) => `
-                <div class="flex flex-col mb-4">
-                    <span class="text-[10px] font-bold opacity-40 uppercase mb-2 tracking-widest pl-1">${l.name}</span>
+                <div class="link-group-wrapper">
+                    <span class="link-label-title">${l.name}</span>
                     <div class="play-row">
                         <button onclick="playStream('${escUrl(l.url)}', this)" class="btn-play btn-app ${i === 0 ? 'active' : ''}"><i class="fas fa-play"></i> App Play</button>
-                        <div class="ad-color-run"><button onclick="openNetworkPlayer('${escUrl(l.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play"><i class="fas fa-external-link-alt"></i>NS PLAYER</button></div>
+                        <div class="ad-color-run" style="flex:1; margin-bottom:0; padding:2px; border-radius:16px;">
+                            <button onclick="openNetworkPlayer('${escUrl(l.url)}', '${escStr(match.home_name)} vs ${escStr(match.away_name)}')" class="btn-play"><i class="fas fa-external-link-alt"></i>NS PLAYER</button>
+                        </div>
                     </div>
                 </div>
             `).join('');
 
-        container.innerHTML = `<div class="text-center mb-6"><h2 class="text-lg font-black uppercase dark:text-white">${match.home_name} VS ${match.away_name}</h2><p class="text-primary text-[10px] font-bold mt-1 uppercase">${match.league}</p></div><div class="space-y-2">${linksContent}</div>`;
+        container.innerHTML = `
+            <div class="detail-header-center">
+                <h2 class="detail-match-title">${match.home_name} VS ${match.away_name}</h2>
+                <p class="detail-league-sub">${match.league}</p>
+            </div>
+            <div style="margin-top:10px;">${linksContent}</div>
+        `;
         
         if (links.length > 0) playStream(links[0].url);
     }
@@ -218,70 +338,51 @@
     function escUrl(url) { return url.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
     function escStr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
-    // Multi-platform Optimized Video Engine (iOS, Android, Android TV, PC, Web Browser)
     function playStream(url, btn) {
         if(btn) { document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
         let finalUrl = url.includes('niuerr.live') ? VIDEO_PROXY + encodeURIComponent(url) : url;
         
         const video = document.getElementById('player');
         
-        // Cleanup existing instances safely
         if (player) { player.destroy(); player = null; }
         if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
         
         const plyrConfig = {
             controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
             clickable: true,
-            keyboard: { focused: true, global: true } // Better navigation for Smart TV / PC keyboards
+            keyboard: { focused: true, global: true } 
         };
 
-        // 1. For Native HLS Support (iOS Safari, Mac Safari, Apple WebViews)
         if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = finalUrl;
             player = new Plyr(video, plyrConfig);
         } 
-        // 2. For Hls.js supported browsers (Android Chrome, PC Chrome/Firefox, Android TV WebViews)
         else if (Hls.isSupported()) {
-            hlsInstance = new Hls({
-                maxMaxBufferLength: 10,
-                enableWorker: true,
-                lowLatencyMode: true
-            });
+            hlsInstance = new Hls({ maxMaxBufferLength: 10, enableWorker: true, lowLatencyMode: true });
             hlsInstance.loadSource(finalUrl);
             hlsInstance.attachMedia(video);
-            
-            hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                player = new Plyr(video, plyrConfig);
-            });
-
+            hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() { player = new Plyr(video, plyrConfig); });
             hlsInstance.on(Hls.Events.ERROR, function (event, data) {
                 if (data.fatal) {
                     switch (data.type) {
-                        case Hls.ErrorTypes.NETWORK_ERROR:
-                            hlsInstance.startLoad();
-                            break;
-                        case Hls.ErrorTypes.MEDIA_ERROR:
-                            hlsInstance.recoverMediaError();
-                            break;
-                        default:
-                            break;
+                        case Hls.ErrorTypes.NETWORK_ERROR: hlsInstance.startLoad(); break;
+                        case Hls.ErrorTypes.MEDIA_ERROR: hlsInstance.recoverMediaError(); break;
+                        default: break;
                     }
                 }
             });
         } 
-        // 3. Fallback standard source definition
         else {
             video.src = finalUrl;
             player = new Plyr(video, plyrConfig);
         }
-        
-        video.play().catch(err => console.log("Autoplay context resolution:", err));
+        video.play().catch(err => console.log("Autoplay blocker bypass handler", err));
     }
 
     function openNetworkPlayer(url, title) { window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`; }
 
     function filterMatches(type, btn) {
-        if (btn) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('ring-2', 'ring-primary', 'border-primary')); btn.classList.add('ring-2', 'ring-primary', 'border-primary'); }
+        if (btn) { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter')); btn.classList.add('active-filter'); }
         let filtered = allMatches;
         if (type === 'live') filtered = allMatches.filter(m => m.match_status);
         else if (type === 'main') filtered = allMatches.filter(m => m.is_main);
@@ -295,15 +396,11 @@
 
     if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
 
-    window.addEventListener('load', () => {
-        fetchMatches();
-    });
+    window.addEventListener('load', () => { fetchMatches(); });
 
     function closeDetail() {
         document.getElementById('detail-view').style.display = 'none';
-        document.getElementById('detail-view').classList.add('hidden');
         document.getElementById('list-view').classList.remove('hidden');
-        
         if (player) { player.destroy(); player = null; }
         if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
     }
