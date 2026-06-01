@@ -2,42 +2,78 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Movie Detail - FOTMOV</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    :root { --primary: #ef4444; --bg-dark: #0f172a; --card-bg: #1e293b; }
+    :root { 
+      --primary: #ef4444; 
+      --bg-dark: #0f172a; 
+      --card-bg: #1f2937; 
+      --sidebar-bg: #1e293b;
+      --focus-color: #3b82f6;
+    }
+    
     body { 
       background-color: var(--bg-dark); color: white; 
       font-family: 'Roboto', sans-serif; margin: 0; 
-      display: flex; align-items: center; justify-content: center; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; 
+      min-height: 100vh; padding: 20px; box-sizing: border-box;
     }
+    
     .detail-container { 
-      background: var(--card-bg); width: 90%; max-width: 1000px; 
+      background: var(--card-bg); width: 100%; max-width: 950px; 
       display: flex; border-radius: 20px; overflow: hidden; 
-      border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+      border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.6);
     }
-    .detail-poster-box { width: 350px; flex-shrink: 0; background: #000; }
-    .detail-poster-box img { width: 100%; height: 100%; object-fit: cover; }
-    .detail-content { flex: 1; padding: 40px; }
+    
+    .detail-poster-box { width: 320px; flex-shrink: 0; background: #000; display: flex; align-items: center; justify-content: center; }
+    .detail-poster-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    
+    .detail-content { flex: 1; padding: 35px; display: flex; flex-direction: column; justify-content: center; }
     
     .back-btn { 
-      padding: 10px 20px; background: #334155; color: white; border: none; 
+      align-self: flex-start; padding: 10px 22px; background: #334155; color: white; border: none; 
       border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold;
-      outline: none; transition: 0.2s;
+      outline: none; transition: 0.2s; font-size: 13px; letter-spacing: 0.5px;
     }
+    .back-btn:hover { background: #475569; }
     .back-btn:focus { background: var(--primary); transform: scale(1.05); border: 2px solid #fbbf24; }
     
-    .play-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px; }
+    /* Smart Adaptive Play Grid for PC & Phone Screens */
+    .play-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 25px; }
+    
     .play-btn { 
-      padding: 12px; background: #2563eb; color: white; border: 3px solid transparent; 
-      border-radius: 10px; font-weight: bold; cursor: pointer; outline: none;
+      padding: 14px 10px; background: #2563eb; color: white; border: 3px solid transparent; 
+      border-radius: 10px; font-weight: bold; cursor: pointer; outline: none; transition: 0.2s;
+      text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .play-btn:focus { border-color: #fbbf24; transform: scale(1.05); }
+    .play-btn:hover { background: #1d4ed8; }
+    .play-btn:active { transform: scale(0.98); }
+    .play-btn:focus { border-color: #fbbf24; background: var(--primary); transform: scale(1.05); z-index: 10; }
 
+    /* Description Scroll Styling with iOS support */
+    .desc-box {
+      background: rgba(15, 23, 42, 0.6); padding: 20px; border-radius: 12px; 
+      font-size: 14.5px; line-height: 1.6; color: #cbd5e1; max-height: 200px; 
+      overflow-y: auto; border: 1px solid rgba(255,255,255,0.05);
+      scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+    }
+
+    /* MOBILE & PC RESPONSIVE QUERIES */
     @media (max-width: 768px) {
-      .detail-container { flex-direction: column; width: 95%; margin: 20px 0; }
-      .detail-poster-box { width: 100%; height: 300px; }
+      body { padding: 10px; }
+      .detail-container { flex-direction: column; border-radius: 16px; }
+      
+      /* Avoid huge stretched poster on mobile screens */
+      .detail-poster-box { 
+        width: 100%; max-width: 240px; margin: 25px auto 0 auto; 
+        aspect-ratio: 2/3; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+      }
+      .detail-content { padding: 20px; }
+      #det-title { text-align: center; font-size: 26px !important; margin-top: 10px !important; }
+      .back-btn { align-self: center; width: 100%; text-align: center; }
+      .play-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columns on phones */
     }
   </style>
 </head>
@@ -45,14 +81,15 @@
 
   <div class="detail-container">
     <div class="detail-poster-box">
-      <img id="det-img" src="" alt="Poster">
+      <img id="det-img" src="" alt="Movie Poster" onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
     </div>
     <div class="detail-content">
-      <button onclick="window.history.back()" class="back-btn" id="back-button">
-        <i class="fas fa-arrow-left"></i> BACK
+      <button onclick="window.history.back()" class="back-btn" id="back-button" tabindex="1">
+        <i class="fas fa-arrow-left"></i> BACK (နောက်သို့)
       </button>
-      <h2 id="det-title" style="font-size: 32px; margin: 0 0 15px 0; color: #f8fafc;"></h2>
-      <div id="det-desc" style="background: rgba(15, 23, 42, 0.5); padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.6; color: #cbd5e1; max-height: 250px; overflow-y: auto;"></div>
+      <h2 id="det-title" style="font-size: 30px; margin: 0 0 15px 0; color: #f8fafc; font-weight: 900;"></h2>
+      
+      <div id="det-desc" class="desc-box"></div>
       
       <div id="play-btns" class="play-grid"></div>
     </div>
@@ -61,9 +98,9 @@
   <script>
     window.onload = () => {
         const params = new URLSearchParams(window.location.search);
-        const title = params.get('title');
-        const logo = params.get('logo');
-        const desc = params.get('desc');
+        const title = params.get('title') || "Unknown Movie";
+        const logo = params.get('logo') || "";
+        const desc = params.get('desc') || "အညွှန်း မရရှိနိုင်သေးပါ။";
         const links = params.get('links') ? params.get('links').split(',') : [];
 
         document.getElementById('det-title').innerText = title;
@@ -71,25 +108,56 @@
         document.getElementById('det-desc').innerText = desc;
 
         const btnWrap = document.getElementById('play-btns');
+        let buttonCount = 0;
+
         links.forEach((url, i) => {
-            if(!url) return;
+            const cleanUrl = url.trim();
+            if(!cleanUrl) return;
+            
+            buttonCount++;
             const btn = document.createElement('button');
             btn.className = "play-btn";
-            btn.innerHTML = `<i class="fas fa-play"></i> SERVER ${i+1}`;
+            btn.tabIndex = 2;
+            btn.innerHTML = `<i class="fas fa-play"></i> SERVER ${buttonCount}`;
+            
             btn.onclick = () => {
-                window.location.href = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=" + encodeURIComponent(title) + ";end";
+                playVideo(cleanUrl, title);
             };
+            
             btnWrap.appendChild(btn);
-            if(i === 0) btn.focus(); // ပထမဆုံးခလုတ်ကို auto focus ပေးမယ်
+            
+            // For Smart TV / Remote Engine Default Active Focus
+            if(buttonCount === 1 && !('ontouchstart' in window)) {
+                btn.focus(); 
+            }
         });
 
-        // Remote Control အတွက် Back Button focus logic
-        if (links.length === 0) document.getElementById('back-button').focus();
+        // If no stream servers available, focus back button
+        if (buttonCount === 0) {
+            btnWrap.innerHTML = '<div style="color:#94a3b8; font-size:13px; padding:10px 0;">ကြည့်ရှုရန် လင့်ခ်မရှိသေးပါ။</div>';
+            document.getElementById('back-button').focus();
+        }
     };
 
-    // Remote Back Key handle
+    // SMART PLATFORM VIDEO ROUTER (Android, iOS, PC Compatible)
+    function playVideo(url, movieTitle) {
+        // Detect System Platform
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isAndroid = /Android/i.test(userAgent);
+        
+        if (isAndroid) {
+            // Android APK / Android Phone Ecosystem -> Launch via External Player Intent
+            window.location.href = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=" + encodeURIComponent(movieTitle) + ";end";
+        } else {
+            // iOS (Safari, iPhone, iPad) & PC Browsers (Chrome, Edge, Mac) -> Open Link directly in Safe Window
+            window.open(url, '_blank');
+        }
+    }
+
+    // Remote Back Keys Support
     window.addEventListener('keydown', (e) => {
         if (e.keyCode === 8 || e.keyCode === 461 || e.keyCode === 10009) {
+            e.preventDefault();
             window.history.back();
         }
     });
