@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     
-    <!-- Plyr Player CSS & JS (Artplayer အစား ပြောင်းလဲထည့်သွင်းမှု) -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     
@@ -63,115 +62,13 @@
         .btn-app { border-radius: 16px; background: rgba(250,204,21,0.1); color: #facc15; border: 1px solid rgba(250,204,21,0.2); }
         .btn-app.active { background: #facc15; color: #000; }
         .no-select { user-select: none; }
-
-        /* Chat Box Styles */
-        .chat-box-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            height: 480px;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            z-index: 80;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .dark .chat-box-container { background: #1e293b; }
-
-        .chat-box-container.minimized { height: 60px; width: 60px; }
-        .chat-header {
-            background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%);
-            color: #000; padding: 12px 16px; display: flex;
-            justify-content: space-between; align-items: center;
-            font-weight: bold; font-size: 13px; cursor: pointer;
-        }
-        .chat-header-title { display: flex; align-items: center; gap: 8px; }
-        .chat-header-buttons { display: flex; gap: 8px; }
-        .chat-header-btn {
-            background: rgba(0,0,0,0.1); border: none; color: #000;
-            width: 28px; height: 28px; border-radius: 6px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; font-size: 12px; transition: 0.2s;
-        }
-        .chat-header-btn:hover { background: rgba(0,0,0,0.2); }
-
-        .chat-notice {
-            background: #fffbeb; color: #92400e; padding: 8px 12px; font-size: 10px;
-            font-weight: 600; border-bottom: 1px solid #fef3c7; text-align: center;
-        }
-        .dark .chat-notice { background: #451a03; color: #fef3c7; border-bottom-color: #78350f; }
-
-        .chat-messages { flex: 1; overflow-y: auto; padding: 12px; background: #f8f9fa; }
-        .dark .chat-messages { background: #0f172a; }
-
-        .chat-message { margin-bottom: 12px; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .chat-message.own { display: flex; justify-content: flex-end; }
-        .chat-message-bubble { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 12px; line-height: 1.4; word-wrap: break-word; }
-        .chat-message.own .chat-message-bubble { background: #facc15; color: #000; border-bottom-right-radius: 4px; }
-        .chat-message.other .chat-message-bubble { background: white; color: #000; border-bottom-left-radius: 4px; border: 1px solid #e5e7eb; }
-        .dark .chat-message.other .chat-message-bubble { background: #1a2436; color: #fff; border-color: rgba(255,255,255,0.1); }
-
-        .chat-message-name { font-size: 11px; margin-bottom: 4px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
-        .chat-user-id-badge { font-size: 10px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 6px; font-family: monospace; color: #facc15; font-weight: 900; }
-        .dark .chat-user-id-badge { background: rgba(255,255,255,0.1); }
-
-        .chat-input-area { padding: 12px; border-top: 1px solid #e5e7eb; background: white; display: flex; gap: 8px; }
-        .dark .chat-input-area { background: #1e293b; border-top-color: rgba(255,255,255,0.1); }
-
-        .chat-input {
-            flex: 1; border: 1px solid #e5e7eb; border-radius: 8px;
-            padding: 8px 12px; font-size: 12px; background: white; color: #000; outline: none; transition: 0.2s;
-        }
-        .dark .chat-input { background: #0f172a; color: #fff; border-color: rgba(255,255,255,0.1); }
-        .chat-input:focus { border-color: #facc15; box-shadow: 0 0 0 2px rgba(250,204,21,0.1); }
-
-        .chat-send-btn {
-            background: #facc15; border: none; color: #000; width: 36px; height: 36px;
-            border-radius: 8px; cursor: pointer; display: flex; align-items: center;
-            justify-content: center; font-size: 14px; font-weight: bold; transition: 0.2s;
-        }
-        .chat-send-btn:hover { background: #f59e0b; transform: scale(1.05); }
-        .chat-send-btn:active { transform: scale(0.95); }
-
-        .chat-toggle-btn {
-            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
-            background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); border: none;
-            border-radius: 50%; color: #000; font-size: 24px; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(250,204,21,0.3); z-index: 75; transition: all 0.3s ease;
-        }
-        .chat-toggle-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(250,204,21,0.4); }
-        .chat-toggle-btn:active { transform: scale(0.95); }
-        .chat-toggle-btn.hidden { display: none; }
-
-        .chat-empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; opacity: 0.5; text-align: center; padding: 20px; font-size: 12px; }
-        .chat-user-badge { display: inline-block; background: #000; color: #facc15; padding: 2px 8px; border-radius: 12px; font-size: 9px; font-weight: bold; margin-left: 4px; }
-
-        .user-info-top-bar {
-            position: fixed; top: 0; left: 0; right: 0; height: 28px; z-index: 95;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 0 10px; background: #020617; color: #facc15; border-bottom: 1px solid rgba(250,204,21,0.25);
-            font-size: 10px; font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap;
-        }
-        .user-info-top-bar .user-info-item { display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
-        .user-info-top-bar .user-info-value { color: #ffffff; max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300 no-select">
     
     <div id="sidebar-container"></div>
 
-    <div id="user-info-top" class="user-info-top-bar">
-        <span class="user-info-item"><i class="fas fa-id-card"></i> User ID: <span id="top-user-id" class="user-info-value">Loading</span></span>
-        <span class="opacity-40">|</span>
-        <span class="user-info-item"><i class="fas fa-calendar-times"></i> Expired: <span id="top-user-expired" class="user-info-value">Loading</span></span>
-    </div>
-
-    <header class="fixed top-7 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
+    <header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex justify-between items-center">
         <button id="menu-btn" class="text-primary text-2xl w-10 text-left">
             <i class="fas fa-bars-staggered"></i>
         </button>
@@ -187,14 +84,14 @@
         </div>
     </header>
 
-    <main id="list-view" class="p-4 pt-28">
+    <main id="list-view" class="p-4 pt-20">
         <div class="mb-5 bg-red-600/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
             <div class="bg-red-500 p-3 rounded-xl shadow-lg shadow-red-500/20">
                 <i class="fas fa-shield-halved text-white text-lg"></i>
             </div>
             <div>
                 <p class="text-[11px] font-black dark:text-red-400 text-red-600 leading-snug uppercase tracking-tight">
-                    မြန်မာအချို့နေရာများတွင် VPN လိုအပ်နိုင်ပါသည်။ <br>မြန်မာသံ Football live ကြည့်ရမ် နှင့်
+                    မြန်မာအချို့နေရာများတွင် VPN လိုအပ်နိုင်ပါသည်။ <br>မြန်မာသံ Football live ကြည့်ရန် နှင့်
                    စုံလင်တဲ့အစီစဉ်များကြည့်ရန် <span class="text-primary">APP ‌ဒေါင်းယူ၍</span>  ကြည့်နိုင်ပါသည်။
                 </p>
             </div>
@@ -220,9 +117,8 @@
 
     <main id="detail-view" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-darkBg hidden flex-col overflow-y-auto">
         <div class="relative w-full aspect-video bg-black shadow-2xl">
-            <!-- Plyr HTML5 Video Tag integration instead of Artplayer div -->
-            <video id="player" playsinline controls class="w-full h-full object-cover"></video>
-            <button onclick="handleBackAction()" class="absolute top-10 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
+            <video id="player" playsinline webkit-playsinline controls class="w-full h-full object-cover"></video>
+            <button onclick="handleBackAction()" class="absolute top-6 left-4 z-20 w-10 h-10 bg-black/50 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10">
                 <i class="fas fa-chevron-left"></i>
             </button>
         </div>
@@ -236,60 +132,8 @@
         </div>
     </main>
 
-    <!-- Chat Box -->
-    <button id="chat-toggle-btn" class="chat-toggle-btn hidden" onclick="toggleChatBox()">
-        <i class="fas fa-comments"></i>
-    </button>
-
-    <div id="chat-box" class="chat-box-container hidden">
-        <div class="chat-header" onclick="toggleChatBoxMinimize()">
-            <div class="chat-header-title">
-                <i class="fas fa-comments"></i>
-                <span>Live Chat</span>
-                <span class="chat-user-badge" id="chat-user-count">0</span>
-            </div>
-            <div class="chat-header-buttons">
-                <button class="chat-header-btn" onclick="toggleChatBoxMinimize(event)">
-                    <i class="fas fa-minus" id="minimize-icon"></i>
-                </button>
-                <button class="chat-header-btn" onclick="closeChatBox(event)">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-
-        <div class="chat-notice">
-            <i class="fas fa-bullhorn mr-1"></i> ရိုင်းစိုင်းတဲ့အသုံးအနုန်းများမသုံးပါနဲ့ခင်ဗျာ သုံးနုန်းခဲ့ပါက warning 3 ကြိမ်ပြည့်ရင်ဘမ်းပါမည်။
-        </div>
-
-        <div class="chat-messages" id="chat-messages">
-            <div class="chat-empty-state">
-                <i class="fas fa-comments" style="font-size: 32px; margin-bottom: 8px;"></i>
-                <p>စကားပြောရန် စာရိုက်ပါ...</p>
-            </div>
-        </div>
-
-        <!-- Chat Input area with Username completely removed -->
-        <div class="chat-input-area">
-            <input 
-                type="text" 
-                id="chat-message-input" 
-                class="chat-input" 
-                placeholder="စာသား..." 
-                maxlength="100"
-                onkeypress="handleChatKeyPress(event)"
-            >
-            <button class="chat-send-btn" onclick="sendChatMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
     <script src="../sidebar.js"></script>
 <script>
-    const HF_BASE_URL = "https://livesportmm-s4itmmapprover.hf.space";
-    const APPROVED_USERS_URL = `${HF_BASE_URL}/Web/approved_users.json`;
-    
     let allMatches = [];
     let player = null;      // Plyr Instance
     let hlsInstance = null; // Hls Instance
@@ -297,162 +141,6 @@
     const PROXY_IMG = "https://wsrv.nl/?url=";
     const VIDEO_PROXY = "https://my-proxy-wt0l.onrender.com/proxy?url=";
     const DEFAULT_LOGO = "https://cdn-icons-png.flaticon.com/512/53/53254.png";
-
-    // Chat Box Variables
-    let chatMessages = [];
-    let chatUsers = new Set();
-    let isChatMinimized = false;
-    let currentUserId = localStorage.getItem('currentUserId') || ("Guest-" + Math.floor(Math.random() * 10000));
-    let currentUserExpired = localStorage.getItem('currentUserExpired') || 'N/A';
-
-    function updateUserInfoBar() {
-        const idEl = document.getElementById('top-user-id');
-        const expiredEl = document.getElementById('top-user-expired');
-        if (idEl) idEl.textContent = currentUserId || 'N/A';
-        if (expiredEl) expiredEl.textContent = currentUserExpired || 'N/A';
-    }
-
-    async function fetchUserInfo() {
-        const id = localStorage.getItem('zetflix_device_id_web') || "GUEST-USER";
-        updateUserInfoBar();
-        try {
-            const res = await fetch(`${APPROVED_USERS_URL}?t=${Date.now()}`);
-            const users = await res.json();
-            
-            const user = users.find(u => String(u.id) === String(id));
-
-            if (user) {
-                currentUserId = String(id);
-                currentUserExpired = user.expires ? user.expires.split('T')[0] : "Active Member";
-                localStorage.setItem('currentUserId', currentUserId);
-                localStorage.setItem('currentUserExpired', currentUserExpired);
-            }
-        } catch(e) {
-            console.log("Error fetching user info:", e);
-        }
-        updateUserInfoBar();
-    }
-
-    // Chat Functions
-    function initializeChat() {
-        const savedMessages = localStorage.getItem('chatMessages');
-        const savedUsers = localStorage.getItem('chatUsers');
-        if (savedMessages) chatMessages = JSON.parse(savedMessages);
-        if (savedUsers) chatUsers = new Set(JSON.parse(savedUsers));
-        renderChatMessages();
-    }
-
-    function showChatToggleForDetail() {
-        const chatBox = document.getElementById('chat-box');
-        const toggleBtn = document.getElementById('chat-toggle-btn');
-        chatBox.classList.add('hidden');
-        chatBox.classList.remove('minimized');
-        toggleBtn.classList.remove('hidden');
-        isChatMinimized = false;
-    }
-
-    function hideChatCompletely() {
-        const chatBox = document.getElementById('chat-box');
-        const toggleBtn = document.getElementById('chat-toggle-btn');
-        chatBox.classList.add('hidden');
-        toggleBtn.classList.add('hidden');
-    }
-
-    function toggleChatBox() {
-        const chatBox = document.getElementById('chat-box');
-        const toggleBtn = document.getElementById('chat-toggle-btn');
-        if (chatBox.classList.contains('hidden')) {
-            chatBox.classList.remove('hidden');
-            toggleBtn.classList.add('hidden');
-        } else {
-            chatBox.classList.add('hidden');
-            toggleBtn.classList.remove('hidden');
-        }
-    }
-
-    // Close chat
-    function closeChatBox(event) {
-        event.stopPropagation();
-        document.getElementById('chat-box').classList.add('hidden');
-        document.getElementById('chat-toggle-btn').classList.remove('hidden');
-    }
-
-    function toggleChatBoxMinimize(event) {
-        if (event) event.stopPropagation();
-        const chatBox = document.getElementById('chat-box');
-        const minimizeIcon = document.getElementById('minimize-icon');
-        isChatMinimized = !isChatMinimized;
-        if (isChatMinimized) {
-            chatBox.classList.add('minimized');
-            minimizeIcon.innerHTML = '<i class="fas fa-plus"></i>';
-        } else {
-            chatBox.classList.remove('minimized');
-            minimizeIcon.innerHTML = '<i class="fas fa-minus"></i>';
-        }
-    }
-
- // Send chat using currentUserId as Username
-    function sendChatMessage() {
-        const messageInput = document.getElementById('chat-message-input');
-        const message = messageInput.value.trim();
-        
-        if (!message) return;
-        
-        const chatMessage = {
-            id: Date.now(),
-            userId: currentUserId,
-            username: currentUserId, 
-            message: message,
-            timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-            isOwn: true
-        };
-        
-        chatMessages.push(chatMessage);
-        chatUsers.add(currentUserId);
-        
-        localStorage.setItem('chatMessages', JSON.stringify(chatMessages));
-        localStorage.setItem('chatUsers', JSON.stringify(Array.from(chatUsers)));
-        
-        messageInput.value = '';
-        renderChatMessages();
-        
-        setTimeout(() => {
-            const messagesContainer = document.getElementById('chat-messages');
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 100);
-    }
-
-    function handleChatKeyPress(event) {
-        if (event.key === 'Enter') sendChatMessage();
-    }
-
-    function renderChatMessages() {
-        const messagesContainer = document.getElementById('chat-messages');
-        const userCountBadge = document.getElementById('chat-user-count');
-        userCountBadge.textContent = chatUsers.size;
-        
-        if (chatMessages.length === 0) {
-            messagesContainer.innerHTML = `<div class="chat-empty-state"><i class="fas fa-comments text-3xl mb-2"></i><p>စကားပြောရန် စာရိုက်ပါ...</p></div>`;
-            return;
-        }
-        
-        messagesContainer.innerHTML = chatMessages.map(msg => `
-            <div class="chat-message ${msg.isOwn ? 'own' : 'other'}">
-                <div>
-                    <div class="chat-message-name" style="${msg.isOwn ? 'justify-content: flex-end;' : ''}">
-                        <span class="chat-user-id-badge"><i class="fas fa-user text-[9px] mr-1"></i> ${msg.userId}</span>
-                    </div>
-                    <div class="chat-message-bubble">${escapeHtml(msg.message)}</div>
-                    <div style="font-size: 9px; opacity: 0.5; margin-top: 2px; ${msg.isOwn ? 'text-right' : 'text-left'}">${msg.timestamp}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function escapeHtml(text) {
-        const map = {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'};
-        return text.replace(/[&<>"']/g, m => map[m]);
-    }
 
     window.onpopstate = () => { if (document.getElementById('detail-view').style.display !== 'none') closeDetail(); };
     function handleBackAction() { window.history.back(); }
@@ -462,7 +150,6 @@
         const grid = document.getElementById('movie-grid');
         grid.innerHTML = '<div class="text-center py-20 opacity-30 animate-pulse font-bold text-xs uppercase">Updating Matches...</div>';
         try {
-            // Selection.json Fetch ဖယ်ထုတ်လိုက်ပါပြီ
             const res = await fetch('https://nextjs-mobile-one.vercel.app/api/get-matches.js?_t=' + Date.now());
             const data = await res.json();
             allMatches = data.context || [];
@@ -508,12 +195,10 @@
         document.getElementById('list-view').classList.add('hidden');
         document.getElementById('detail-view').style.display = 'flex';
         document.getElementById('detail-view').classList.remove('hidden');
-        showChatToggleForDetail();
         
         const container = document.getElementById('match-detail-container');
         const links = match.links || [];
 
-        // App Play နှင့် NS Player Link များသီးသန့်စီစစ်မှု
         let linksContent = links.length === 0 ? `<div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-6 text-center mt-4"><p class="text-yellow-500 text-[11px] font-bold uppercase">ပွဲစဉ်အချိန်နီးမှ လိုင်းများပေါ်ပါမည်။</p></div>` : 
             links.map((l, i) => `
                 <div class="flex flex-col mb-4">
@@ -533,39 +218,64 @@
     function escUrl(url) { return url.replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
     function escStr(str) { return (str || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
-    // Plyr Player ဖြင့် HLS (.m3u8) Stream မောင်းနှင်မှုစနစ်
+    // Multi-platform Optimized Video Engine (iOS, Android, Android TV, PC, Web Browser)
     function playStream(url, btn) {
         if(btn) { document.querySelectorAll('.btn-app').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
         let finalUrl = url.includes('niuerr.live') ? VIDEO_PROXY + encodeURIComponent(url) : url;
         
         const video = document.getElementById('player');
         
-        // ဉီးစွာလက်ရှိပတ်နေသော player များကို သန့်ရှင်းရေးလုပ်သည်
-        if (player) {
-            player.destroy();
-            player = null;
-        }
-        if (hlsInstance) {
-            hlsInstance.destroy();
-            hlsInstance = null;
-        }
+        // Cleanup existing instances safely
+        if (player) { player.destroy(); player = null; }
+        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
         
-        // Hls.js ဖြင့် Plyr ကို ချိတ်ဆက်မောင်းနှင်ခြင်း
-        if (Hls.isSupported()) {
-            hlsInstance = new Hls();
+        const plyrConfig = {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
+            clickable: true,
+            keyboard: { focused: true, global: true } // Better navigation for Smart TV / PC keyboards
+        };
+
+        // 1. For Native HLS Support (iOS Safari, Mac Safari, Apple WebViews)
+        if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = finalUrl;
+            player = new Plyr(video, plyrConfig);
+        } 
+        // 2. For Hls.js supported browsers (Android Chrome, PC Chrome/Firefox, Android TV WebViews)
+        else if (Hls.isSupported()) {
+            hlsInstance = new Hls({
+                maxMaxBufferLength: 10,
+                enableWorker: true,
+                lowLatencyMode: true
+            });
             hlsInstance.loadSource(finalUrl);
             hlsInstance.attachMedia(video);
-        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            
+            hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
+                player = new Plyr(video, plyrConfig);
+            });
+
+            hlsInstance.on(Hls.Events.ERROR, function (event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            hlsInstance.startLoad();
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            hlsInstance.recoverMediaError();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        } 
+        // 3. Fallback standard source definition
+        else {
             video.src = finalUrl;
+            player = new Plyr(video, plyrConfig);
         }
         
-        // Plyr Initialization
-        player = new Plyr(video, {
-            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'pip', 'fullscreen'],
-            clickable: true
-        });
-        
-        video.play().catch(err => console.log("Autoplay context init:", err));
+        video.play().catch(err => console.log("Autoplay context resolution:", err));
     }
 
     function openNetworkPlayer(url, title) { window.location.href = `intent:${url}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(title)};end`; }
@@ -586,27 +296,16 @@
     if (localStorage.getItem('theme') === 'light') document.documentElement.classList.remove('dark');
 
     window.addEventListener('load', () => {
-        fetchUserInfo();
         fetchMatches();
-        initializeChat();
-        hideChatCompletely();
     });
 
     function closeDetail() {
         document.getElementById('detail-view').style.display = 'none';
         document.getElementById('detail-view').classList.add('hidden');
         document.getElementById('list-view').classList.remove('hidden');
-        hideChatCompletely();
         
-        // Detail ပိတ်လိုက်လျှင် ဖွင့်ထားသော Plyr ကိုအပြီးသတ်ရပ်နားမည်
-        if (player) {
-            player.destroy();
-            player = null;
-        }
-        if (hlsInstance) {
-            hlsInstance.destroy();
-            hlsInstance = null;
-        }
+        if (player) { player.destroy(); player = null; }
+        if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
     }
 </script>
     
