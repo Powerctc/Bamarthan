@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Detail - FOTMOV</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root { --primary: #ef4444; --bg-dark: #0f172a; --card-bg: #1e293b; }
+    body { 
+      background-color: var(--bg-dark); color: white; 
+      font-family: 'Roboto', sans-serif; margin: 0; 
+      display: flex; align-items: center; justify-content: center; min-height: 100vh;
+    }
+    .detail-container { 
+      background: var(--card-bg); width: 90%; max-width: 1000px; 
+      display: flex; border-radius: 20px; overflow: hidden; 
+      border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5);
+    }
+    .detail-poster-box { width: 350px; flex-shrink: 0; background: #000; }
+    .detail-poster-box img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-content { flex: 1; padding: 40px; }
+    
+    .back-btn { 
+      padding: 10px 20px; background: #334155; color: white; border: none; 
+      border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold;
+      outline: none; transition: 0.2s;
+    }
+    .back-btn:focus { background: var(--primary); transform: scale(1.05); border: 2px solid #fbbf24; }
+    
+    .play-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px; }
+    .play-btn { 
+      padding: 12px; background: #2563eb; color: white; border: 3px solid transparent; 
+      border-radius: 10px; font-weight: bold; cursor: pointer; outline: none;
+    }
+    .play-btn:focus { border-color: #fbbf24; transform: scale(1.05); }
+
+    @media (max-width: 768px) {
+      .detail-container { flex-direction: column; width: 95%; margin: 20px 0; }
+      .detail-poster-box { width: 100%; height: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="detail-container">
+    <div class="detail-poster-box">
+      <img id="det-img" src="" alt="Poster">
+    </div>
+    <div class="detail-content">
+      <button onclick="window.history.back()" class="back-btn" id="back-button">
+        <i class="fas fa-arrow-left"></i> BACK
+      </button>
+      <h2 id="det-title" style="font-size: 32px; margin: 0 0 15px 0; color: #f8fafc;"></h2>
+      <div id="det-desc" style="background: rgba(15, 23, 42, 0.5); padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.6; color: #cbd5e1; max-height: 250px; overflow-y: auto;"></div>
+      
+      <div id="play-btns" class="play-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get('title');
+        const logo = params.get('logo');
+        const desc = params.get('desc');
+        const links = params.get('links') ? params.get('links').split(',') : [];
+
+        document.getElementById('det-title').innerText = title;
+        document.getElementById('det-img').src = logo;
+        document.getElementById('det-desc').innerText = desc;
+
+        const btnWrap = document.getElementById('play-btns');
+        links.forEach((url, i) => {
+            if(!url) return;
+            const btn = document.createElement('button');
+            btn.className = "play-btn";
+            btn.innerHTML = `<i class="fas fa-play"></i> SERVER ${i+1}`;
+            btn.onclick = () => {
+                window.location.href = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=" + encodeURIComponent(title) + ";end";
+            };
+            btnWrap.appendChild(btn);
+            if(i === 0) btn.focus(); // ပထမဆုံးခလုတ်ကို auto focus ပေးမယ်
+        });
+
+        // Remote Control အတွက် Back Button focus logic
+        if (links.length === 0) document.getElementById('back-button').focus();
+    };
+
+    // Remote Back Key handle
+    window.addEventListener('keydown', (e) => {
+        if (e.keyCode === 8 || e.keyCode === 461 || e.keyCode === 10009) {
+            window.history.back();
+        }
+    });
+  </script>
+</body>
+</html>
