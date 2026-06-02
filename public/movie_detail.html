@@ -2,97 +2,219 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movie Detail - FOTMOV</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>
-    :root { --primary: #ef4444; --bg-dark: #0f172a; --card-bg: #1e293b; }
-    body { 
-      background-color: var(--bg-dark); color: white; 
-      font-family: 'Roboto', sans-serif; margin: 0; 
-      display: flex; align-items: center; justify-content: center; min-height: 100vh;
-    }
-    .detail-container { 
-      background: var(--card-bg); width: 90%; max-width: 1000px; 
-      display: flex; border-radius: 20px; overflow: hidden; 
-      border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5);
-    }
-    .detail-poster-box { width: 350px; flex-shrink: 0; background: #000; }
-    .detail-poster-box img { width: 100%; height: 100%; object-fit: cover; }
-    .detail-content { flex: 1; padding: 40px; }
-    
-    .back-btn { 
-      padding: 10px 20px; background: #334155; color: white; border: none; 
-      border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: bold;
-      outline: none; transition: 0.2s;
-    }
-    .back-btn:focus { background: var(--primary); transform: scale(1.05); border: 2px solid #fbbf24; }
-    
-    .play-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 30px; }
-    .play-btn { 
-      padding: 12px; background: #2563eb; color: white; border: 3px solid transparent; 
-      border-radius: 10px; font-weight: bold; cursor: pointer; outline: none;
-    }
-    .play-btn:focus { border-color: #fbbf24; transform: scale(1.05); }
-
-    @media (max-width: 768px) {
-      .detail-container { flex-direction: column; width: 95%; margin: 20px 0; }
-      .detail-poster-box { width: 100%; height: 300px; }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="detail-container">
-    <div class="detail-poster-box">
-      <img id="det-img" src="" alt="Poster">
-    </div>
-    <div class="detail-content">
-      <button onclick="window.history.back()" class="back-btn" id="back-button">
-        <i class="fas fa-arrow-left"></i> BACK
-      </button>
-      <h2 id="det-title" style="font-size: 32px; margin: 0 0 15px 0; color: #f8fafc;"></h2>
-      <div id="det-desc" style="background: rgba(15, 23, 42, 0.5); padding: 20px; border-radius: 12px; font-size: 15px; line-height: 1.6; color: #cbd5e1; max-height: 250px; overflow-y: auto;"></div>
-      
-      <div id="play-btns" class="play-grid"></div>
-    </div>
-  </div>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FOTMOV - Movie Detail</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
   <script>
-    window.onload = () => {
-        const params = new URLSearchParams(window.location.search);
-        const title = params.get('title');
-        const logo = params.get('logo');
-        const desc = params.get('desc');
-        const links = params.get('links') ? params.get('links').split(',') : [];
+    tailwind.config = {
+      theme: { extend: { colors: { primary: '#ef4444', darkBg: '#0f172a', darkCard: '#1e293b' } } }
+    }
+  </script>
 
-        document.getElementById('det-title').innerText = title;
-        document.getElementById('det-img').src = logo;
-        document.getElementById('det-desc').innerText = desc;
+  <style>
+    * { -webkit-tap-highlight-color: transparent; outline: none; }
+    ::-webkit-scrollbar { width: 0; background: transparent; }
+    .artplayer-app { width: 100%; height: 100%; }
+    .server-btn.active { background: #ef4444 !important; color: white !important; border-color: #fbbf24 !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    
+    /* TV Remote Focus States */
+    button:focus, a:focus { border-color: #3b82f6 !important; transform: scale(1.03); background-color: rgba(239, 68, 68, 0.2); }
+    .ad-color-run { padding: 3px; border-radius: 20px; background: linear-gradient(270deg,#ff0000,#ff9900,#ffff00,#00ff00,#00ffff,#0000ff,#ff00ff,#ff0000); background-size:600% 600%; animation:colorRun 4s linear infinite }
+    @keyframes colorRun{ 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
+  </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen font-sans overflow-y-auto">
 
-        const btnWrap = document.getElementById('play-btns');
-        links.forEach((url, i) => {
-            if(!url) return;
-            const btn = document.createElement('button');
-            btn.className = "play-btn";
-            btn.innerHTML = `<i class="fas fa-play"></i> SERVER ${i+1}`;
-            btn.onclick = () => {
-                window.location.href = "intent:" + url + "#Intent;package=com.genuine.leone;type=video/*;S.title=" + encodeURIComponent(title) + ";end";
-            };
-            btnWrap.appendChild(btn);
-            if(i === 0) btn.focus(); // ပထမဆုံးခလုတ်ကို auto focus ပေးမယ်
-        });
+  <div class="relative w-full aspect-video bg-black shadow-2xl sticky top-0 z-50 max-w-4xl mx-auto rounded-b-2xl overflow-hidden">
+    <div class="artplayer-app"></div>
+    <button onclick="goBack()" class="absolute top-4 left-4 z-20 w-10 h-10 bg-black/60 rounded-full flex justify-center items-center text-primary backdrop-blur-md border border-white/10" id="back-btn" tabindex="1">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+  </div>
 
-        // Remote Control အတွက် Back Button focus logic
-        if (links.length === 0) document.getElementById('back-button').focus();
+  <main class="p-4 max-w-2xl mx-auto pb-24">
+    
+    <div class="flex gap-4 items-start mb-6">
+      <img id="movie-poster" src="" class="w-24 aspect-[2/3] object-cover rounded-xl shadow-md border border-slate-700 bg-slate-800">
+      <div class="flex-1">
+        <h1 id="movie-title" class="text-xl font-black text-white uppercase leading-tight">Loading Title...</h1>
+        <p class="text-xs text-amber-400 font-bold mt-1 uppercase"><i class="fas fa-star"></i> Ultimate Premium</p>
+      </div>
+    </div>
+
+    <div class="bg-darkCard p-4 rounded-2xl border border-slate-800 mb-6">
+      <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">ရုပ်ရှင်အညွှန်း</h3>
+      <p id="movie-desc" class="text-slate-300 text-sm leading-relaxed">Loading story...</p>
+    </div>
+
+    <div id="server-section" class="hidden mb-6">
+      <p class="text-[10px] font-black opacity-40 uppercase mb-2 tracking-widest">Select Server (လင့်ခ်ရွေးချယ်ရန်)</p>
+      <div id="server-group" class="flex flex-wrap gap-2"></div>
+    </div>
+
+    <div class="space-y-3">
+      <button id="in-app-play" class="w-full bg-primary hover:bg-red-600 text-white font-black py-4 rounded-xl flex items-center justify-center gap-4 transition-all" tabindex="2">
+        <i class="fas fa-play-circle text-lg"></i>
+        <span class="text-xs uppercase tracking-widest">In-App Web Player ဖြင့်ကြည့်မည်</span>
+      </button>
+
+      <div class="ad-color-run">
+        <button id="ext-play-btn" class="w-full bg-slate-950 text-white font-black py-4 rounded-xl flex items-center justify-center gap-4 transition-all border border-transparent" tabindex="3">
+          <i class="fas fa-play text-primary"></i>
+          <span id="ext-btn-text" class="text-xs uppercase tracking-widest">External Player</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let art = null;
+    let movieTitle = "";
+    let moviePoster = "";
+    let urlsList = [];
+    let activeUrl = "";
+    let currentServerIdx = 1;
+
+    // 1. URL တွင်ပါလာသော Parameter များအား ဖတ်ယူခြင်း
+    const urlParams = new URLSearchParams(window.location.search);
+    movieTitle = urlParams.get('title') || "Unknown Movie";
+    moviePoster = urlParams.get('logo') || "";
+    const movieDesc = urlParams.get('desc') || "အညွှန်း မရရှိနိုင်သေးပါ။";
+    const linksRaw = urlParams.get('links') || "";
+
+    // နေရာချခြင်း
+    document.getElementById('movie-title').innerText = movieTitle;
+    document.getElementById('movie-desc').innerText = movieDesc;
+    if(moviePoster) document.getElementById('movie-poster').src = moviePoster;
+
+    // လင့်ခ်များကို ခွဲထုတ်ခြင်း (ကော်မာခံထားသည်များကို array ပြောင်းသည်)
+    urlsList = linksRaw.split(',').map(url => url.trim()).filter(Boolean);
+    activeUrl = urlsList[0] || "";
+
+    // 2. Cross-Platform Device Detection (ဖုန်း၊ စမတ်တီဗွီ၊ ကွန်ပျူတာ ခွဲခြားရန်)
+    const getDeviceOS = () => {
+        const ua = navigator.userAgent.toLowerCase();
+        if (ua.includes('android')) return 'android';
+        if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod')) return 'ios';
+        return 'pc_tv'; 
     };
 
-    // Remote Back Key handle
-    window.addEventListener('keydown', (e) => {
+    // 3. ArtPlayer (In-App) စနစ်အား မောင်းနှင်ခြင်း
+    function initArtPlayer(url, poster) {
+        if (!url) return;
+        if (art) art.destroy();
+        
+        art = new Artplayer({
+            container: '.artplayer-app',
+            url: url,
+            poster: poster,
+            autoplay: true,
+            autoSize: true,
+            setting: true,
+            pip: true,
+            playbackRate: true,
+            aspectRatio: true,
+            fullscreen: true,
+            fullscreenWeb: true,
+            lock: true,
+            theme: '#ef4444',
+            // PC နှင့် Android browser များပေါ်တွင် .m3u8 လင့်များ တိုက်ရိုက်ပွင့်ရန် 
+            customType: {
+                m3u8: function (video, url) {
+                    if (window.Hls && Hls.isSupported()) {
+                        const hls = new Hls();
+                        hls.loadSource(url);
+                        hls.attachMedia(video);
+                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        video.src = url;
+                    }
+                }
+            }
+        });
+    }
+
+    // 4. Server Selection UI Setup (လင့်ခ်တစ်ခုထက်ပိုပါက ခလုတ်များထုတ်ပေးရန်)
+    if (urlsList.length > 1) {
+        const serverSection = document.getElementById('server-section');
+        const serverGroup = document.getElementById('server-group');
+        serverSection.classList.remove('hidden');
+        
+        urlsList.forEach((url, index) => {
+            const btn = document.createElement('button');
+            btn.className = `server-btn bg-slate-800 border border-slate-700 text-[11px] font-bold py-2 px-4 rounded-xl text-slate-300 transition-all ${index === 0 ? 'active' : ''}`;
+            btn.innerText = `Server ${index + 1}`;
+            btn.tabIndex = 4;
+            btn.onclick = () => {
+                activeUrl = url;
+                currentServerIdx = index + 1;
+                document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                if(art) art.switchUrl(url);
+            };
+            serverGroup.appendChild(btn);
+        });
+    }
+
+    // 5. External Player Play Button Logic (Device အလိုက် ပြောင်းလဲပေးခြင်း)
+    const extPlayBtn = document.getElementById('ext-play-btn');
+    const extBtnText = document.getElementById('ext-btn-text');
+    const os = getDeviceOS();
+
+    if (os === 'ios') {
+        extBtnText.innerText = "Open in VLC Player (iOS)";
+        extPlayBtn.onclick = () => {
+            if(!activeUrl) return;
+            // iOS VLC Schema
+            window.location.href = `vlc://bg/stream/${activeUrl}`;
+        };
+    } else if (os === 'android') {
+        extBtnText.innerText = "Open in NS Player (Android)";
+        extPlayBtn.onclick = () => {
+            if(!activeUrl) return;
+            // Android MX/NS Player Intent
+            window.location.href = `intent:${activeUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(movieTitle + ' - Server ' + currentServerIdx)};end`;
+        };
+    } else {
+        // PC သို့မဟုတ် TV ဖြစ်ခဲ့ပါက
+        extBtnText.innerText = "External Stream (လင့်ခ်အပြင်မှာဖွင့်ရန်)";
+        extPlayBtn.onclick = () => {
+            if(!activeUrl) return;
+            window.open(activeUrl, '_blank');
+        };
+    }
+
+    // 6. In-App Play Button Trigger
+    document.getElementById('in-app-play').onclick = () => {
+        initArtPlayer(activeUrl, moviePoster);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    function goBack() {
+        if (art) art.destroy();
+        window.history.back();
+    }
+
+    // Smart TV Controller - Back key နှင့် D-pad support 
+    window.addEventListener('keydown', function(e) {
+        // TV Remote Back key (အနောက်ပြန်ခလုတ်နှိပ်ပါက)
         if (e.keyCode === 8 || e.keyCode === 461 || e.keyCode === 10009) {
-            window.history.back();
+            e.preventDefault();
+            goBack();
         }
     });
+
+    // စတင်ပွင့်ချိန်တွင် Player အား Auto-init လုပ်ပေးခြင်း
+    window.onload = () => {
+        if(activeUrl) initArtPlayer(activeUrl, moviePoster);
+        // Focus အား Back Button ဆီသို့ အလိုအလျောက် ပေးထားခြင်း (TV များအတွက်)
+        document.getElementById('back-btn').focus();
+    };
   </script>
 </body>
 </html>
