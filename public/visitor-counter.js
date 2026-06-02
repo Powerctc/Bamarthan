@@ -1,9 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // ⚙️ FAKE COUNT ပြင်ဆင်ရန်နေရာ (ဒီနေရာက ဂဏန်းတွေကို စိတ်ကြိုက်ပြောင်းပါ)
+    const FAKE_CONFIG = {
+        activeBase: 25,     // လက်ရှိကြည့်သူကို အနည်းဆုံး ၂၅ ဦး အမြဲပြထားမည်
+        todayBase: 340,     // ယနေ့ကြည့်သူကို အနည်းဆုံး ၃၄၀ ဦး အမြဲပြထားမည်
+        totalBase: 12450,   // စုစုပေါင်းကြည့်သူကို အနည်းဆုံး ၁၂၄၅၀ ဦး အမြဲပြထားမည်
+        fluctuationRange: 3 // လက်ရှိကြည့်သူကို ငြိမ်မနေစေဘဲ (ဥပမာ +၃ သို့မဟုတ် -၃) ပုံစံဖြင့် လှုပ်ရှားနေစေရန်
+    };
+
     // HTML ထဲက Container Div ကို ရှာခြင်း
     const targetDiv = document.querySelector('.visitor-stats-container');
     if (!targetDiv) return;
 
-    // Component ရဲ့ HTML နှင့် CSS ဒီဇိုင်းကို တစ်ခါတည်း သိမ်းသွင်းခြင်း
+    // Component ရဲ့ HTML နှင့် CSS ဒီဇိုင်း
     targetDiv.innerHTML = `
         <style>
             .visitor-box-wrap {
@@ -82,25 +90,44 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="visitor-table">
                 <div class="visitor-row">
                     <div class="visitor-label"><i class="fas fa-users icon-active"></i> လက်ရှိကြည့်ရှုသူ (Active)</div>
-                    <div id="v-active" class="visitor-value" style="color: #60a5fa;">1000</div>
+                    <div id="v-active" class="visitor-value" style="color: #60a5fa;">0</div>
                 </div>
                 <div class="visitor-row">
                     <div class="visitor-label"><i class="fas fa-calendar-alt icon-today"></i> ယနေ့ကြည့်ရှုသူ (Today)</div>
-                    <div id="v-today" class="visitor-value" style="color: #fbbf24;">1000</div>
+                    <div id="v-today" class="visitor-value" style="color: #fbbf24;">0</div>
                 </div>
                 <div class="visitor-row">
-                    <div class="visitor-row">
                     <div class="visitor-label"><i class="fas fa-eye icon-total"></i> စုစုပေါင်းကြည့်ရှုသူ (Total)</div>
-                    <div id="v-total" class="visitor-value" style="color: #c084fc;">1000</div>
+                    <div id="v-total" class="visitor-value" style="color: #c084fc;">0</div>
                 </div>
             </div>
         </div>
     `;
 
-    // 🛠️ Python Backend ရဲ့ WebSocket URL (Hosting တင်ရင် မိမိ Domain/IP ပြောင်းပေးပါ)
-    // 🛠️ Python Backend ရဲ့ Hugging Face Space URL (ws နေရာတွင် wss ပြောင်းရန် သတိပြုပါ)
-const wsUrl = "wss://bamarthan-visitor-counter.hf.space/ws/analytics"; 
+    const wsUrl = "wss://bamarthan-visitor-counter.hf.space/ws/analytics"; 
     let ws;
+    let realActive = 0;
+    let realToday = 0;
+    let realTotal = 0;
+    let flucInterval;
+
+    function updateUI() {
+        // Real Data နှင့် Fake Base ကို ပေါင်းခြင်း
+        let displayToday = realToday + FAKE_CONFIG.todayBase;
+        let displayTotal = realTotal + FAKE_CONFIG.totalBase;
+        
+        // Active User ကို ပိုပြီး သဘာဝကျကျ လှုပ်ရှားနေစေရန် Random ဂဏန်း အနည်းငယ် ပေါင်း/နှုတ် လုပ်ခြင်း
+        let randomOffset = Math.floor(Math.random() * (FAKE_CONFIG.fluctuationRange * 2 + 1)) - FAKE_CONFIG.fluctuationRange;
+        let displayActive = realActive + FAKE_CONFIG.activeBase + randomOffset;
+        
+        // Active ပြကွက် အနုတ်လက္ခဏာ မဖြစ်သွားစေရန် ထိန်းခြင်း
+        if (displayActive < 0) displayActive = 0;
+
+        // မျက်နှာပြင်ပေါ်တွင် ဂဏန်းများ လှပစွာ ကော်မာ ( , ) ဖြတ်ပြီး ပြသခြင်း
+        document.getElementById('v-active').innerText = Number(displayActive).toLocaleString();
+        document.getElementById('v-today').innerText = Number(displayToday).toLocaleString();
+        document.getElementById('v-total').innerText = Number(displayTotal).toLocaleString();
+    }
 
     function connectAnalytics() {
         ws = new WebSocket(wsUrl);
@@ -109,14 +136,21 @@ const wsUrl = "wss://bamarthan-visitor-counter.hf.space/ws/analytics";
         ws.onopen = () => {
             statusEl.innerText = "● Live";
             statusEl.className = "status-badge status-live";
+            
+            // WebSocket မိသွားရင် ၂ စက္ကန့်တစ်ကြိမ် Active count ကို ငြိမ်မနေဘဲ လှုပ်ရှားနေအောင် လုပ်ခြင်း
+            clearInterval(flucInterval);
+            flucInterval = setInterval(updateUI, 2000);
         };
 
         ws.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                document.getElementById('v-active').innerText = Number(data.active).toLocaleString();
-                document.getElementById('v-today').innerText = Number(data.today).toLocaleString();
-                document.getElementById('v-total').innerText = Number(data.total).toLocaleString();
+                // Server ကလာတဲ့ တကယ့် Real data ကို သိမ်းထားခြင်း
+                realActive = Number(data.active) || 0;
+                realToday = Number(data.today) || 0;
+                realTotal = Number(data.total) || 0;
+                
+                updateUI();
             } catch (err) {
                 console.error("Data error:", err);
             }
@@ -125,7 +159,12 @@ const wsUrl = "wss://bamarthan-visitor-counter.hf.space/ws/analytics";
         ws.onclose = () => {
             statusEl.innerText = "● Offline";
             statusEl.className = "status-badge status-down";
-            // Server ကျသွားရင် သို့မဟုတ် လိုင်းပြတ်သွားရင် ၅ စက္ကန့်တစ်ကြိမ် Auto ပြန်ချိတ်ရန်
+            clearInterval(flucInterval);
+            
+            // Server နှင့် လိုင်းပြတ်သွားလျှင်လည်း အခြေခံ Fake data ကို ဆက်ပြထားပေးခြင်း
+            updateUI();
+            
+            // ၅ စက္ကန့်တစ်ကြိမ် Auto ပြန်ချိတ်ရန် စောင့်ခြင်း
             setTimeout(connectAnalytics, 5000); 
         };
 
@@ -136,4 +175,3 @@ const wsUrl = "wss://bamarthan-visitor-counter.hf.space/ws/analytics";
 
     connectAnalytics();
 });
-              
