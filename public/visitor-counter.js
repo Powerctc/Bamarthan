@@ -98,7 +98,8 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
 
     // 🛠️ Python Backend ရဲ့ WebSocket URL (Hosting တင်ရင် မိမိ Domain/IP ပြောင်းပေးပါ)
-    const wsUrl = "ws://localhost:8000/ws/analytics"; 
+    // 🛠️ Python Backend ရဲ့ Hugging Face Space URL (ws နေရာတွင် wss ပြောင်းရန် သတိပြုပါ)
+const wsUrl = "wss://bamarthan-visitor-counter.hf.space/ws/analytics"; 
     let ws;
 
     function connectAnalytics() {
