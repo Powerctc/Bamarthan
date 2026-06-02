@@ -310,7 +310,8 @@
         this.isDetailOpen = true;
         document.getElementById('detailOverlay').style.display = 'flex';
         document.getElementById('videoContainer').style.display = 'none'; 
-        
+        document.getElementById('det-h-img').src = this.getProxyImg(match.home_img);
+        document.getElementById('det-a-img').src = this.getProxyImg(match.away_img);
         document.getElementById('det-h-name').innerText = match.home_name;
         document.getElementById('det-a-name').innerText = match.away_name;
 
