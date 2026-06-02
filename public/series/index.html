@@ -143,6 +143,15 @@ window.onpopstate = () => closeDetail();
 
 function handleBackAction() { window.history.back(); }
 
+// Simple device detection helper
+const getDeviceOS = () => {
+    const ua = navigator.userAgent.toLowerCase();
+    if (ua.includes('android')) return 'android';
+    if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod')) return 'ios';
+    if (ua.includes('macintosh') || ua.includes('windows') || ua.includes('linux')) return 'pc';
+    return 'tv'; // Fallback for smart TVs
+};
+
 async function loadSeries(url) {
     localStorage.setItem('s4itmm_series_source', url);
     const btn = document.getElementById('src-btn');
@@ -175,7 +184,7 @@ function renderSeries(data) {
             </div>
             <div class="p-3">
                 <h3 class="text-[10px] font-bold line-clamp-1 uppercase ${isActive ? 'text-primary' : ''}">${s.title}</h3>
-                <p class="text-[8px] opacity-50 mt-1 uppercase">${s.year || '2025'} • ${s.episodes ? s.episodes.length : 0} EPs</p>
+                <p class="text-[8px] opacity-50 mt-1 uppercase">${s.year || '2026'} • ${s.episodes ? s.episodes.length : 0} EPs</p>
             </div>
         `;
         card.onclick = () => openDetail(s);
@@ -185,6 +194,7 @@ function renderSeries(data) {
 
 function initArtPlayer(url, poster) {
     if (art) art.destroy();
+    
     art = new Artplayer({
         container: '.artplayer-app',
         url: url,
@@ -198,10 +208,21 @@ function initArtPlayer(url, poster) {
         fullscreen: true,
         fullscreenWeb: true,
         lock: true,
-        theme: '#facc15'
+        theme: '#facc15',
+        // Critical addition: Allows cross-platform .m3u8 playback on PC & Android
+        customType: {
+            m3u8: function (video, url) {
+                if (window.Hls && Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(video);
+                } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = url;
+                }
+            }
+        }
     });
 }
-
 
 function openDetail(s) {
     window.history.pushState({view: 'detail'}, '');
@@ -240,9 +261,23 @@ function openDetail(s) {
         window.scrollTo(0,0);
     };
 
-    document.getElementById('ext-play-btn').onclick = () => {
-        window.location.href = `intent:${activeEpUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(activeSeriesTitle + ' EP-' + currentEpIdx)};end`;
-    };
+    // Platform-aware External Play Button Actions
+    const extPlayBtn = document.getElementById('ext-play-btn');
+    const os = getDeviceOS();
+
+    if (os === 'ios') {
+        extPlayBtn.innerHTML = `<i class="fas fa-play text-primary"></i> <span class="text-xs uppercase tracking-widest">Open in VLC (iOS)</span>`;
+        extPlayBtn.onclick = () => { window.location.href = `vlc://bg/stream/${activeEpUrl}`; };
+    } else if (os === 'pc') {
+        extPlayBtn.innerHTML = `<i class="fas fa-external-link-alt text-primary"></i> <span class="text-xs uppercase tracking-widest">Open Video Link</span>`;
+        extPlayBtn.onclick = () => { window.open(activeEpUrl, '_blank'); };
+    } else {
+        // Android default (NS Player Intent)
+        extPlayBtn.innerHTML = `<i class="fas fa-play text-primary"></i> <span class="text-xs uppercase tracking-widest">Open in NS Player</span>`;
+        extPlayBtn.onclick = () => {
+            window.location.href = `intent:${activeEpUrl}#Intent;package=com.genuine.leone;type=video/*;S.title=${encodeURIComponent(activeSeriesTitle + ' EP-' + currentEpIdx)};end`;
+        };
+    }
 
     initArtPlayer(activeEpUrl, s.logo);
 }
@@ -287,6 +322,7 @@ window.onload = () => {
     const saved = localStorage.getItem('s4itmm_series_source') || seriesSources[0].value;
     loadSeries(saved);
 };
+
 </script>
 </body>
     </html>
