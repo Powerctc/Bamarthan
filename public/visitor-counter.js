@@ -82,16 +82,16 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="visitor-table">
                 <div class="visitor-row">
                     <div class="visitor-label"><i class="fas fa-users icon-active"></i> လက်ရှိကြည့်ရှုသူ (Active)</div>
-                    <div id="v-active" class="visitor-value" style="color: #60a5fa;">0</div>
+                    <div id="v-active" class="visitor-value" style="color: #60a5fa;">1000</div>
                 </div>
                 <div class="visitor-row">
                     <div class="visitor-label"><i class="fas fa-calendar-alt icon-today"></i> ယနေ့ကြည့်ရှုသူ (Today)</div>
-                    <div id="v-today" class="visitor-value" style="color: #fbbf24;">0</div>
+                    <div id="v-today" class="visitor-value" style="color: #fbbf24;">1000</div>
                 </div>
                 <div class="visitor-row">
                     <div class="visitor-row">
                     <div class="visitor-label"><i class="fas fa-eye icon-total"></i> စုစုပေါင်းကြည့်ရှုသူ (Total)</div>
-                    <div id="v-total" class="visitor-value" style="color: #c084fc;">0</div>
+                    <div id="v-total" class="visitor-value" style="color: #c084fc;">1000</div>
                 </div>
             </div>
         </div>
