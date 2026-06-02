@@ -201,7 +201,7 @@
       </div>
 
       <div class="detail-teams">
-        <div class="detail-team"><img id="det-h-img" src=""><h3 id="det-h-name"></h3></div>
+        <!--<div class="detail-team"><img id="det-h-img" src="">--><h3 id="det-h-name"></h3></div>
         <div style="font-size: 32px; font-weight: 900; color: #ef4444;">VS</div>
         <div class="detail-team"><img id="det-a-img" src=""><h3 id="det-a-name"></h3></div>
       </div>
@@ -310,8 +310,7 @@
         this.isDetailOpen = true;
         document.getElementById('detailOverlay').style.display = 'flex';
         document.getElementById('videoContainer').style.display = 'none'; 
-        document.getElementById('det-h-img').src = this.getProxyImg(match.home_img);
-        document.getElementById('det-a-img').src = this.getProxyImg(match.away_img);
+        
         document.getElementById('det-h-name').innerText = match.home_name;
         document.getElementById('det-a-name').innerText = match.away_name;
 
