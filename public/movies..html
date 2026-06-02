@@ -95,7 +95,7 @@
     .poster-wrapper { width: 100%; aspect-ratio: 2/3; overflow: hidden; border-radius: 8px; background: #000; margin-bottom: 10px; flex-shrink: 0; }
     .movie-poster { width: 100%; height: 100%; object-fit: cover; }
 
-    .movie-card:focus { border-color: var(--focus-color); transform: scale(1.05); z-index: 50; }
+    .movie-card:focus { border-color: var(--focus-color); transform: scale(1.02); z-index: 50; }
     
     .movie-title { 
       font-size: 13px; font-weight: bold; color: #f8fafc;
@@ -244,7 +244,7 @@
                 <div class="poster-wrapper"><img src="${movie.logo}" class="movie-poster" loading="lazy" onerror="this.src='https://via.placeholder.com/200x300?text=No+Poster'"></div>
                 <div class="movie-info">
                   <div class="movie-title">${movie.title}</div>
-                  <div class="movie-meta"><span>${movie.year || '2024'}</span><span class="movie-genre">${movie.category || movie.genre || 'Movie'}</span></div>
+                  <div class="movie-meta"><span>${movie.year || '2026'}</span><span class="movie-genre">${movie.category || movie.genre || 'Movie'}</span></div>
                 </div>`;
             card.onclick = () => openMovie(movie);
             grid.appendChild(card);
@@ -279,11 +279,29 @@
     }
 
     const searchInput = document.getElementById('search-input');
+    const scrollContainer = document.getElementById('main-scroll-area');
     
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
         searchInput.removeAttribute('readonly');
         searchInput.placeholder = "ရိုက်ရှာရန် နှိပ်ပါ...";
     }
+
+    // 1. Cross-Platform Infinite Scroll Listener (Phone, iOS, PC Mouse Wheel အတွက်)
+    scrollContainer.addEventListener('scroll', () => {
+        if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 300) {
+            if (currentLimit < filteredMovies.length) {
+                currentLimit += PAGE_SIZE;
+                renderGrid();
+            }
+        }
+    });
+
+    // 2. Smart TV D-Pad focus ချိန်ညှိချက် (Focus ရောက်တာနဲ့ အလယ်ဗဟို ဆွဲပြပေးရန်)
+    document.addEventListener('focusin', (e) => {
+        if (e.target.classList.contains('movie-card') || e.target.classList.contains('sidebar-item')) {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
 
     window.addEventListener('keydown', function(e) {
         const active = document.activeElement;
@@ -327,9 +345,10 @@
             }
         }
         
+        // Android TV Remote Box - Down arrow pagination fallback
         if (e.keyCode === 40 && active.classList.contains('movie-card')) {
             const grid = document.getElementById('movie-grid');
-            if (active === grid.lastElementChild || active === grid.children[grid.children.length - 3]) {
+            if (active === grid.lastElementChild || active === grid.children[grid.children.length - 2] || active === grid.children[grid.children.length - 3]) {
                 if (currentLimit < filteredMovies.length) { 
                     currentLimit += PAGE_SIZE; 
                     renderGrid(); 
