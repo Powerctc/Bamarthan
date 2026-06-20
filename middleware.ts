@@ -6,7 +6,6 @@ export function middleware(request: NextRequest) {
   const host = request.headers.get('host') || '';
 
   // ၁။ ပေးဖြတ်မည့် လမ်းကြောင်းများ (Public Routes)
-  // Verification Page (index.html) နဲ့ လိုအပ်တဲ့ static file တွေကို ပေးဖြတ်ရပါမယ်
   if (
     pathname === '/' || 
     pathname.startsWith('/index.html') || 
@@ -15,14 +14,21 @@ export function middleware(request: NextRequest) {
     pathname === '/offline.html' ||
     pathname.includes('.') // file extension ပါရင် ပေးဖြတ်မယ် (images/css)
   ) {
-    return NextResponse.next();
+    // Public routes ဖြစ်ပေမယ့် တခြား web ကနေ iframe နဲ့ လှမ်းမခေါ်နိုင်အောင် Header ထည့်ပေးမည်
+    const response = NextResponse.next();
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('Content-Security-Policy', "frame-ancestors 'self'");
+    return response;
   }
 
   // ၂။ Web Security: Referer စစ်ဆေးခြင်း
   // မိမိ Website ရဲ့ Domain ကနေ လာတာ မဟုတ်ရင် တားဆီးမယ်
   const isInternalRequest = referer.includes(host);
 
-  if (!isInternalRequest) {
+  // 💡 Localhost မှာ စမ်းသပ်နေစဉ်အတွင်း ပြဿနာမတက်စေရန် လွှတ်ပေးထားခြင်း
+  const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
+
+  if (!isInternalRequest && !isLocalhost && referer !== '') {
     return new NextResponse(
       `
       <!DOCTYPE html>
@@ -50,24 +56,25 @@ export function middleware(request: NextRequest) {
       `,
       {
         status: 403,
-        headers: { 'content-type': 'text/html; charset=utf-8' },
+        headers: { 
+          'content-type': 'text/html; charset=utf-8',
+          'X-Frame-Options': 'DENY', // 💡 iframe နဲ့ လှမ်းထည့်တာကို ပိတ်ဆို့သည်
+          'Content-Security-Policy': "frame-ancestors 'self'" // 💡 မိမိ domain ကလွဲပြီး ကျန်တာ iframe ခေါ်မရအောင် တားဆီးသည်
+        },
       }
     );
   }
 
-  return NextResponse.next();
+  // ပုံမှန် အောင်မြင်စွာ ပေးဖြတ်မည့် လမ်းကြောင်းများတွင်ပါ လုံခြုံရေး Header များ ထည့်သွင်းခြင်း
+  const response = NextResponse.next();
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('Content-Security-Policy', "frame-ancestors 'self'");
+  
+  return response;
 }
 
 export const config = {
   matcher: [
-    /*
-     * အောက်ပါ paths များမှလွဲ၍ ကျန်တာအားလုံးကို middleware စစ်မည်:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!api|_next/static|_next/image|favicon.ico|index.html|Chat/Group.html|sw.js|offline.html).*)',
   ],
 };
-  
