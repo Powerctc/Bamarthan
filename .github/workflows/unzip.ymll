@@ -1,0 +1,39 @@
+name: Unzip Bamarthanlive Source
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  unzip-and-deploy:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Unzip and Move Files to Root
+        run: |
+          # ၁။ Zip ဖိုင်ကို အရင်ဖြည်ချမယ် (ဖိုင်နာမည်ကို Bamarthan-main.zip လို့ ယူဆပြီး ပြင်ထားပါတယ်)
+          unzip -o Bamarthan-main.zip -d .
+          
+          # ၂။ ထွက်လာတဲ့ Folder ထဲက ပစ္စည်းအားလုံးကို ရှာပြီး Root ထဲ ရွှေ့မယ်
+          # (mv ထက် find သုံးတာက Hidden files တွေပါ တစ်ခါတည်း စိတ်ချလက်ချ ရွှေ့ပေးနိုင်လို့ ပိုမြန်ပြီး ပိုသေချာပါတယ်)
+          find Bamarthan-main -mindepth 1 -maxdepth 1 -exec mv -t . {} +
+          
+          # ၃။ အသုံးမလိုတော့တဲ့ Zip ဖိုင်နဲ့ Folder အဟောင်းကို ဖျက်ပစ်မယ်
+          rm -rf Bamarthan-main.zip Bamarthan-main
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          git add -A
+          git diff-index --quiet HEAD || git commit -m "Automated unzip and flatten folder [skip ci]"
+          git push origin HEAD
